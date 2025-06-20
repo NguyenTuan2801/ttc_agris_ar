@@ -1018,7 +1018,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 142.55
+  m_fontSize: 113.8
   m_fontSizeBase: 1
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1929,6 +1929,7 @@ GameObject:
   - component: {fileID: 878477615}
   - component: {fileID: 878477617}
   - component: {fileID: 878477618}
+  - component: {fileID: 878477619}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -1995,6 +1996,23 @@ MonoBehaviour:
   - {fileID: 1525490222}
   previousSceneName: ControlDeviceSelectGrapperSettingScene
   menuSettingName: ControlDeviceMenuSettingScene
+--- !u!114 &878477619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878477614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cce52bd792b9b741ba796d8d2097729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grapperButtons:
+  - {fileID: 1089914358}
+  - {fileID: 14640453}
+  - {fileID: 1698711165}
+  - {fileID: 1525490222}
 --- !u!1 &923202467
 GameObject:
   m_ObjectHideFlags: 0

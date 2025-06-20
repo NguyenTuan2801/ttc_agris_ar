@@ -76,7 +76,7 @@ public class LoginPresenter
 
         try
         {
-            // var companyTask = _companyService.GetCompanyByIdAsync(1);
+            var companyTask = _companyService.GetCompanyByIdAsync(1);
             var grapperTask = _grapperService.GetListGrapperAsync(1);
             var jbTask = _jbService.GetListJBInformationAsync(1);
             var imageTask = _imageService.GetListImageAsync(1);
@@ -88,13 +88,14 @@ public class LoginPresenter
             var adapterSpecificationTask = _adapterSpecificationService.GetListAdapterSpecificationAsync(1);
             var rackTask = _rackService.GetListRackAsync(1);
 
+
             await Task.WhenAll(
-                // companyTask,
+                companyTask,
                 grapperTask, jbTask, imageTask, moduleTask, mccTask, fieldDeviceTask, deviceTask,
                  moduleSpecificationTask, adapterSpecificationTask,
                  rackTask);
 
-            // var companyDto = companyTask.Result;
+            var companyDto = companyTask.Result;
             var grapperDtos = grapperTask.Result;
             var jbDtos = jbTask.Result;
             var imageDtos = imageTask.Result;
@@ -107,7 +108,7 @@ public class LoginPresenter
             var rackDtos = rackTask.Result;
 
             if (
-            // companyDto == null||
+            companyDto == null ||
             grapperDtos == null
             || jbDtos == null || imageDtos == null
             || moduleDtos == null
@@ -122,18 +123,18 @@ public class LoginPresenter
                 return;
             }
 
-            // if (companyDto != null)
-            // {
-            //     var models = ConvertCompanyModelFromDto(companyDto);
-            //     if (models != null)
-            //     {
-            //         GlobalVariable.temp_CompanyInformationModel = models;
-            //     }
-            // }
-            // else
-            // {
-            //     _view.ShowError("Tải dữ liệu thất bại!");
-            // }
+            if (companyDto != null)
+            {
+                var models = ConvertCompanyModelFromDto(companyDto);
+                if (models != null)
+                {
+                    GlobalVariable.temp_CompanyInformationModel = models;
+                }
+            }
+            else
+            {
+                _view.ShowError("Tải dữ liệu thất bại!");
+            }
             if (grapperDtos != null)
             {
                 var models = new List<GrapperInformationModel>();
