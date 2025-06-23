@@ -655,7 +655,7 @@ namespace OpenCVForUnity.UnityUtils.Helper
             {
                 arGameObjects[i] = Instantiate(arGameObjectOrigin);
                 arGameObjects[i].SetActive(false);
-                Debug.LogWarning(arGameObjects[i].layer);
+                // Debug.LogWarning(arGameObjects[i].layer);
                 //arGameObjects[i].layer = 5; //UI
                 // if (canvas != null)
                 // {

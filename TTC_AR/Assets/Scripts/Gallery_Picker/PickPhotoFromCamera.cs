@@ -1,5 +1,6 @@
 using EasyUI.Progress;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.UI;
 
 public class PickPhotoFromCamera : MonoBehaviour
@@ -10,15 +11,16 @@ public class PickPhotoFromCamera : MonoBehaviour
     private void Start()
     {
         camera_Option_Btn.onClick.RemoveAllListeners();
-        camera_Option_Btn.onClick.AddListener(OpenCameraToTakePhoto);
+        camera_Option_Btn.onClick.AddListener(PickPhoto);
     }
 
     public void UpdateConfirmImage(Texture2D savedPhoto)
     {
         if (savedPhoto == null) return;
 
-        Texture2D rotatedTexture = RotateTexture90(savedPhoto);
-        confirmImage.texture = rotatedTexture;
+        // Texture2D rotatedTexture = RotateTexture90(savedPhoto);
+        // confirmImage.texture = rotatedTexture;
+        confirmImage.texture = savedPhoto;
 
         StartCoroutine(Resize_GameObject_Function.Set_NativeSize_For_GameObject(confirmImage));
     }
@@ -58,9 +60,27 @@ public class PickPhotoFromCamera : MonoBehaviour
 
 
     private void OpenCameraToTakePhoto()
-    {
+    {        // GlobalVariable.PickPhotoFromCamera = true;
         WebCamPhotoCamera.Instance.ConfirmImageCanvas.SetActive(false);
-        GlobalVariable.PickPhotoFromCamera = true;
         WebCamPhotoCamera.Instance.StartCameraToTakePhoto(this);
+    }
+
+    public void PickPhoto()
+    {
+        GlobalVariable.PickPhotoFromCamera = true;
+        if (Permission.HasUserAuthorizedPermission(Permission.Camera))
+        {
+            OpenCameraToTakePhoto();
+        }
+        else
+        {
+            Debug.LogWarning("Permission Not Granted");
+            AskPermission();
+        }
+    }
+    public void AskPermission()
+    {
+        Permission.RequestUserPermission(Permission.Camera);
+        PickPhoto();
     }
 }
