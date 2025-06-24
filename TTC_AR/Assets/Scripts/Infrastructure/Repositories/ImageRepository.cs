@@ -42,7 +42,7 @@ namespace Infrastructure.Repositories
                 else
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    Debug.Log(content);
+                    //Debug.Log(content);
                     var entity = JsonConvert.DeserializeObject<ImageEntity>(content);
                     return entity;
                 }
@@ -69,7 +69,7 @@ namespace Infrastructure.Repositories
                 else
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    Debug.Log(content);
+                    //Debug.Log(content);
                     var entities = JsonConvert.DeserializeObject<List<ImageEntity>>(content);
                     return entities;
                 }
@@ -98,14 +98,14 @@ namespace Infrastructure.Repositories
                 // var ImageImageEntity = ConvertImageImageEntity(ImageEntity);
                 var json = JsonConvert.SerializeObject(ImageEntity);
 
-                Debug.Log(json);
+                //Debug.Log(json);
 
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.PostAsync($"{GlobalVariable.baseUrl}/Images/{grapperId}?fileName={ImageEntity.Name}", content);
 
                 var temp = await response.Content.ReadAsStringAsync();
-                Debug.Log(temp);
+                //Debug.Log(temp);
                 var result = JsonConvert.DeserializeObject<bool>(temp);
                 return result;
             }
@@ -125,7 +125,7 @@ namespace Infrastructure.Repositories
             {
                 var response = await _httpClient.DeleteAsync($"{GlobalVariable.baseUrl}/Images/{ImageId}");
                 var temp = await response.Content.ReadAsStringAsync();
-                Debug.Log(temp);
+                //Debug.Log(temp);
                 var result = JsonConvert.DeserializeObject<bool>(temp);
                 return result;
             }
@@ -143,93 +143,57 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                if (!fileName.Contains(".png") && !fileName.Contains(".jpg"))
-                {
-                    fileName += ".png";
-                }
-                if (fileName.Contains(".jpg"))
-                {
-                    Debug.Log("fileName.Contain jpg");
-                    fileName = fileName.Replace(".jpg", ".png");
-                }
+                // Chuẩn hóa file name
+                fileName = Path.GetFileNameWithoutExtension(fileName) + ".png";
 
-                Debug.Log("Run Repository 1");
+                if (texture.height == 0)
+                    throw new Exception("Texture height is zero!");
 
-                int targetHeight = 2560;
-                if (texture.height == 0) throw new Exception("Texture height is zero!");
-
+                // Resize ảnh dùng GPU (Graphics.Blit)
+                const int targetHeight = 2560;
                 float aspectRatio = (float)texture.width / texture.height;
                 int targetWidth = Mathf.Max(1, Mathf.RoundToInt(targetHeight * aspectRatio));
 
-                // Tạo texture mới (readable)
+                RenderTexture rt = RenderTexture.GetTemporary(targetWidth, targetHeight);
+                Graphics.Blit(texture, rt);
+
                 Texture2D resizedTexture = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false);
-
-                // Đảm bảo texture gốc readable
-                Color[] pixels = texture.GetPixels();
-                Color[] resizedPixels = new Color[targetWidth * targetHeight];
-
-                // Bilinear scaling
-                for (int y = 0; y < targetHeight; y++)
-                {
-                    for (int x = 0; x < targetWidth; x++)
-                    {
-                        float u = x / (float)(targetWidth - 1);
-                        float v = y / (float)(targetHeight - 1);
-                        int x0 = Mathf.Clamp((int)(u * (texture.width - 1)), 0, texture.width - 1);
-                        int y0 = Mathf.Clamp((int)(v * (texture.height - 1)), 0, texture.height - 1);
-                        resizedPixels[y * targetWidth + x] = pixels[y0 * texture.width + x0];
-                    }
-                }
-                Debug.Log("Run Repository 1.5");
-
-                resizedTexture.SetPixels(resizedPixels);
-
-                Debug.Log("Run Repository 1.6");
+                RenderTexture.active = rt;
+                resizedTexture.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
                 resizedTexture.Apply();
+                RenderTexture.active = null;
+                RenderTexture.ReleaseTemporary(rt);
 
-                Debug.Log("Run Repository 2");
-                byte[] fileData = File.ReadAllBytes(filePath);
-                Debug.Log("Run Repository 3");
+                // Encode resized image
+                byte[] imageData = resizedTexture.EncodeToPNG();
+                UnityEngine.Object.Destroy(resizedTexture); // Cleanup
+
+                // Chuẩn bị form upload
                 WWWForm form = new WWWForm();
-                Debug.Log("Run Repository 4");
-                form.AddBinaryData("file", fileData, fileName, mimeType);
-                Debug.Log("Run Repository 5");
-
-                Debug.Log($"imageSize: {resizedTexture.width} x {resizedTexture.height}");
-
+                form.AddBinaryData("file", imageData, fileName, "image/png");
+                Debug.Log($"UploadNewImageFromGallery: {grapperId} + {fileName}");
+                // Upload
+                using (UnityWebRequest request = UnityWebRequest.Post($"{GlobalVariable.baseUrl}/Images/{grapperId}?fileName={fileName}", form))
                 {
-
-                    using (UnityWebRequest request = UnityWebRequest.Post($"{GlobalVariable.baseUrl}/Images/{grapperId}?fileName={fileName}", form))
+                    var operation = request.SendWebRequest();
+                    while (!operation.isDone)
                     {
-                        Debug.Log("Run Repository 6");
-                        request.SendWebRequest();
-                        while (!request.isDone)
-                        {
-                            await Task.Delay(50);
-                        }
-
-                        if (request.result != UnityWebRequest.Result.Success)
-                        {
-                            Debug.LogError($"❌ Lỗi upload ảnh: {request.error}");
-                            throw new Exception($"Lỗi upload ảnh: {request.error}");
-                        }
-
-                        // Deserialize the response to check success
-                        string responseText = request.downloadHandler.text;
-                        Debug.Log($"Response: {responseText}");
-                        bool Result = JsonConvert.DeserializeObject<bool>(responseText);
-                        return Result;
+                        await Task.Yield();
                     }
+
+                    if (request.result != UnityWebRequest.Result.Success)
+                        throw new Exception($"Lỗi upload ảnh: {request.error}");
+
+                    string responseText = request.downloadHandler.text;
+                    return JsonConvert.DeserializeObject<bool>(responseText);
                 }
             }
             catch (HttpRequestException ex)
             {
-                Debug.LogError($"❌ Lỗi upload ảnh: {ex.Message}");
                 throw new ApplicationException("Failed to upload image", ex);
             }
             catch (Exception ex)
             {
-                Debug.LogError($"❌ Lỗi upload ảnh: {ex.Message}");
                 throw new ApplicationException($"Lỗi upload ảnh: {ex.Message}", ex);
             }
         }
@@ -237,155 +201,128 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                // Ensure proper file extension
-                if (!fileName.Contains(".png") && !fileName.Contains(".jpg"))
-                {
-                    fileName += ".png";
-                }
-                if (fileName.Contains(".jpg"))
-                {
-                    fileName = fileName.Replace(".jpg", ".png");
-                }
+                // Đảm bảo đuôi .png
+                fileName = Path.GetFileNameWithoutExtension(fileName) + ".png";
 
-                // Resize the texture to height 2560 while maintaining aspect ratio
-                int targetHeight = 2560;
+                if (texture.height == 0)
+                    throw new Exception("Texture height is zero!");
+
+                // Resize ảnh (dùng GPU - nhanh hơn nhiều)
+                const int targetHeight = 2560;
                 float aspectRatio = (float)texture.width / texture.height;
-                int targetWidth = Mathf.RoundToInt(targetHeight * aspectRatio);
+                int targetWidth = Mathf.Max(1, Mathf.RoundToInt(targetHeight * aspectRatio));
 
-                Texture2D resizedTexture = new Texture2D(targetWidth, targetHeight, texture.format, false);
-                Color[] pixels = texture.GetPixels();
-                Color[] resizedPixels = new Color[targetWidth * targetHeight];
+                RenderTexture rt = RenderTexture.GetTemporary(targetWidth, targetHeight);
+                Graphics.Blit(texture, rt);
 
-                // Simple bilinear scaling
-                for (int y = 0; y < targetHeight; y++)
-                {
-                    for (int x = 0; x < targetWidth; x++)
-                    {
-                        float u = x / (float)(targetWidth - 1);
-                        float v = y / (float)(targetHeight - 1);
-                        int x0 = (int)(u * (texture.width - 1));
-                        int y0 = (int)(v * (texture.height - 1));
-                        resizedPixels[y * targetWidth + x] = pixels[y0 * texture.width + x0];
-                    }
-                }
-
-                resizedTexture.SetPixels(resizedPixels);
+                Texture2D resizedTexture = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false);
+                RenderTexture.active = rt;
+                resizedTexture.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
                 resizedTexture.Apply();
+                RenderTexture.active = null;
+                RenderTexture.ReleaseTemporary(rt);
 
-                // Encode the resized texture to PNG
+                // Encode ảnh
                 byte[] imageData = resizedTexture.EncodeToPNG();
-
-                // Clean up
                 UnityEngine.Object.Destroy(resizedTexture);
 
-                // Create form data
+                // Form dữ liệu
                 WWWForm form = new WWWForm();
                 form.AddBinaryData("file", imageData, fileName, "image/png");
 
-                Debug.Log($"UploadNewImageFromCamera: {grapperId} + {fileName}");
-                Debug.Log($"imageSize: {resizedTexture.width} x {resizedTexture.height}");
-
-                using (UnityWebRequest request = UnityWebRequest.Post($"{GlobalVariable.baseUrl}/Images/{grapperId}?fileName={fileName}", form))
+                using (UnityWebRequest request = UnityWebRequest.Post(
+                    $"{GlobalVariable.baseUrl}/Images/{grapperId}?fileName={fileName}", form))
                 {
-                    request.SendWebRequest();
-
-                    while (!request.isDone)
+                    var operation = request.SendWebRequest();
+                    while (!operation.isDone)
                     {
-                        await Task.Delay(50);
+                        await Task.Yield();
                     }
 
                     if (request.result != UnityWebRequest.Result.Success)
-                    {
-                        Debug.LogError($"❌ Lỗi upload ảnh: {request.error}");
                         throw new Exception($"Lỗi upload ảnh: {request.error}");
-                    }
 
-                    // Deserialize the response to check success
                     string responseText = request.downloadHandler.text;
-                    Debug.Log($"Response: {responseText}");
-                    bool Result = JsonConvert.DeserializeObject<bool>(responseText);
-                    return Result;
+                    return JsonConvert.DeserializeObject<bool>(responseText);
                 }
             }
             catch (HttpRequestException ex)
             {
-                Debug.LogError($"❌ Lỗi upload ảnh: {ex.Message}");
                 throw new ApplicationException("Failed to upload image", ex);
             }
             catch (Exception ex)
             {
-                Debug.LogError($"❌ Lỗi upload ảnh: {ex.Message}");
                 throw new ApplicationException("Unexpected error during HTTP request", ex);
             }
         }
+
+        // public IEnumerator UploadNewImage()
+        // {
+        //     // Chụp ảnh màn hình
+        //     string filePath = Path.Combine(Application.persistentDataPath, "screenshot.png");
+
+        //     yield return new WaitForEndOfFrame();
+        //     // Đọc dữ liệu ảnh
+        //     byte[] imageBytes = File.ReadAllBytes(filePath);
+
+        //     // Tạo DTO
+        //     ImageDto imageDto = new ImageDto
+        //     {
+        //         FileName = "screenshot.png",
+        //         ContentType = "image/png",
+        //         Size = imageBytes.Length,
+        //         Description = "Ảnh chụp từ Unity"
+        //     };
+
+        //     // Chuyển DTO thành JSON
+        //     string jsonDto = JsonUtility.ToJson(imageDto);
+
+        //     // Tạo form để gửi cả file và DTO
+        //     WWWForm form = new WWWForm();
+        //     form.AddBinaryData("file", imageBytes, "screenshot.png", "image/png");
+
+        //     form.AddField("metadata", jsonDto);
+
+        //     using (UnityWebRequest www = UnityWebRequest.Post(GlobalVariable.baseUrl, form))
+        //     {
+        //         yield return www.SendWebRequest();
+
+        //         if (www.result == UnityWebRequest.Result.Success)
+        //         {
+        //         }
+        //         else
+        //         {
+        //         }
+        //     }
+
+        //     // Xóa file tạm
+        //     File.Delete(filePath);
+        // }
+        // private object ConvertImageRequestData(ImageEntity ImageEntity)
+        // {
+        //     return new
+        //     {
+        //         name = ImageEntity.Name,
+        //         Location = ImageEntity.Location ?? "",
+        //         ListDevices = ImageEntity.DeviceEntities?
+        //             .Where(d => d != null)
+        //             .Select(d => new DeviceBasicDto(d.Id, d.Code))
+        //             .ToList() ?? new List<DeviceBasicDto>(),
+        //         ListModules = ImageEntity.ModuleEntities
+        //             .Where(m => m != null)
+        //             .Select(m => new ModuleBasicDto(m.Id, m.Name))
+        //             .ToList() ?? new List<ModuleBasicDto>(),
+        //         OutdoorImage = ImageEntity.OutdoorImageEntity != null
+        //             ? new ImageBasicDto(ImageEntity.OutdoorImageEntity.Id, ImageEntity.OutdoorImageEntity.Name)
+        //             : null,
+        //         ListConnectionImages = ImageEntity.ConnectionImageEntities?
+        //             .Where(i => i != null)
+        //             .Select(i => new ImageBasicDto(i.Id, i.Name))
+        //             .ToList() ?? new List<ImageBasicDto>()
+        //     };
+        // }
+
+
+
     }
-
-    // public IEnumerator UploadNewImage()
-    // {
-    //     // Chụp ảnh màn hình
-    //     string filePath = Path.Combine(Application.persistentDataPath, "screenshot.png");
-
-    //     yield return new WaitForEndOfFrame();
-    //     // Đọc dữ liệu ảnh
-    //     byte[] imageBytes = File.ReadAllBytes(filePath);
-
-    //     // Tạo DTO
-    //     ImageDto imageDto = new ImageDto
-    //     {
-    //         FileName = "screenshot.png",
-    //         ContentType = "image/png",
-    //         Size = imageBytes.Length,
-    //         Description = "Ảnh chụp từ Unity"
-    //     };
-
-    //     // Chuyển DTO thành JSON
-    //     string jsonDto = JsonUtility.ToJson(imageDto);
-
-    //     // Tạo form để gửi cả file và DTO
-    //     WWWForm form = new WWWForm();
-    //     form.AddBinaryData("file", imageBytes, "screenshot.png", "image/png");
-
-    //     form.AddField("metadata", jsonDto);
-
-    //     using (UnityWebRequest www = UnityWebRequest.Post(GlobalVariable.baseUrl, form))
-    //     {
-    //         yield return www.SendWebRequest();
-
-    //         if (www.result == UnityWebRequest.Result.Success)
-    //         {
-    //         }
-    //         else
-    //         {
-    //         }
-    //     }
-
-    //     // Xóa file tạm
-    //     File.Delete(filePath);
-    // }
-    // private object ConvertImageRequestData(ImageEntity ImageEntity)
-    // {
-    //     return new
-    //     {
-    //         name = ImageEntity.Name,
-    //         Location = ImageEntity.Location ?? "",
-    //         ListDevices = ImageEntity.DeviceEntities?
-    //             .Where(d => d != null)
-    //             .Select(d => new DeviceBasicDto(d.Id, d.Code))
-    //             .ToList() ?? new List<DeviceBasicDto>(),
-    //         ListModules = ImageEntity.ModuleEntities
-    //             .Where(m => m != null)
-    //             .Select(m => new ModuleBasicDto(m.Id, m.Name))
-    //             .ToList() ?? new List<ModuleBasicDto>(),
-    //         OutdoorImage = ImageEntity.OutdoorImageEntity != null
-    //             ? new ImageBasicDto(ImageEntity.OutdoorImageEntity.Id, ImageEntity.OutdoorImageEntity.Name)
-    //             : null,
-    //         ListConnectionImages = ImageEntity.ConnectionImageEntities?
-    //             .Where(i => i != null)
-    //             .Select(i => new ImageBasicDto(i.Id, i.Name))
-    //             .ToList() ?? new List<ImageBasicDto>()
-    //     };
-    // }
-
-
-
 }

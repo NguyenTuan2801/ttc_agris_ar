@@ -142,7 +142,7 @@ public class CreateAdapterSpecificationSettingView : MonoBehaviour, IAdapterSpec
         var horizontalGroupTransform = backgroundTransform.Find("Horizontal_Group");
 
         backgroundTransform.Find("Dialog_Status_Icon").GetComponent<Image>().sprite = Resources.Load<Sprite>("images/UIimages/Success_Icon_For_Dialog");
-        backgroundTransform.Find("Dialog_Content").GetComponent<TMP_Text>().text = $"Bạn đã thành công thêm loại Adapter <b><color =#004C8A>{model.Code}</b></color> vào hệ thống";
+        backgroundTransform.Find("Dialog_Content").GetComponent<TMP_Text>().text = $"Bạn đã thành công thêm loại Adapter <b><color=#004C8A>{model.Code}</b></color> vào hệ thống";
         backgroundTransform.Find("Dialog_Title").GetComponent<TMP_Text>().text = "Thêm loại Adapter mới thành công";
 
         var confirmButton = horizontalGroupTransform.Find("Confirm_Button").GetComponent<Button>();

@@ -184,7 +184,6 @@ public class ImagePresenter
         GlobalVariable.APIRequestType.Add("POST_Image");
         _view.ShowLoading("Đang cập nhật...");
         try
-
         {
             Debug.Log("Run Presenter");
             Debug.Log("UploadImageFromCamera: " + grapperId + " " + fileName);

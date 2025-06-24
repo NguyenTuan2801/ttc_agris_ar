@@ -293,7 +293,7 @@ public class UpdateMccSettingView : MonoBehaviour, IMccView
 
         DialogOneButton.transform.Find("Background/Dialog_Status_Icon").GetComponent<Image>().sprite = Resources.Load<Sprite>("images/UIimages/Success_Icon_For_Dialog");
 
-        DialogOneButton.transform.Find("Background/Dialog_Content").GetComponent<TMP_Text>().text = $"{message}: <color=#004C8A><b>{MccInformationModel.CabinetCode}</b></color>";
+        DialogOneButton.transform.Find("Background/Dialog_Content").GetComponent<TMP_Text>().text = $"{message}<color=#004C8A><b>{MccInformationModel.CabinetCode}</b></color>";
         DialogOneButton.transform.Find("Background/Dialog_Title").GetComponent<TMP_Text>().text = title;
 
         backButton.onClick.RemoveAllListeners();

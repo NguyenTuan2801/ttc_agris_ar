@@ -123,9 +123,9 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
 
         var Horizontal_Group = DialogTwoButton.transform.Find("Background/Horizontal_Group").gameObject.transform;
 
-        var dialog_Content = DialogTwoButton.transform.Find("Background/Dialog_Content").GetComponent<TMP_Text>().text = $"Bạn có chắc chắn muốn xóa thông tin thiết bi trường <color=#ED1C24><b>{model.Name}</b></color> khỏi hệ thống? Hãy kiểm tra kĩ trước khi nhấn nút xác nhận phía dưới";
+        var dialog_Content = DialogTwoButton.transform.Find("Background/Dialog_Content").GetComponent<TMP_Text>().text = $"Bạn có chắc chắn muốn xóa thông tin thiết bị trường <color=#ED1C24><b>{model.Name}</b></color> khỏi hệ thống? Hãy kiểm tra kĩ trước khi nhấn nút xác nhận phía dưới";
 
-        var dialog_Title = DialogTwoButton.transform.Find("Background/Dialog_Title").GetComponent<TMP_Text>().text = "Xóa thiết bi trường khỏi hệ thống?";
+        var dialog_Title = DialogTwoButton.transform.Find("Background/Dialog_Title").GetComponent<TMP_Text>().text = "Xóa thiết bị trường khỏi hệ thống?";
 
         backgroundTransform.Find("Dialog_Status_Icon").GetComponent<Image>().sprite = Resources.Load<Sprite>("images/UIimages/Warning_Icon_For_Dialog");
 
@@ -164,7 +164,7 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
     }
 
 
-    private void OpenErrorDialog(string title = "Xóa thiết bi trường thất bại", string message = "Đã có lỗi xảy ra khi xóa thiết bi trường khỏi hệ thống. Vui lòng thử lại sau")
+    private void OpenErrorDialog(string title = "Xóa thiết bị trường thất bại", string message = "Đã có lỗi xảy ra khi xóa thiết bị trường khỏi hệ thống. Vui lòng thử lại sau")
     {
         DialogOneButton.SetActive(true);
 
@@ -207,7 +207,7 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
     {
         if (GlobalVariable.APIRequestType.Contains("GET_FieldDevice_List"))
         {
-            OpenErrorDialog(title: "Tải danh sách thiết bi trường thất bại", message: "Đã có lỗi xảy ra khi tải danh sách thiết bi trường. Vui lòng thử lại sau");
+            OpenErrorDialog(title: "Tải danh sách thiết bị trường thất bại", message: "Đã có lỗi xảy ra khi tải danh sách thiết bị trường. Vui lòng thử lại sau");
         }
         if (GlobalVariable.APIRequestType.Contains("DELETE_FieldDevice"))
         {
@@ -227,7 +227,7 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
         {
             listFieldDeviceItems.Remove(_fieldDeviceItem);
             Destroy(_fieldDeviceItem);
-            Show_Toast.Instance.ShowToast("success", "Xóa thiết bi trường thành công");
+            Show_Toast.Instance.ShowToast("success", "Xóa thiết bị trường thành công");
         }
 
         StartCoroutine(Show_Toast.Instance.Set_Instance_Status_False(1f));

@@ -18,9 +18,9 @@ public class PickPhotoFromCamera : MonoBehaviour
     {
         if (savedPhoto == null) return;
 
-        // Texture2D rotatedTexture = RotateTexture90(savedPhoto);
-        // confirmImage.texture = rotatedTexture;
-        confirmImage.texture = savedPhoto;
+        Texture2D rotatedTexture = RotateTexture90(savedPhoto);
+        confirmImage.texture = rotatedTexture;
+        // confirmImage.texture = savedPhoto;
 
         StartCoroutine(Resize_GameObject_Function.Set_NativeSize_For_GameObject(confirmImage));
     }
@@ -44,10 +44,10 @@ public class PickPhotoFromCamera : MonoBehaviour
                 // Vị trí pixel trong ảnh gốc
                 int originalIndex = y * width + x;
 
-                // Vị trí tương ứng trong ảnh xoay 90 độ
-                int rotatedX = height - 1 - y;
-                int rotatedY = x;
-                int rotatedIndex = rotatedY * height + rotatedX;
+                // Toạ độ mới sau khi xoay 90 độ theo chiều kim đồng hồ
+                int rotatedX = y;
+                int rotatedY = width - 1 - x;
+                int rotatedIndex = rotatedX + rotatedY * height;
 
                 rotatedPixels[rotatedIndex] = originalPixels[originalIndex];
             }
@@ -57,6 +57,7 @@ public class PickPhotoFromCamera : MonoBehaviour
         rotatedTexture.Apply();
         return rotatedTexture;
     }
+
 
 
     private void OpenCameraToTakePhoto()

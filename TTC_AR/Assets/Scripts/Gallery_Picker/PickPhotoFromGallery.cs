@@ -40,7 +40,7 @@ public class PickPhotoFromGallery : MonoBehaviour
         {
             GetImageFromGallery((path)
             => HandlePickedPhoto(path, imageForUpload),
-            "Select an image", "image/*");
+            "Chọn thư mục chứa ảnh", "image/*");
         }
         else
         {
