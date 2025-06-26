@@ -734,7 +734,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.1993267, y: 0.22777273}
   m_AnchorMax: {x: 0.94410235, y: 0.7511814}
-  m_AnchoredPosition: {x: -0.5, y: -1.8043976}
+  m_AnchoredPosition: {x: -0.5, y: -1.8043823}
   m_SizeDelta: {x: -0.95651245, y: 4.390999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &217664555
@@ -1228,6 +1228,7 @@ GameObject:
   - component: {fileID: 430925135}
   - component: {fileID: 430925137}
   - component: {fileID: 430925136}
+  - component: {fileID: 430925139}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -1311,6 +1312,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &430925139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 430925134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c851612e8d8b89c4082d87065a3137a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  previousSceneName: 
+  recentSceneName:
+  - MenuScene
+  - LoginScene
+  listButton:
+  - {fileID: 987616056}
+  - {fileID: 873105038}
 --- !u!1 &433245725
 GameObject:
   m_ObjectHideFlags: 0
@@ -2189,7 +2209,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.1993267, y: 0.22777273}
   m_AnchorMax: {x: 0.94410235, y: 0.7511814}
-  m_AnchoredPosition: {x: -0.5, y: -1.8043976}
+  m_AnchoredPosition: {x: -0.5, y: -1.8043823}
   m_SizeDelta: {x: -0.95651245, y: 4.390999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1106178492
@@ -2325,7 +2345,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.1993267, y: 0.22777273}
   m_AnchorMax: {x: 0.94410235, y: 0.7511814}
-  m_AnchoredPosition: {x: -0.5, y: -1.8043976}
+  m_AnchoredPosition: {x: -0.5, y: -1.8043823}
   m_SizeDelta: {x: -0.95651245, y: 4.390999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1248120369
@@ -3574,7 +3594,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.1993267, y: 0.22777273}
   m_AnchorMax: {x: 0.94410235, y: 0.7511814}
-  m_AnchoredPosition: {x: -0.5, y: -1.8043976}
+  m_AnchoredPosition: {x: -0.5, y: -1.8043823}
   m_SizeDelta: {x: -0.95651245, y: 4.390999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1944332892
