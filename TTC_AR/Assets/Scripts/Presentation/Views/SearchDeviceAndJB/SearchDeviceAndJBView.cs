@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
 {
-
     [Header("Filter")]
     public GameObject filterDropdownButton;
     public GameObject filterContent;
@@ -63,7 +62,8 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
         contentItemSelectionRect ??= contentItemSelection.GetComponent<RectTransform>();
         scrollRectInitialSize = scrollRect.gameObject.GetComponent<RectTransform>().sizeDelta;
         Debug.Log("SearchableDropDown awake");
-        filter_Type = "Device";
+        filter_Type = GlobalVariable_Search_Devices.selectedDeviceType == "JB" ? "JB/TSD" : "Device";
+        //filter_Type = "Device";
     }
 
     private void LoadData()
@@ -78,31 +78,70 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
 
     public void SetInitialTextFieldValue()
     {
-
-        if (!string.IsNullOrEmpty(tempDeviceInfo[0].Code) && !string.IsNullOrEmpty(tempJBInfo[0].Name))
+        if (GlobalVariable_Search_Devices.selectedDeviceType == "JB")
         {
-            inputField.text = tempDeviceInfo[0].Code;
-            //    OnValueChangedEvt?.Invoke(inputField.text);
+            if (tempJBInfo.Any() && !string.IsNullOrEmpty(tempJBInfo[0].Name))
+            {
+                inputField.text = tempJBInfo[0].Name;
+            }
+            else
+            {
+                Debug.Log("Debug Log: tempJBInfo[0].Name is null or empty");
+                return;
+            }
         }
         else
         {
-            Debug.Log("Debug Log: tempDeviceInfo[0].Code or tempJBInfo[0].Name is null or empty");
-            return;
+            if (tempDeviceInfo.Any() && !string.IsNullOrEmpty(tempDeviceInfo[0].Code) && !string.IsNullOrEmpty(tempDeviceInfo[0].Function))
+            {
+                inputField.text = $"{tempDeviceInfo[0].Code} - {tempDeviceInfo[0].Function}";  // Chuỗi ghép
+            }
+            else
+            {
+                Debug.Log("Debug Log: tempDeviceInfo[0].Code or Function is null or empty");
+                return;
+            }
         }
+
+        //if (!string.IsNullOrEmpty(tempDeviceInfo[0].Code) && !string.IsNullOrEmpty(tempJBInfo[0].Name))
+        //{
+        //    inputField.text = tempDeviceInfo[0].Code;
+        //    //    OnValueChangedEvt?.Invoke(inputField.text);
+        //}
+        //else
+        //{
+        //    Debug.Log("Debug Log: tempDeviceInfo[0].Code or tempJBInfo[0].Name is null or empty");
+        //    return;
+        //}
     }
 
     public void Initialize()
     {
-        tempDeviceInfo = GlobalVariable_Search_Devices.temp_ListDeviceInformationModel;
+        if (GlobalVariable_Search_Devices.selectedDeviceType == "JB")
+        {
+            filter_Type = "JB/TSD";
+            tempDeviceInfo = new List<DeviceInformationModel>();
+            tempJBInfo = GlobalVariable_Search_Devices.temp_ListJBInformationModel;
+            deviceOptions = new List<string>();
+            jbOptions = tempJBInfo.Select(jb => jb.Name).ToList();
+            availableOptions = jbOptions;
+        }
+        else
+        {
+            filter_Type = "Device";
+            tempDeviceInfo = GlobalVariable_Search_Devices.temp_ListDeviceInformationModel
+            .Where(device => device.Type == GlobalVariable_Search_Devices.selectedDeviceType)
+            .ToList();
 
-        tempJBInfo = GlobalVariable_Search_Devices.temp_ListJBInformationModel;
+            tempJBInfo = GlobalVariable_Search_Devices.temp_ListJBInformationModel;
 
-        deviceOptions = tempDeviceInfo.SelectMany(device => new[] { device.Code, device.Function }).ToList();
+            // SỬA ĐÂY: Ghép Code và Function thành một chuỗi duy nhất theo định dạng "{Code} - {Function}"
+            deviceOptions = tempDeviceInfo.Select(device => $"{device.Code} - {device.Function}").ToList();
 
-        jbOptions = tempJBInfo.Select(jb => jb.Name).ToList();
+            jbOptions = tempJBInfo.Select(jb => jb.Name).ToList();
 
-
-        availableOptions = deviceOptions;
+            availableOptions = deviceOptions;
+        }
 
         if (scrollRect == null || inputField == null || contentItemSelection == null || itemPrefab == null)
         {
@@ -135,22 +174,36 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
     public void OnDeviceFilterClicked()
     {
         filter_Type = "Device";
-        UpdateDropdownOptions(deviceOptions);
-        ToggleDropdown();
+        GlobalVariable_Search_Devices.selectedDeviceType = "Cảm biến nhiệt độ";
+        Initialize();
         filterText.text = filter_Type;
-        inputField.text = deviceOptions[0];
+        // SỬA ĐÂY: Để trống hoặc chọn chuỗi ghép đầu tiên nếu cần (theo yêu cầu trước, nên để trống)
+        inputField.text = deviceOptions.Any() ? deviceOptions[0] : ""; // Bây giờ deviceOptions[0] là chuỗi ghép
         Canvas.ForceUpdateCanvases();
+
+        //filter_Type = "Device";
+        //UpdateDropdownOptions(deviceOptions);
+        //ToggleDropdown();
+        //filterText.text = filter_Type;
+        //inputField.text = deviceOptions[0];
+        //Canvas.ForceUpdateCanvases();
     }
 
     public void OnJBFilterClicked()
     {
         filter_Type = "JB/TSD";
-        UpdateDropdownOptions(jbOptions);
-        ToggleDropdown();
+        GlobalVariable_Search_Devices.selectedDeviceType = "JB";
+        Initialize();
         filterText.text = filter_Type;
-        inputField.text = jbOptions[0];
+        inputField.text = jbOptions.Any() ? jbOptions[0] : "";
         Canvas.ForceUpdateCanvases();
 
+        //filter_Type = "JB/TSD";
+        //UpdateDropdownOptions(jbOptions);
+        //ToggleDropdown();
+        //filterText.text = filter_Type;
+        //inputField.text = jbOptions[0];
+        //Canvas.ForceUpdateCanvases();
     }
 
     private void UpdateDropdownOptions(List<string> options)
@@ -253,7 +306,7 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
                 var optionText = availableOptions[i];
                 var textComponent = item.GetComponentInChildren<TMP_Text>();
                 textComponent.text = optionText;
-                item.name = optionText;
+                item.name = optionText; // SỬA ĐÂY: item.name cũng là chuỗi ghép để lọc đúng
                 item.SetActive(true);
             }
             else
@@ -337,8 +390,8 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
 
     private void OnItemSelected(string selectedItem)
     {
-        inputField.text = selectedItem;
-        OnValueChangedEvt?.Invoke(inputField.text);
+        inputField.text = selectedItem; // SỬA ĐÂY: selectedItem giờ là chuỗi ghép
+        OnValueChangedEvt?.Invoke(inputField.text); // Truyền chuỗi ghép đi
         scrollRect.gameObject.SetActive(false);
         arrowButtonDown.SetActive(false);
         arrowButtonUp.SetActive(true);
@@ -393,6 +446,4 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
     {
         throw new NotImplementedException();
     }
-
-
 }

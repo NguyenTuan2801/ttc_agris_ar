@@ -9,11 +9,11 @@ using UnityEngine.Scripting;
 [Serializable]
 public class AccountModel
 {
-  public string userName { get; set; } = string.Empty;
+  public string email { get; set; } = string.Empty;
   public string password { get; set; } = string.Empty;
-  public AccountModel(string userName, string password)
+  public AccountModel(string email, string password)
   {
-    this.userName = userName;
+    this.email = email;
     this.password = password;
   }
 }

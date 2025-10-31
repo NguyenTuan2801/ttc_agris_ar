@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,18 +45,35 @@ public class NavScene : MonoBehaviour
         {
             switch (recentSceneName)
             {
-                case "PLCBoxGrapA":
+                case "PLCBoxGrapA_TemperatureSensor":
                     GlobalVariable.GrapperId = 1;
+                    GlobalVariable_Search_Devices.selectedDeviceType = "Cảm biến nhiệt độ";
                     return 1;
-                case "PLCBoxGrapB":
-                    GlobalVariable.GrapperId = 2;
+                case "PLCBoxGrapA_LevelSensor":
+                    GlobalVariable.GrapperId = 1;
+                    GlobalVariable_Search_Devices.selectedDeviceType = "Cảm biến đo mức";
                     return 2;
-                case "PLCBoxGrapC":
-                    GlobalVariable.GrapperId = 3;
+                case "PLCBoxGrapA_JB":
+                    GlobalVariable.GrapperId = 1;
+                    GlobalVariable_Search_Devices.selectedDeviceType = "JB";
                     return 3;
-                case "PLCBoxLHGrapA":
-                    GlobalVariable.GrapperId = 4;
+                case "PLCBoxGrapA_PressureSensor":
+                    GlobalVariable.GrapperId = 1;
+                    GlobalVariable_Search_Devices.selectedDeviceType = "Cảm biến áp suất";
                     return 4;
+                case "PLCBoxGrapA_OtherSensor":
+                    GlobalVariable.GrapperId = 1;
+                    GlobalVariable_Search_Devices.selectedDeviceType = "Cảm biến khác";
+                    return 5;
+                //case "PLCBoxGrapB":
+                //    GlobalVariable.GrapperId = 2;
+                //    return 2;
+                //case "PLCBoxGrapC":
+                //    GlobalVariable.GrapperId = 3;
+                //    return 3;
+                //case "PLCBoxLHGrapA":
+                //    GlobalVariable.GrapperId = 4;
+                //    return 4;
                 default:
                     return 0;
             }

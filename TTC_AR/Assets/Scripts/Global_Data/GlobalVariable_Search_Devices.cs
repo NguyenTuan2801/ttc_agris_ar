@@ -18,6 +18,6 @@ public class GlobalVariable_Search_Devices : MonoBehaviour
    public static List<JBInformationModel> temp_ListJBInformationModel = new List<JBInformationModel>();
    public static List<string> temp_List_Device_For_Fitler = new List<string>(); // just Function and Code
    public static List<string> temp_List_JB_For_Fitler = new List<string>(); // just Function and Code
-
+   public static string selectedDeviceType = "Cảm biến nhiệt độ";
 
 }

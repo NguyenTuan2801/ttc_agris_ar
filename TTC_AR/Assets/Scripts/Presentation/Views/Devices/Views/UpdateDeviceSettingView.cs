@@ -13,16 +13,50 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
     [Header("Input Fields")]
     [SerializeField] private TMP_InputField deviceCode_TextField;
     [SerializeField] private TMP_InputField deviceFunction_TextField;
+    [SerializeField] private TMP_InputField deviceIOAddress_TextField;
+    [SerializeField] private TMP_InputField deviceType_TextField;
+    [SerializeField] private TMP_InputField deviceModelSeries_TextField;
+    [SerializeField] private TMP_InputField deviceManufacturer_TextField;
+    [SerializeField] private TMP_InputField devicePartNumber_TextField;
+    [SerializeField] private TMP_InputField deviceSerialNumber_TextField;
+    [SerializeField] private TMP_InputField deviceManufacturingYear_TextField;
+    [SerializeField] private TMP_InputField deviceInstallationDate_TextField;
+    [SerializeField] private TMP_InputField deviceMeasurementType_TextField;
     [SerializeField] private TMP_InputField deviceRange_TextField;
     [SerializeField] private TMP_InputField deviceUnit_TextField;
-    [SerializeField] private TMP_InputField deviceIOAddress_TextField;
+    [SerializeField] private TMP_InputField deviceAccuracy_TextField;
+    [SerializeField] private TMP_InputField deviceSupplyVoltage_TextField;
+    [SerializeField] private TMP_InputField deviceOutputSignal_TextField;
+    [SerializeField] private TMP_InputField deviceIngressProtection_TextField;
+    [SerializeField] private TMP_InputField deviceConnectorType_TextField;
+    [SerializeField] private TMP_InputField deviceProcessConnection_TextField;
+    [SerializeField] private TMP_InputField deviceResponseTime_TextField;
+    [SerializeField] private TMP_InputField deviceOtherSpecifications_TextField;
+    [SerializeField] private TMP_InputField deviceInstallationLocation_TextField;
+    [SerializeField] private TMP_InputField deviceMeasuredMedium_TextField;
+    [SerializeField] private TMP_InputField deviceOperatingTemperature_TextField;
+    [SerializeField] private TMP_InputField deviceOperatingPressure_TextField;
+    [SerializeField] private TMP_InputField deviceCalibrationFrequency_TextField;
+    [SerializeField] private TMP_InputField deviceFailureHistory_TextField;
+    [SerializeField] private TMP_InputField deviceEnvironmentCondition_TextField;
     [SerializeField] private List<TMP_InputField> deviceTextFieldValues;
 
-    [Header("Basic")]
-    public ScrollRect scrollRect;
-    public RectTransform viewPortTransform;
-    public GameObject parent_Content_Vertical_Group;
+    [Header("Basic Information")]
+    public ScrollRect basic_ScrollRect;
+    public RectTransform basic_ViewPortTransform;
+    public GameObject basic_Parent_Content_Vertical_Group;
+
     private Transform temp_Item_Transform;
+
+    [Header("Technical Information")]
+    public ScrollRect technical_ScrollRect;
+    public RectTransform technical_ViewPortTransform;
+    public GameObject technical_Parent_Content_Vertical_Group;
+
+    [Header("Operational Information")]
+    public ScrollRect operational_ScrollRect;
+    public RectTransform operational_ViewPortTransform;
+    public GameObject operational_Parent_Content_Vertical_Group;
 
     [Header("LayOutGroup")]
     public GameObject List_JB_Parent_GridLayout_Group;
@@ -42,10 +76,18 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
     [SerializeField] private Button backButtonAdditionalConnectionImageListSelection;
     [SerializeField] private GameObject addModuleItem;
 
+    [SerializeField] private Button basicInfoButton;
+    [SerializeField] private Button technicalInfoButton;
+    [SerializeField] private Button operationalInfoButton;
+
+    [Header("Scroll Views")]
+    public GameObject basicInfo_ScrollView;
+    public GameObject technicalInfo_ScrollView;
+    public GameObject operationalInfo_ScrollView;
+
     [Header("Dialog Buttons")]
     public GameObject DialogOneButton;
     public GameObject DialogTwoButton;
-
 
     [Header("Canvas")]
     public GameObject List_Device_Canvas;
@@ -92,7 +134,9 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
         backButtonJBListSelection.onClick.RemoveAllListeners();
         backButtonModuleListSelection.onClick.RemoveAllListeners();
         backButtonAdditionalConnectionImageListSelection.onClick.RemoveAllListeners();
-
+        basicInfoButton.onClick.RemoveAllListeners();
+        technicalInfoButton.onClick.RemoveAllListeners();
+        operationalInfoButton.onClick.RemoveAllListeners();
 
         backButton.onClick.AddListener(CloseAddCanvas);
         submitButton.onClick.AddListener(OnSubmitButtonClick);
@@ -101,6 +145,10 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
         backButtonAdditionalConnectionImageListSelection.onClick.AddListener(() => CloseListSelectionFromBackButton("Additional_Connection_Images"));
 
         LoadDetailById();
+
+        basicInfoButton.onClick.AddListener(OpenBasicInfo);
+        technicalInfoButton.onClick.AddListener(OpenTechnicalInfo);
+        operationalInfoButton.onClick.AddListener(OpenOperationalInfo);
     }
 
     void OnDisable()
@@ -132,9 +180,32 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
             DeviceInformationModel = new DeviceInformationModel(
             code: string.IsNullOrEmpty(deviceCode_TextField.text) ? throw new ArgumentNullException(nameof(deviceCode_TextField.text)) : deviceCode_TextField.text,
             function: string.IsNullOrEmpty(deviceFunction_TextField.text) ? "Chưa cập nhật" : deviceFunction_TextField.text,
+            ioAddress: string.IsNullOrEmpty(deviceIOAddress_TextField.text) ? "Chưa cập nhật" : deviceIOAddress_TextField.text,
+            type: string.IsNullOrEmpty(deviceType_TextField.text) ? "Chưa cập nhật" : deviceType_TextField.text,
+            modelSeries: string.IsNullOrEmpty(deviceModelSeries_TextField.text) ? "Chưa cập nhật" : deviceModelSeries_TextField.text,
+            manufacturer: string.IsNullOrEmpty(deviceManufacturer_TextField.text) ? "Chưa cập nhật" : deviceManufacturer_TextField.text,
+            partNumber: string.IsNullOrEmpty(devicePartNumber_TextField.text) ? "Chưa cập nhật" : devicePartNumber_TextField.text,
+            serialNumber: string.IsNullOrEmpty(deviceSerialNumber_TextField.text) ? "Chưa cập nhật" : deviceSerialNumber_TextField.text,
+            manufacturingYear: string.IsNullOrEmpty(deviceManufacturingYear_TextField.text) ? "Chưa cập nhật" : deviceManufacturingYear_TextField.text,
+            installationDate: string.IsNullOrEmpty(deviceInstallationDate_TextField.text) ? "Chưa cập nhật" : deviceInstallationDate_TextField.text,
+            measurementType: string.IsNullOrEmpty(deviceMeasurementType_TextField.text) ? "Chưa cập nhật" : deviceMeasurementType_TextField.text,
             range: string.IsNullOrEmpty(deviceRange_TextField.text) ? "Chưa cập nhật" : deviceRange_TextField.text,
             unit: string.IsNullOrEmpty(deviceUnit_TextField.text) ? "Chưa cập nhật" : deviceUnit_TextField.text,
-            ioAddress: string.IsNullOrEmpty(deviceIOAddress_TextField.text) ? "Chưa cập nhật" : deviceIOAddress_TextField.text,
+            accuracy: string.IsNullOrEmpty(deviceAccuracy_TextField.text) ? "Chưa cập nhật" : deviceAccuracy_TextField.text,
+            supplyVoltage: string.IsNullOrEmpty(deviceSupplyVoltage_TextField.text) ? "Chưa cập nhật" : deviceSupplyVoltage_TextField.text,
+            outputSignal: string.IsNullOrEmpty(deviceOutputSignal_TextField.text) ? "Chưa cập nhật" : deviceOutputSignal_TextField.text,
+            ingressProtection: string.IsNullOrEmpty(deviceIngressProtection_TextField.text) ? "Chưa cập nhật" : deviceIngressProtection_TextField.text,
+            connectorType: string.IsNullOrEmpty(deviceConnectorType_TextField.text) ? "Chưa cập nhật" : deviceConnectorType_TextField.text,
+            processConnection: string.IsNullOrEmpty(deviceProcessConnection_TextField.text) ? "Chưa cập nhật" : deviceProcessConnection_TextField.text,
+            responseTime: string.IsNullOrEmpty(deviceResponseTime_TextField.text) ? "Chưa cập nhật" : deviceResponseTime_TextField.text,
+            otherSpecifications: string.IsNullOrEmpty(deviceOtherSpecifications_TextField.text) ? "Chưa cập nhật" : deviceOtherSpecifications_TextField.text,
+            installationLocation: string.IsNullOrEmpty(deviceInstallationLocation_TextField.text) ? "Chưa cập nhật" : deviceInstallationLocation_TextField.text,
+            measuredMedium: string.IsNullOrEmpty(deviceMeasuredMedium_TextField.text) ? "Chưa cập nhật" : deviceMeasuredMedium_TextField.text,
+            operatingTemperature: string.IsNullOrEmpty(deviceOperatingTemperature_TextField.text) ? "Chưa cập nhật" : deviceOperatingTemperature_TextField.text,
+            operatingPressure: string.IsNullOrEmpty(deviceOperatingPressure_TextField.text) ? "Chưa cập nhật" : deviceOperatingPressure_TextField.text,
+            calibrationFrequency: string.IsNullOrEmpty(deviceCalibrationFrequency_TextField.text) ? "Chưa cập nhật" : deviceCalibrationFrequency_TextField.text,
+            failureHistory: string.IsNullOrEmpty(deviceFailureHistory_TextField.text) ? "Chưa cập nhật" : deviceFailureHistory_TextField.text,
+            environmentCondition: string.IsNullOrEmpty(deviceEnvironmentCondition_TextField.text) ? "Chưa cập nhật" : deviceEnvironmentCondition_TextField.text,
             jbInformationModels: temp_Dictionary_JBInformationModel.Any() ? temp_Dictionary_JBInformationModel.Values.ToList() : new List<JBInformationModel>(),
             moduleInformationModel: !addModuleItem.activeSelf ? temp_ModuleModel : null,
             additionalConnectionImages: temp_Dictionary_Additional_ConnectionModel.Any() ? temp_Dictionary_Additional_ConnectionModel.Values.ToList() : new List<ImageInformationModel>()
@@ -166,6 +237,7 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
 
     public void CloseAddCanvas()
     {
+        OpenBasicInfo();
         Add_New_Device_Canvas.SetActive(false);
         Update_Device_Canvas.SetActive(false);
         List_Device_Canvas.SetActive(true);
@@ -436,21 +508,44 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
     {
         deviceCode_TextField.text = string.IsNullOrEmpty(model.Code) ? "Chưa cập nhật" : model.Code;
         deviceFunction_TextField.text = string.IsNullOrEmpty(model.Function) ? "Chưa cập nhật" : model.Function;
+        deviceType_TextField.text = string.IsNullOrEmpty(model.Type) ? "Chưa cập nhật" : model.Type;
         deviceIOAddress_TextField.text = string.IsNullOrEmpty(model.IOAddress) ? "Chưa cập nhật" : model.IOAddress;
+        deviceModelSeries_TextField.text = string.IsNullOrEmpty(model.ModelSeries) ? "Chưa cập nhật" : model.ModelSeries;
+        deviceManufacturer_TextField.text = string.IsNullOrEmpty(model.Manufacturer) ? "Chưa cập nhật" : model.Manufacturer;
+        devicePartNumber_TextField.text = string.IsNullOrEmpty(model.PartNumber) ? "Chưa cập nhật" : model.PartNumber;
+        deviceSerialNumber_TextField.text = string.IsNullOrEmpty(model.SerialNumber) ? "Chưa cập nhật" : model.SerialNumber;
+        deviceManufacturingYear_TextField.text = string.IsNullOrEmpty(model.ManufacturingYear) ? "Chưa cập nhật" : model.ManufacturingYear;
+        deviceInstallationDate_TextField.text = string.IsNullOrEmpty(model.InstallationDate) ? "Chưa cập nhật" : model.InstallationDate;
+        deviceMeasurementType_TextField.text = string.IsNullOrEmpty(model.MeasurementType) ? "Chưa cập nhật" : model.MeasurementType;
         deviceRange_TextField.text = string.IsNullOrEmpty(model.Range) ? "Chưa cập nhật" : model.Range;
         deviceUnit_TextField.text = string.IsNullOrEmpty(model.Unit) ? "Chưa cập nhật" : model.Unit;
+        deviceAccuracy_TextField.text = string.IsNullOrEmpty(model.Accuracy) ? "Chưa cập nhật" : model.Accuracy;
+        deviceSupplyVoltage_TextField.text = string.IsNullOrEmpty(model.SupplyVoltage) ? "Chưa cập nhật" : model.SupplyVoltage;
+        deviceOutputSignal_TextField.text = string.IsNullOrEmpty(model.OutputSignal) ? "Chưa cập nhật" : model.OutputSignal;
+        deviceIngressProtection_TextField.text = string.IsNullOrEmpty(model.IngressProtection) ? "Chưa cập nhật" : model.IngressProtection;
+        deviceConnectorType_TextField.text = string.IsNullOrEmpty(model.ConnectorType) ? "Chưa cập nhật" : model.ConnectorType;
+        deviceProcessConnection_TextField.text = string.IsNullOrEmpty(model.ProcessConnection) ? "Chưa cập nhật" : model.ProcessConnection;
+        deviceResponseTime_TextField.text = string.IsNullOrEmpty(model.ResponseTime) ? "Chưa cập nhật" : model.ResponseTime;
+        deviceOtherSpecifications_TextField.text = string.IsNullOrEmpty(model.OtherSpecifications) ? "Chưa cập nhật" : model.OtherSpecifications;
+        deviceInstallationLocation_TextField.text = string.IsNullOrEmpty(model.InstallationLocation) ? "Chưa cập nhật" : model.InstallationLocation;
+        deviceMeasuredMedium_TextField.text = string.IsNullOrEmpty(model.MeasuredMedium) ? "Chưa cập nhật" : model.MeasuredMedium;
+        deviceOperatingTemperature_TextField.text = string.IsNullOrEmpty(model.OperatingTemperature) ? "Chưa cập nhật" : model.OperatingTemperature;
+        deviceOperatingPressure_TextField.text = string.IsNullOrEmpty(model.OperatingPressure) ? "Chưa cập nhật" : model.OperatingPressure;
+        deviceCalibrationFrequency_TextField.text = string.IsNullOrEmpty(model.CalibrationFrequency) ? "Chưa cập nhật" : model.CalibrationFrequency;
+        deviceFailureHistory_TextField.text = string.IsNullOrEmpty(model.FailureHistory) ? "Chưa cập nhật" : model.FailureHistory;
+        deviceEnvironmentCondition_TextField.text = string.IsNullOrEmpty(model.EnvironmentCondition) ? "Chưa cập nhật" : model.EnvironmentCondition;
 
         foreach (var textField in deviceTextFieldValues)
         {
             if (textField.text == "Chưa cập nhật" || string.IsNullOrEmpty(textField.text))
             {
-                textField.textComponent.color = Color.red;
-                textField.textComponent.fontStyle = FontStyles.Bold;
+                textField.textComponent.color = Color.black;
+                //textField.textComponent.fontStyle = FontStyles.Normal;
             }
             else
             {
                 textField.textComponent.color = Color.black;
-                textField.textComponent.fontStyle = FontStyles.Normal;
+                //textField.textComponent.fontStyle = FontStyles.Normal;
             }
         }
     }
@@ -514,6 +609,37 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
                     field: "Additional_Connection_Images");
             }
         }
-        scrollRect.verticalNormalizedPosition = 1;
+        basic_ScrollRect.verticalNormalizedPosition = 1;
+        technical_ScrollRect.verticalNormalizedPosition = 1;
+        operational_ScrollRect.verticalNormalizedPosition = 1;
     }
+
+    private void OpenBasicInfo()
+    {
+        basicInfo_ScrollView.SetActive(true);
+        basicInfoButton.image.color = new Color32(226, 226, 226, 255);
+        technicalInfo_ScrollView.SetActive(false);
+        technicalInfoButton.image.color = new Color32(255, 255, 255, 255);
+        operationalInfo_ScrollView.SetActive(false);
+        operationalInfoButton.image.color = new Color32(255, 255, 255, 255);
+    }
+    private void OpenTechnicalInfo()
+    {
+        basicInfo_ScrollView.SetActive(false);
+        basicInfoButton.image.color = new Color32(255, 255, 255, 255);
+        technicalInfo_ScrollView.SetActive(true);
+        technicalInfoButton.image.color = new Color32(226, 226, 226, 255);
+        operationalInfo_ScrollView.SetActive(false);
+        operationalInfoButton.image.color = new Color32(255, 255, 255, 255);
+    }
+    private void OpenOperationalInfo()
+    {
+        basicInfo_ScrollView.SetActive(false);
+        basicInfoButton.image.color = new Color32(255, 255, 255, 255);
+        technicalInfo_ScrollView.SetActive(false);
+        technicalInfoButton.image.color = new Color32(255, 255, 255, 255);
+        operationalInfo_ScrollView.SetActive(true);
+        operationalInfoButton.image.color = new Color32(226, 226, 226, 255);
+    }
+
 }

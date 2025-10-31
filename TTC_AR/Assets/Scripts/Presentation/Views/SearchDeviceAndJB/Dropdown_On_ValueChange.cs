@@ -20,13 +20,18 @@ public class Dropdown_On_ValueChange : MonoBehaviour
     public GameObject JBPrefab;
 
     [SerializeField] private RectTransform contentTransform;
-    [SerializeField] private TMP_Text code_Value_Text, function_Value_Text, range_Value_Text, unit_Value_Text, io_Value_Text;
+    [SerializeField] private TMP_Text code_Value_Text, function_Value_Text, type_Value_Text, modelSeries_Value_Text, manufacturer_Value_Text, partNumber_Value_Text, serialNumber_Value_Text, manufacturingYear_Value_Text, installationDate_Value_Text, io_Value_Text, measurementType_Value_Text, range_Value_Text, unit_Value_Text, accuracy_Value_Text, supplyVoltage_Value_Text, outputSignal_Value_Text, ingressProtection_Value_Text, connectorType_Value_Text, processConnection_Value_Text, responseTime_Value_Text, otherSpecifications_Value_Text, installationLocation_Value_Text, measuredMedium_Value_Text, operatingTemperature_Value_Text, operatingPressure_Value_Text, calibrationFrequency_Value_Text, failureHistory_Value_Text, environmentCondition_Value_Text;
     [SerializeField] private Image JB_Location_Image_Prefab, JB_Connection_Wiring_Image_Prefab;
     [SerializeField] private GameObject JB_Connection_Group, bottom_App_Bar;
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private Dictionary<string, Sprite> spriteCache = new();
     [SerializeField] private List<Image> instantiatedImages = new();
     [SerializeField] private Transform deviceInfo;
+
+    [SerializeField] private GameObject searchScrollPanel;
+
+    [SerializeField] private TMP_InputField searchInputField;
+    [SerializeField] private Button clearButton;
 
     private Dictionary<string, DeviceInformationModel> deviceDictionary;
     private Dictionary<string, JBInformationModel> jBDictionary;
@@ -49,6 +54,7 @@ public class Dropdown_On_ValueChange : MonoBehaviour
     private void Start()
     {
         StartCoroutine(LoadData());
+        clearButton.onClick.AddListener(ClearSearchInputField);
     }
     void OnDestroy()
     {
@@ -69,6 +75,7 @@ public class Dropdown_On_ValueChange : MonoBehaviour
             Prepare_JB_Dictionary_For_Searching();
             searchableDropDownView.Initialize();
             searchableDropDownView.SetInitialTextFieldValue();
+            searchScrollPanel.SetActive(false);
         }
         catch (Exception e)
         {
@@ -80,11 +87,36 @@ public class Dropdown_On_ValueChange : MonoBehaviour
     {
         scrollRect ??= prefab_Infor.GetComponent<ScrollRect>();
         var content = prefab_Infor.transform.Find("Content");
-        deviceInfo = content.Find("Device_information");
+        deviceInfo = content.Find("Device_Info");
         code_Value_Text ??= deviceInfo.Find("Code_group/Code_value").GetComponent<TMP_Text>();
         function_Value_Text ??= deviceInfo.Find("Function_group/Function_value").GetComponent<TMP_Text>();
-        range_Value_Text ??= deviceInfo.Find("Range_group/Range_value").GetComponent<TMP_Text>();
         io_Value_Text ??= deviceInfo.Find("IO_group/IO_value").GetComponent<TMP_Text>();
+        type_Value_Text ??= deviceInfo.Find("Type_group/Type_value").GetComponent<TMP_Text>();
+        modelSeries_Value_Text ??= deviceInfo.Find("ModelSeries_group/ModelSeries_value").GetComponent<TMP_Text>();
+        manufacturer_Value_Text ??= deviceInfo.Find("Manufacturer_group/Manufacturer_value").GetComponent<TMP_Text>();
+        partNumber_Value_Text ??= deviceInfo.Find("PartNumber_group/PartNumber_value").GetComponent<TMP_Text>();
+        serialNumber_Value_Text ??= deviceInfo.Find("SerialNumber_group/SerialNumber_value").GetComponent<TMP_Text>();
+        manufacturingYear_Value_Text ??= deviceInfo.Find("ManufacturingYear_group/ManufacturingYear_value").GetComponent<TMP_Text>();
+        installationDate_Value_Text ??= deviceInfo.Find("InstallationDate_group/InstallationDate_value").GetComponent<TMP_Text>();
+        measurementType_Value_Text ??= deviceInfo.Find("MeasurementType_group/MeasurementType_value").GetComponent<TMP_Text>();
+        range_Value_Text ??= deviceInfo.Find("Range_group/Range_value").GetComponent<TMP_Text>();
+        unit_Value_Text ??= deviceInfo.Find("Unit_group/Unit_value").GetComponent<TMP_Text>();
+        accuracy_Value_Text ??= deviceInfo.Find("Accuracy_group/Accuracy_value").GetComponent<TMP_Text>();
+        supplyVoltage_Value_Text ??= deviceInfo.Find("SupplyVoltage_group/SupplyVoltage_value").GetComponent<TMP_Text>();
+        outputSignal_Value_Text ??= deviceInfo.Find("OutputSignal_group/OutputSignal_value").GetComponent<TMP_Text>();
+        ingressProtection_Value_Text ??= deviceInfo.Find("IngressProtection_group/IngressProtection_value").GetComponent<TMP_Text>();
+        connectorType_Value_Text ??= deviceInfo.Find("ConnectorType_group/ConnectorType_value").GetComponent<TMP_Text>();
+        processConnection_Value_Text ??= deviceInfo.Find("ProcessConnection_group/ProcessConnection_value").GetComponent<TMP_Text>();
+        responseTime_Value_Text ??= deviceInfo.Find("ResponseTime_group/ResponseTime_value").GetComponent<TMP_Text>();
+        otherSpecifications_Value_Text ??= deviceInfo.Find("OtherSpecifications_group/OtherSpecifications_value").GetComponent<TMP_Text>();
+        installationLocation_Value_Text ??= deviceInfo.Find("InstallationLocation_group/InstallationLocation_value").GetComponent<TMP_Text>();
+        measuredMedium_Value_Text ??= deviceInfo.Find("MeasuredMedium_group/MeasuredMedium_value").GetComponent<TMP_Text>();
+        operatingTemperature_Value_Text ??= deviceInfo.Find("OperatingTemperature_group/OperatingTemperature_value").GetComponent<TMP_Text>();
+        operatingPressure_Value_Text ??= deviceInfo.Find("OperatingPressure_group/OperatingPressure_value").GetComponent<TMP_Text>();
+        calibrationFrequency_Value_Text ??= deviceInfo.Find("CalibrationFrequency_group/CalibrationFrequency_value").GetComponent<TMP_Text>();
+        failureHistory_Value_Text ??= deviceInfo.Find("FailureHistory_group/FailureHistory_value").GetComponent<TMP_Text>();
+        environmentCondition_Value_Text ??= deviceInfo.Find("EnvironmentCondition_group/EnvironmentCondition_value").GetComponent<TMP_Text>();
+
         // var jbConnectionGroup = content.Find("JB_Connection_group/JB_Connection_text_group");
         JB_Connection_Group ??= content.Find("JB_Connection_group").gameObject;
         JB_Location_Image_Prefab ??= JB_Connection_Group.transform.Find("image_BackGround/JB_Location_Image").GetComponent<Image>();
@@ -93,19 +125,30 @@ public class Dropdown_On_ValueChange : MonoBehaviour
 
     private void Prepare_Device_Dictionary_For_Searching()
     {
-        var tempListDevice = GlobalVariable_Search_Devices.temp_ListDeviceInformationModel;
-        deviceDictionary = tempListDevice
-            .GroupBy(device => device.Code.ToLower())
-            .ToDictionary(g => g.Key, g => g.First());
-
-        foreach (var device in tempListDevice)
+        if (GlobalVariable_Search_Devices.selectedDeviceType == "JB")
         {
-            var functionKey = device.Function.ToLower();
-            if (!deviceDictionary.ContainsKey(functionKey))
-            {
-                deviceDictionary.Add(functionKey, device);
-            }
+            deviceDictionary = new Dictionary<string, DeviceInformationModel>(); // Không tải thiết bị
+            return;
         }
+
+        var tempListDevice = GlobalVariable_Search_Devices.temp_ListDeviceInformationModel
+            .Where(device => device.Type == GlobalVariable_Search_Devices.selectedDeviceType)
+            .ToList();
+        //deviceDictionary = tempListDevice
+        //    .GroupBy(device => device.Code.ToLower())
+        //    .ToDictionary(g => g.Key, g => g.First());
+
+        //foreach (var device in tempListDevice)
+        //{
+        //    var functionKey = device.Function.ToLower();
+        //    if (!deviceDictionary.ContainsKey(functionKey))
+        //    {
+        //        deviceDictionary.Add(functionKey, device);
+        //    }
+        //}
+        deviceDictionary = tempListDevice
+        .ToDictionary(device => ($"{device.Code} - {device.Function}").ToLower(),
+                      device => device);
     }
 
     private void Prepare_JB_Dictionary_For_Searching()
@@ -176,13 +219,36 @@ public class Dropdown_On_ValueChange : MonoBehaviour
         if (!deviceInfo.gameObject.activeSelf) deviceInfo.gameObject.SetActive(true);
         code_Value_Text.text = device.Code;
         function_Value_Text.text = device.Function;
-        unit_Value_Text.text = device.Unit;
-        range_Value_Text.text = device.Range;
         io_Value_Text.text = device.IOAddress;
+        type_Value_Text.text = device.Type;
+        modelSeries_Value_Text.text = device.ModelSeries;
+        manufacturer_Value_Text.text = device.Manufacturer;
+        partNumber_Value_Text.text = device.PartNumber;
+        serialNumber_Value_Text.text = device.SerialNumber;
+        manufacturingYear_Value_Text.text = device.ManufacturingYear;
+        installationDate_Value_Text.text = device.InstallationDate;
+        measurementType_Value_Text.text = device.MeasurementType;
+        range_Value_Text.text = device.Range;
+        unit_Value_Text.text = device.Unit;
+        accuracy_Value_Text.text = device.Accuracy;
+        supplyVoltage_Value_Text.text = device.SupplyVoltage;
+        outputSignal_Value_Text.text = device.OutputSignal;
+        ingressProtection_Value_Text.text = device.IngressProtection;
+        connectorType_Value_Text.text = device.ConnectorType;
+        processConnection_Value_Text.text = device.ProcessConnection;
+        responseTime_Value_Text.text = device.ResponseTime;
+        otherSpecifications_Value_Text.text = device.OtherSpecifications;
+        installationLocation_Value_Text.text = device.InstallationLocation;
+        measuredMedium_Value_Text.text = device.MeasuredMedium;
+        operatingTemperature_Value_Text.text = device.OperatingTemperature;
+        operatingPressure_Value_Text.text = device.OperatingPressure;
+        calibrationFrequency_Value_Text.text = device.CalibrationFrequency;
+        failureHistory_Value_Text.text = device.FailureHistory;
+        environmentCondition_Value_Text.text = device.EnvironmentCondition;
 
         if (device.JBInformationModels.Any())
         {
-            ShowProgressBar("Đang tải hình ảnh...");
+            ShowProgressBar("Đang tải dữ liệu...");
 
             if (device.JBInformationModels.Count == 1)
             {
@@ -259,7 +325,7 @@ public class Dropdown_On_ValueChange : MonoBehaviour
 
     private async void UpdateJBInformation(JBInformationModel jB)
     {
-        ShowProgressBar("Đang tải hình ảnh...");
+        ShowProgressBar("Đang tải dữ liệu...");
         if (deviceInfo.gameObject.activeSelf) deviceInfo.gameObject.SetActive(false);
         var JBName = JBPrefab.transform.Find("JB_Connection_text_group/JB_Connection_value").GetComponent<TMP_Text>();
         var JBLocation = JBPrefab.transform.Find("JB_Connection_text_group/JB_Connection_location").GetComponent<TMP_Text>();
@@ -456,5 +522,10 @@ public class Dropdown_On_ValueChange : MonoBehaviour
         // {
         //     bottom_App_Bar.SetActive(false);
         // }
+    }
+
+    private void ClearSearchInputField()
+    {
+        searchInputField.text = string.Empty;
     }
 }

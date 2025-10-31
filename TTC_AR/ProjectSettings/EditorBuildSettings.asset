@@ -65,6 +65,27 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ARScenes/FieldDeviceARScene.unity
     guid: 22a0f6f43d5232a449e7394c4170ebcc
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_TemperatureSensor.unity
+    guid: 50aa67826a32c2443a89fe87fa07f14b
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SelectionDeviceTypeGrapA.unity
+    guid: 44c9dc253adc547439efe5f530f28335
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_LevelSensor.unity
+    guid: 23eae91df61be1a4f8e8b1645eca1294
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_JB.unity
+    guid: 0cfe927271b30f147858da2bd3b3a5a3
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_OtherSensor.unity
+    guid: aa5543768e295474bbbabc60679c5bf2
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_PressureSensor.unity
+    guid: 8643f386ad409e341aea98989d66900c
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SelectionDeviceTypeGrapB.unity
+    guid: aade19f3943633741a12741ede4d2833
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 4e27cb49c56077a4e9377e67098f2e89,
       type: 2}

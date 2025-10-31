@@ -329,8 +329,8 @@ public class UpdateFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
         {
             if (textField.text == "Chưa cập nhật" || string.IsNullOrEmpty(textField.text))
             {
-                textField.textComponent.color = Color.red;
-                textField.textComponent.fontStyle = FontStyles.Bold;
+                textField.textComponent.color = Color.black;
+                textField.textComponent.fontStyle = FontStyles.Normal;
             }
             else
             {

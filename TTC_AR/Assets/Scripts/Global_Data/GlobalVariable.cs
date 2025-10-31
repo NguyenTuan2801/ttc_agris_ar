@@ -18,7 +18,7 @@ using UnityEngine.UI;
 
 public class GlobalVariable : MonoBehaviour
 {
-    public static string baseUrl = "http://23.102.234.127/api";
+    public static string baseUrl = "https://proc-digidoc.agris.com.vn/api";
     public static List<string> APIRequestType = new List<string>()
     {
 
@@ -320,10 +320,16 @@ public class GlobalVariable : MonoBehaviour
 
     public static List<string> PLCBoxScene = new List<string>()
     {
-        "PLCBoxGrapA",
-        "PLCBoxGrapB",
-        "PLCBoxGrapC",
-        "PLCBoxLH",
+        "PLCBoxGrapA_TemperatureSensor",
+        "PLCBoxGrapA_LevelSensor",
+        "PLCBoxGrapA_JB",
+        "PLCBoxGrapA_PressureSensor",
+        "PLCBoxGrapB_TemperatureSensor",
+
+        //"PLCBoxGrapA",
+        //"PLCBoxGrapB",
+        //"PLCBoxGrapC",
+        //"PLCBoxLH",
     };
     public static List<string> jBLocation = new List<string>()
     {
