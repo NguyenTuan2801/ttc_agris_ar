@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 using EasyUI.Progress;
 using System.Collections;
@@ -21,7 +22,8 @@ public class Dropdown_On_ValueChange : MonoBehaviour
 
     [SerializeField] private RectTransform contentTransform;
     [SerializeField] private TMP_Text code_Value_Text, function_Value_Text, type_Value_Text, modelSeries_Value_Text, manufacturer_Value_Text, partNumber_Value_Text, serialNumber_Value_Text, manufacturingYear_Value_Text, installationDate_Value_Text, io_Value_Text, measurementType_Value_Text, range_Value_Text, unit_Value_Text, accuracy_Value_Text, supplyVoltage_Value_Text, outputSignal_Value_Text, ingressProtection_Value_Text, connectorType_Value_Text, processConnection_Value_Text, responseTime_Value_Text, otherSpecifications_Value_Text, installationLocation_Value_Text, measuredMedium_Value_Text, operatingTemperature_Value_Text, operatingPressure_Value_Text, calibrationFrequency_Value_Text, failureHistory_Value_Text, environmentCondition_Value_Text;
-    [SerializeField] private Image JB_Location_Image_Prefab, JB_Connection_Wiring_Image_Prefab;
+    [SerializeField] private Image JB_Location_Image_Prefab;
+    [SerializeField] private Image JB_Connection_Wiring_Image_Prefab;
     [SerializeField] private GameObject JB_Connection_Group, bottom_App_Bar;
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private Dictionary<string, Sprite> spriteCache = new();
@@ -32,6 +34,7 @@ public class Dropdown_On_ValueChange : MonoBehaviour
 
     [SerializeField] private TMP_InputField searchInputField;
     [SerializeField] private Button clearButton;
+    [SerializeField] private Button blurButton;
 
     private Dictionary<string, DeviceInformationModel> deviceDictionary;
     private Dictionary<string, JBInformationModel> jBDictionary;
@@ -41,6 +44,8 @@ public class Dropdown_On_ValueChange : MonoBehaviour
     {
         searchableDropDownView ??= GameObject.Find("Searchable").GetComponent<SearchDeviceAndJBView>();
         InitUIElements();
+
+        searchableDropDownView.OnValueChangedEvt += OnInputValueChanged;
     }
 
     private void OnEnable()
@@ -49,12 +54,17 @@ public class Dropdown_On_ValueChange : MonoBehaviour
 
     private void OnDisable()
     {
+        if (searchableDropDownView != null)
+        {
+            searchableDropDownView.OnValueChangedEvt -= OnInputValueChanged;
+        }
     }
 
     private void Start()
     {
         StartCoroutine(LoadData());
         clearButton.onClick.AddListener(ClearSearchInputField);
+        //UpdateBlurButton();
     }
     void OnDestroy()
     {
@@ -76,6 +86,7 @@ public class Dropdown_On_ValueChange : MonoBehaviour
             searchableDropDownView.Initialize();
             searchableDropDownView.SetInitialTextFieldValue();
             searchScrollPanel.SetActive(false);
+            UpdateBlurButton();
         }
         catch (Exception e)
         {
@@ -162,15 +173,15 @@ public class Dropdown_On_ValueChange : MonoBehaviour
 
     private void OnInputValueChanged(string input)
     {
-        ClearWiringGroupAndCache();
-        if (List_JB_Group.activeSelf)
-        {
-            List_JB_Group.SetActive(false);
-        }
-        if (Device_Information_Group.activeSelf)
-        {
-            Device_Information_Group.SetActive(false);
-        }
+        ClearWiringGroupAndCache();        
+        //if (List_JB_Group.activeSelf)
+        //{
+        //    List_JB_Group.SetActive(false);
+        //}
+        //if (Device_Information_Group.activeSelf)
+        //{
+        //    Device_Information_Group.SetActive(false);
+        //}
 
         switch (searchableDropDownView.filter_Type)
         {
@@ -193,7 +204,6 @@ public class Dropdown_On_ValueChange : MonoBehaviour
                 }
                 break;
         }
-
     }
 
     private void ClearWiringGroupAndCache()
@@ -263,15 +273,16 @@ public class Dropdown_On_ValueChange : MonoBehaviour
                 if (!string.IsNullOrEmpty(_jbName))
                 {
                     Debug.Log("Run LoadDeviceSprites");
-                    await LoadDeviceSprites(
-                          list_Additional_Images: device.AdditionalConnectionImages,
-                           jbInformationModel: jbInformationModel,
-                           LocationImage: JB_Location_Image_Prefab,
-                           ConnectionImage: JB_Connection_Wiring_Image_Prefab,
-                           JB_List_Connection_Group: JB_Connection_Group.transform);
+                    await LoadForDevice(
+                        jbInfo: jbInformationModel,
+                        additionalImages: device.AdditionalConnectionImages,
+                        locationImage: JB_Location_Image_Prefab,
+                        connectionImagePrefab: JB_Connection_Wiring_Image_Prefab,
+                        parentGroup: JB_Connection_Group.transform
+                    );
                     // Canvas.ForceUpdateCanvases();
-                    // LayoutRebuilder.ForceRebuildLayoutImmediate(contentTransform);
-                }
+                    // LayoutRebuilder.ForceRebuildLayoutImmediate(contentTransform);                  
+                }               
             }
             else
             {
@@ -289,31 +300,36 @@ public class Dropdown_On_ValueChange : MonoBehaviour
                     Debug.Log($"JB Name: {_jbName}, JB Location: {jbInformationModel.Location}");
                     if (!string.IsNullOrEmpty(_jbName))
                     {
-                        Image JB_Location_Image = newJB.transform.Find("JB_Location_Image").GetComponent<Image>();
-                        Image JB_Connection_Wiring_Image = newJB.transform.Find("JB_Connection_Wiring").GetComponent<Image>();
-                        await LoadDeviceSprites(
-                             list_Additional_Images: device.AdditionalConnectionImages,
-                              jbInformationModel: jbInformationModel,
-                             LocationImage: JB_Location_Image,
-                             ConnectionImage: JB_Connection_Wiring_Image,
-                             JB_List_Connection_Group: newJB.transform);
+                        Image locImg = newJB.transform.Find("image_BackGround/JB_Location_Image").GetComponent<Image>();
+                        Image connPrefab = newJB.transform.Find("JB_Connection_Wiring").GetComponent<Image>();
+
+                        await LoadForDevice(
+                            jbInfo: jbInformationModel,
+                            additionalImages: device.AdditionalConnectionImages,
+                            locationImage: locImg,
+                            connectionImagePrefab: connPrefab,
+                            parentGroup: newJB.transform
+                        );
                     }
                 }
                 // Canvas.ForceUpdateCanvases();
                 // LayoutRebuilder.ForceRebuildLayoutImmediate(contentTransform);
-                JBPrefab.SetActive(false);
+                JBPrefab.SetActive(true);                
             }
             Canvas.ForceUpdateCanvases();
             LayoutRebuilder.ForceRebuildLayoutImmediate(JB_Connection_Group.transform as RectTransform);
             LayoutRebuilder.ForceRebuildLayoutImmediate(List_JB_Group.transform as RectTransform);
             LayoutRebuilder.ForceRebuildLayoutImmediate(prefab_Infor.transform as RectTransform);
-            prefab_Infor.transform.Find("Content").gameObject.SetActive(false);
-            await Task.Delay(1000);
-            // prefab_Infor.SetActive(true);
-            // await Task.Delay(300);
-            // prefab_Infor.SetActive(false);
-            // await Task.Delay(300);
-            prefab_Infor.transform.Find("Content").gameObject.SetActive(true);
+            //prefab_Infor.transform.Find("Content").gameObject.SetActive(false);
+            //await Task.Delay(1000);
+            //// prefab_Infor.SetActive(true);
+            //// await Task.Delay(300);
+            //// prefab_Infor.SetActive(false);
+            //// await Task.Delay(300);
+            //prefab_Infor.transform.Find("Content").gameObject.SetActive(true);
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(prefab_Infor.transform as RectTransform);
+
             HideProgressBar();
 
         }
@@ -321,6 +337,9 @@ public class Dropdown_On_ValueChange : MonoBehaviour
         {
             List_JB_Group.SetActive(false);
         }
+
+        Debug.Log($"Device info panel active: {Device_Information_Group.activeSelf}");
+
     }
 
     private async void UpdateJBInformation(JBInformationModel jB)
@@ -337,12 +356,12 @@ public class Dropdown_On_ValueChange : MonoBehaviour
         Debug.Log($"JB Name: {_jbName}, JB Location: {jbInformationModel.Location}");
         if (!string.IsNullOrEmpty(_jbName))
         {
-            await LoadDeviceSprites(
-             list_Additional_Images: null,
-             jbInformationModel: jbInformationModel,
-             LocationImage: JB_Location_Image_Prefab,
-             ConnectionImage: JB_Connection_Wiring_Image_Prefab,
-             JB_List_Connection_Group: JB_Connection_Group.transform);
+            await LoadForJB(
+            jbInfo: jbInformationModel,
+            locationImage: JB_Location_Image_Prefab,
+            connectionImagePrefab: JB_Connection_Wiring_Image_Prefab,
+            parentGroup: JB_Connection_Group.transform
+        );
         }
         // Canvas.ForceUpdateCanvases();
         // LayoutRebuilder.ForceRebuildLayoutImmediate(List_JB_Group.transform as RectTransform);
@@ -350,14 +369,19 @@ public class Dropdown_On_ValueChange : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(JB_Connection_Group.transform as RectTransform);
         LayoutRebuilder.ForceRebuildLayoutImmediate(List_JB_Group.transform as RectTransform);
         LayoutRebuilder.ForceRebuildLayoutImmediate(prefab_Infor.transform as RectTransform);
-        prefab_Infor.transform.Find("Content").gameObject.SetActive(false);
-        await Task.Delay(1000);
-        // prefab_Infor.transform.Find("Content").gameObject.SetActive(true);
-        // await Task.Delay(300);
-        // prefab_Infor.transform.Find("Content").gameObject.SetActive(false);
-        // await Task.Delay(300);
-        prefab_Infor.transform.Find("Content").gameObject.SetActive(true);
+        //prefab_Infor.transform.Find("Content").gameObject.SetActive(false);
+        //await Task.Delay(1000);
+        //// prefab_Infor.transform.Find("Content").gameObject.SetActive(true);
+        //// await Task.Delay(300);
+        //// prefab_Infor.transform.Find("Content").gameObject.SetActive(false);
+        //// await Task.Delay(300);
+        //prefab_Infor.transform.Find("Content").gameObject.SetActive(true);
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(prefab_Infor.transform as RectTransform);
+
         HideProgressBar();
+
+        Debug.Log($"JB info panel active: {List_JB_Group.activeSelf}");
 
     }
 
@@ -527,5 +551,109 @@ public class Dropdown_On_ValueChange : MonoBehaviour
     private void ClearSearchInputField()
     {
         searchInputField.text = string.Empty;
+    }
+
+    private void CloseSearchPanel()
+    {
+        searchScrollPanel.SetActive(false);
+        UpdateBlurButton();
+    }
+
+    public void UpdateBlurButton()
+    {
+        bool shouldShow = searchScrollPanel.activeSelf;
+        blurButton.gameObject.SetActive(shouldShow);
+
+        if (shouldShow)
+        {
+            blurButton.onClick.RemoveAllListeners();
+            blurButton.onClick.AddListener(CloseSearchPanel);
+        }
+        else
+        {
+            blurButton.onClick.RemoveAllListeners();
+        }
+    }
+
+    private async Task LoadForDevice(JBInformationModel jbInfo, List<ImageInformationModel> additionalImages, Image locationImage, Image connectionImagePrefab, Transform parentGroup)
+    {
+        if (jbInfo == null) return;
+
+        var tasks = new List<Task>();
+
+        // Load Outdoor Image
+        if (!string.IsNullOrEmpty(jbInfo.OutdoorImage?.Name))
+        {
+            tasks.Add(searchableDropDownView._presenter.LoadImageAsync(jbInfo.OutdoorImage.Name, locationImage));
+        }
+        else
+        {
+            tasks.Add(searchableDropDownView._presenter.LoadImageAsync("JB_Location_Noted.png", locationImage));
+        }
+        AddButtonListener(locationImage.GetComponent<Button>(), () => open_Detail_Image.Open_Detail_Canvas(locationImage));
+
+        // Load TẤT CẢ AdditionalConnectionImages
+        if (additionalImages != null && additionalImages.Count > 0)
+        {
+            foreach (var img in additionalImages)
+            {
+                var clone = Instantiate(connectionImagePrefab.gameObject, parentGroup);
+                var imgComp = clone.GetComponent<Image>();
+                clone.SetActive(true);
+                tasks.Add(searchableDropDownView._presenter.LoadImageAsync(img.Name, imgComp));
+                AddButtonListener(clone.GetComponent<Button>(), () => open_Detail_Image.Open_Detail_Canvas(imgComp));
+            }
+        }
+
+        connectionImagePrefab.gameObject.SetActive(false);
+        await Task.WhenAll(tasks);
+
+        ResizeImages(locationImage, parentGroup);
+        ScrollToTop();
+    }
+
+    private async Task LoadForJB(JBInformationModel jbInfo, Image locationImage, Image connectionImagePrefab, Transform parentGroup)
+    {
+        if (jbInfo == null) return;
+
+        var tasks = new List<Task>();
+
+        // Load Outdoor Image
+        if (!string.IsNullOrEmpty(jbInfo.OutdoorImage?.Name))
+        {
+            tasks.Add(searchableDropDownView._presenter.LoadImageAsync(jbInfo.OutdoorImage.Name, locationImage));
+        }
+        else
+        {
+            tasks.Add(searchableDropDownView._presenter.LoadImageAsync("JB_Location_Noted.png", locationImage));
+        }
+        AddButtonListener(locationImage.GetComponent<Button>(), () => open_Detail_Image.Open_Detail_Canvas(locationImage));
+
+        // Load TẤT CẢ ListConnectionImages
+        if (jbInfo.ListConnectionImages != null && jbInfo.ListConnectionImages.Any())
+        {
+            foreach (var img in jbInfo.ListConnectionImages)
+            {
+                var clone = Instantiate(connectionImagePrefab.gameObject, parentGroup);
+                var imgComp = clone.GetComponent<Image>();
+                clone.SetActive(true);
+                tasks.Add(searchableDropDownView._presenter.LoadImageAsync(img.Name, imgComp));
+                AddButtonListener(clone.GetComponent<Button>(), () => open_Detail_Image.Open_Detail_Canvas(imgComp));
+            }
+        }
+
+        connectionImagePrefab.gameObject.SetActive(false);
+        await Task.WhenAll(tasks);
+
+        ResizeImages(locationImage, parentGroup);
+        ScrollToTop();
+    }
+
+    private void ScrollToTop()
+    {
+        if (scrollRect != null)
+        {
+            scrollRect.verticalNormalizedPosition = 1f;
+        }
     }
 }

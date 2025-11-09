@@ -178,7 +178,7 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
         Initialize();
         filterText.text = filter_Type;
         // SỬA ĐÂY: Để trống hoặc chọn chuỗi ghép đầu tiên nếu cần (theo yêu cầu trước, nên để trống)
-        inputField.text = deviceOptions.Any() ? deviceOptions[0] : ""; // Bây giờ deviceOptions[0] là chuỗi ghép
+        inputField.text = deviceOptions.Any() ? deviceOptions[0] : ""; 
         Canvas.ForceUpdateCanvases();
 
         //filter_Type = "Device";
@@ -339,7 +339,11 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
     private void FilterDropdown(string input)
     {
         if (!scrollRect.gameObject.activeSelf)
+        {
             scrollRect.gameObject.SetActive(true);
+            FindObjectOfType<Dropdown_On_ValueChange>()?.UpdateBlurButton();
+        }
+            
         if (!string.IsNullOrEmpty(input))
         {
             foreach (var item in itemGameObjects)
@@ -390,9 +394,12 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
 
     private void OnItemSelected(string selectedItem)
     {
-        inputField.text = selectedItem; // SỬA ĐÂY: selectedItem giờ là chuỗi ghép
-        OnValueChangedEvt?.Invoke(inputField.text); // Truyền chuỗi ghép đi
+        inputField.text = selectedItem; 
+        OnValueChangedEvt?.Invoke(inputField.text); 
         scrollRect.gameObject.SetActive(false);
+
+        FindObjectOfType<Dropdown_On_ValueChange>()?.UpdateBlurButton();
+
         arrowButtonDown.SetActive(false);
         arrowButtonUp.SetActive(true);
     }

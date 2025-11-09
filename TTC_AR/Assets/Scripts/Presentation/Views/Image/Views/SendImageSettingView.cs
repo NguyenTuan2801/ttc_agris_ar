@@ -18,6 +18,7 @@ public class SendImageSettingView : MonoBehaviour, IImageView
 
     [Header("Send Request")]
     public Button sendRequestButton;
+    public Button backButton;
     public TMP_Text imageNameText;
     public RawImage finalImage; //! Sẽ được cập nhật do PickPhotoFromCamera hoặc PickPhotoFromGallery
 
@@ -29,7 +30,7 @@ public class SendImageSettingView : MonoBehaviour, IImageView
     public GameObject List_Image_Canvas;
     public GameObject Add_NewImage_Canvas;
 
-    public GameObject ConfirmRequestCanvas;
+    public GameObject ConfirmRequestCanvas;    
 
     [Header("Dialog Buttons")]
     public GameObject DialogOneButton;
@@ -70,6 +71,13 @@ public class SendImageSettingView : MonoBehaviour, IImageView
                 finalImage
            )
         );
+
+        backButton.onClick.AddListener(() =>
+        {
+            Add_NewImage_Canvas.SetActive(true);
+            List_Image_Canvas.SetActive(false);
+            ConfirmRequestCanvas.SetActive(false);
+        });
     }
 
     void SetImageName()

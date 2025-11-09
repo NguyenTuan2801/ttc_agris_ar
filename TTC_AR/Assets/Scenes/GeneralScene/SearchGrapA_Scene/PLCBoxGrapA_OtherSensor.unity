@@ -1097,7 +1097,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 665309875}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9517a49242ab4ee4a9a54d17d842473b, type: 3}
   m_Name: 
@@ -1725,7 +1725,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c851612e8d8b89c4082d87065a3137a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  previousSceneName: PLCBoxGrapA_PressureSensor
+  previousSceneName: PLCBoxGrapA_OtherSensor
   recentSceneName:
   - MenuScene
   - ControlDeviceARScene
@@ -4237,8 +4237,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8533cca31a969d44aaa429c5f138d62a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useScrollRect: 1
   objectScrollRect: {fileID: 0}
   contentRectTransform: {fileID: 0}
+  viewRectTransform: {fileID: 0}
   minScale: 0.5
   maxScale: 5
 --- !u!114 &1659306649

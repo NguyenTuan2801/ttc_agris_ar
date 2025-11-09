@@ -7261,7 +7261,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1151588140}
         m_TargetAssemblyTypeName: UpdateJBSettingView, Assembly-CSharp
         m_MethodName: LoadJB
         m_Mode: 1
