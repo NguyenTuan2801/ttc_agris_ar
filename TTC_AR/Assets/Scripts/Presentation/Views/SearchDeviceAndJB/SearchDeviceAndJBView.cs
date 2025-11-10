@@ -23,6 +23,7 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
     public ScrollRect scrollRect;
     public GameObject contentItemSelection;
     public event Action<string> OnValueChangedEvt;
+    public event Action<string> OnItemSelectedEvt;
     [SerializeField] private RectTransform contentItemSelectionRect;
     [SerializeField] private List<GameObject> itemGameObjects = new List<GameObject>();
     [SerializeField] private List<DeviceInformationModel> tempDeviceInfo = new List<DeviceInformationModel>();
@@ -78,11 +79,15 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
 
     public void SetInitialTextFieldValue()
     {
+        string initialText = "";
+        string keyToSelect = "";
+
         if (GlobalVariable_Search_Devices.selectedDeviceType == "JB")
         {
             if (tempJBInfo.Any() && !string.IsNullOrEmpty(tempJBInfo[0].Name))
             {
-                inputField.text = tempJBInfo[0].Name;
+                initialText = tempJBInfo[0].Name;
+                keyToSelect = initialText.ToLower(); 
             }
             else
             {
@@ -92,9 +97,12 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
         }
         else
         {
-            if (tempDeviceInfo.Any() && !string.IsNullOrEmpty(tempDeviceInfo[0].Code) && !string.IsNullOrEmpty(tempDeviceInfo[0].Function))
+            if (tempDeviceInfo.Any() &&
+                !string.IsNullOrEmpty(tempDeviceInfo[0].Code) &&
+                !string.IsNullOrEmpty(tempDeviceInfo[0].Function))
             {
-                inputField.text = $"{tempDeviceInfo[0].Code} - {tempDeviceInfo[0].Function}";  // Chuỗi ghép
+                initialText = $"{tempDeviceInfo[0].Code} - {tempDeviceInfo[0].Function}";
+                keyToSelect = initialText.ToLower(); 
             }
             else
             {
@@ -103,18 +111,10 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
             }
         }
 
-        //if (!string.IsNullOrEmpty(tempDeviceInfo[0].Code) && !string.IsNullOrEmpty(tempJBInfo[0].Name))
-        //{
-        //    inputField.text = tempDeviceInfo[0].Code;
-        //    //    OnValueChangedEvt?.Invoke(inputField.text);
-        //}
-        //else
-        //{
-        //    Debug.Log("Debug Log: tempDeviceInfo[0].Code or tempJBInfo[0].Name is null or empty");
-        //    return;
-        //}
-    }
+        inputField.text = initialText;
 
+        OnItemSelectedEvt?.Invoke(keyToSelect);
+    }
     public void Initialize()
     {
         if (GlobalVariable_Search_Devices.selectedDeviceType == "JB")
@@ -394,8 +394,9 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
 
     private void OnItemSelected(string selectedItem)
     {
-        inputField.text = selectedItem; 
-        OnValueChangedEvt?.Invoke(inputField.text); 
+        inputField.text = selectedItem;
+        OnValueChangedEvt?.Invoke(selectedItem);        
+        OnItemSelectedEvt?.Invoke(selectedItem.ToLower());
         scrollRect.gameObject.SetActive(false);
 
         FindObjectOfType<Dropdown_On_ValueChange>()?.UpdateBlurButton();

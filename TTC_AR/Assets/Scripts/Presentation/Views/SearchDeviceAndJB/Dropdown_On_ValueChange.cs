@@ -45,7 +45,8 @@ public class Dropdown_On_ValueChange : MonoBehaviour
         searchableDropDownView ??= GameObject.Find("Searchable").GetComponent<SearchDeviceAndJBView>();
         InitUIElements();
 
-        searchableDropDownView.OnValueChangedEvt += OnInputValueChanged;
+        //searchableDropDownView.OnValueChangedEvt += OnInputValueChanged;
+        searchableDropDownView.OnItemSelectedEvt += OnItemSelected;
     }
 
     private void OnEnable()
@@ -56,7 +57,8 @@ public class Dropdown_On_ValueChange : MonoBehaviour
     {
         if (searchableDropDownView != null)
         {
-            searchableDropDownView.OnValueChangedEvt -= OnInputValueChanged;
+            //searchableDropDownView.OnValueChangedEvt -= OnInputValueChanged;
+            searchableDropDownView.OnItemSelectedEvt -= OnItemSelected;
         }
     }
 
@@ -171,40 +173,40 @@ public class Dropdown_On_ValueChange : MonoBehaviour
             .ToDictionary(g => g.Key, g => g.First());
     }
 
-    private void OnInputValueChanged(string input)
-    {
-        ClearWiringGroupAndCache();        
-        //if (List_JB_Group.activeSelf)
-        //{
-        //    List_JB_Group.SetActive(false);
-        //}
-        //if (Device_Information_Group.activeSelf)
-        //{
-        //    Device_Information_Group.SetActive(false);
-        //}
+    //private void OnInputValueChanged(string input)
+    //{
+    //    ClearWiringGroupAndCache();        
+    //    //if (List_JB_Group.activeSelf)
+    //    //{
+    //    //    List_JB_Group.SetActive(false);
+    //    //}
+    //    //if (Device_Information_Group.activeSelf)
+    //    //{
+    //    //    Device_Information_Group.SetActive(false);
+    //    //}
 
-        switch (searchableDropDownView.filter_Type)
-        {
-            case "Device":
-                if (deviceDictionary.TryGetValue(input.ToLower(), out var device))
-                {
-                    List_JB_Group.SetActive(true);
-                    Device_Information_Group.SetActive(true);
-                    UpdateDeviceInformation(device);
-                }
-                break;
-            case "JB/TSD":
-                Device_Information_Group.SetActive(false);
+    //    switch (searchableDropDownView.filter_Type)
+    //    {
+    //        case "Device":
+    //            if (deviceDictionary.TryGetValue(input.ToLower(), out var device))
+    //            {
+    //                List_JB_Group.SetActive(true);
+    //                Device_Information_Group.SetActive(true);
+    //                UpdateDeviceInformation(device);
+    //            }
+    //            break;
+    //        case "JB/TSD":
+    //            Device_Information_Group.SetActive(false);
 
-                List_JB_Group.SetActive(true);
-                JBPrefab.SetActive(true);
-                if (jBDictionary.TryGetValue(input.ToLower(), out var jB))
-                {
-                    UpdateJBInformation(jB);
-                }
-                break;
-        }
-    }
+    //            List_JB_Group.SetActive(true);
+    //            JBPrefab.SetActive(true);
+    //            if (jBDictionary.TryGetValue(input.ToLower(), out var jB))
+    //            {
+    //                UpdateJBInformation(jB);
+    //            }
+    //            break;
+    //    }
+    //}
 
     private void ClearWiringGroupAndCache()
     {
@@ -654,6 +656,33 @@ public class Dropdown_On_ValueChange : MonoBehaviour
         if (scrollRect != null)
         {
             scrollRect.verticalNormalizedPosition = 1f;
+        }
+    }
+
+    private void OnItemSelected(string selectedKey)
+    {
+        ClearWiringGroupAndCache(); // Chỉ xóa khi thực sự chọn item mới
+
+        switch (searchableDropDownView.filter_Type)
+        {
+            case "Device":
+                if (deviceDictionary.TryGetValue(selectedKey, out var device))
+                {
+                    List_JB_Group.SetActive(true);
+                    Device_Information_Group.SetActive(true);
+                    UpdateDeviceInformation(device);
+                }
+                break;
+
+            case "JB/TSD":
+                Device_Information_Group.SetActive(false);
+                List_JB_Group.SetActive(true);
+                JBPrefab.SetActive(true);
+                if (jBDictionary.TryGetValue(selectedKey, out var jB))
+                {
+                    UpdateJBInformation(jB);
+                }
+                break;
         }
     }
 }
