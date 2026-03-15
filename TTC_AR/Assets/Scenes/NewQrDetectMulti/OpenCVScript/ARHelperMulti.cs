@@ -650,7 +650,7 @@ namespace OpenCVForUnity.UnityUtils.Helper
 
             // var canvas = GameObject.FindGameObjectWithTag("3D Canvas");
             // Initialize the array of gameObjects;
-            arGameObjects = new GameObject[8];
+            arGameObjects = new GameObject[10];
             for (int i = 0; i < arGameObjects.Length; i++)
             {
                 arGameObjects[i] = Instantiate(arGameObjectOrigin);

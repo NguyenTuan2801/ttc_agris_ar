@@ -49,9 +49,9 @@ public class GlobalVariable : MonoBehaviour
     "PUT_JB",
     "DELETE_JB",
 
-   "GET_Device_List_General",
-   "GET_Device_List_Information_FromModule",
-   "GET_Device_List_Information_Grapper",
+    "GET_Device_List_General",
+    "GET_Device_List_Information_FromModule",
+    "GET_Device_List_Information_Grapper",
     "GET_Device",
     "POST_Device",
     "PUT_Device",
@@ -325,11 +325,6 @@ public class GlobalVariable : MonoBehaviour
         "PLCBoxGrapA_JB",
         "PLCBoxGrapA_PressureSensor",
         "PLCBoxGrapB_TemperatureSensor",
-
-        //"PLCBoxGrapA",
-        //"PLCBoxGrapB",
-        //"PLCBoxGrapC",
-        //"PLCBoxLH",
     };
     public static List<string> jBLocation = new List<string>()
     {
@@ -358,6 +353,5 @@ public class GlobalVariable : MonoBehaviour
     public static List<string> list_ImageName = new List<string>();
 
     public static bool isCameraPaused = false;
-
 
 }

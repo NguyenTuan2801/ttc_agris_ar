@@ -4040,7 +4040,7 @@ MonoBehaviour:
   userNameField: {fileID: 860194577}
   passwordField: {fileID: 1117824330}
   loginButton: {fileID: 369192254}
-  registerButton: {fileID: 229356103}
+  registerButton: {fileID: 0}
   targetSceneName: SelectionScene
   ShowPasswordButton: {fileID: 1434479091}
   HidePasswordButton: {fileID: 1800520687}
