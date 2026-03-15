@@ -15,7 +15,7 @@ public class LoginView : MonoBehaviour, ILoginView
     [SerializeField] private TMP_InputField userNameField;
     [SerializeField] private TMP_InputField passwordField;
     [SerializeField] private Button loginButton;
-    [SerializeField] private Button registerButton;
+    //[SerializeField] private Button registerButton;
     [SerializeField] private string targetSceneName;
 
     [SerializeField] private Button ShowPasswordButton;
@@ -115,7 +115,6 @@ public class LoginView : MonoBehaviour, ILoginView
         {
             StartCoroutine(LoginWithApi(email, password));
         }
-
     }
 
     private void OpenRegisterScene()
@@ -240,18 +239,16 @@ public class LoginView : MonoBehaviour, ILoginView
         }
     }
 
-    // Phương thức để gắn listener
     private void SetupButtonListeners()
     {
         loginButton.onClick.AddListener(HandleLogin);
-        registerButton.onClick.AddListener(OpenRegisterScene);
+        //registerButton.onClick.AddListener(OpenRegisterScene);
         ShowPasswordButton.onClick.AddListener(ShowPassword);
         HidePasswordButton.onClick.AddListener(HidePassword);
 
         passwordField.contentType = TMP_InputField.ContentType.Password;
     }
 
-    // Class để serialize thành JSON
     [System.Serializable]
     private class LoginData
     {
@@ -259,7 +256,6 @@ public class LoginView : MonoBehaviour, ILoginView
         public string password;
     }
 
-    // Class để deserialize response từ API
     [System.Serializable]
     private class LoginResponse
     {

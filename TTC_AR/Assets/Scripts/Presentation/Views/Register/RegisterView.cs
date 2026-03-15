@@ -122,7 +122,6 @@ public class RegisterView : MonoBehaviour
 
             if (www.result == UnityWebRequest.Result.Success && www.responseCode == 200)
             {
-                //errorText.text = "Registration successful! Redirecting to login...";
                 ShowSuccess("Đăng ký thành công!");
                 HideLoading();
                 ShowLoading(" ");

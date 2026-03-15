@@ -34,7 +34,6 @@ public class Manager : MonoBehaviour
         DetectClickedObject();
     }
 
-
     public void DetectClickedObject()
     {
         Ray ray = new Ray();
@@ -141,5 +140,4 @@ public class Manager : MonoBehaviour
         enableQRCodeDetection = enable;
         enableQRCodeDetectionByActiveCameraIcon = enable;
     }
-
 }
