@@ -57,9 +57,6 @@ EditorBuildSettings:
     path: Assets/Scenes/SelectGrapperSettingScene/FieldDeviceSelectGrapperSettingScene.unity
     guid: 55ca09e138833ad488acd552a2beea81
   - enabled: 1
-    path: Assets/Scenes/GeneralScene/PLCBoxGrapA.unity
-    guid: 84a2ef06a2c94454da223fbd33592280
-  - enabled: 1
     path: Assets/Scenes/ARScenes/ControlDeviceARScene.unity
     guid: 5578061237cdbbf4e8cc60d0d4924207
   - enabled: 1
@@ -67,25 +64,100 @@ EditorBuildSettings:
     guid: 22a0f6f43d5232a449e7394c4170ebcc
   - enabled: 1
     path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_TemperatureSensor.unity
-    guid: 50aa67826a32c2443a89fe87fa07f14b
+    guid: 7f4a0f10ee81c7747bb9481eeaeffdd6
   - enabled: 1
     path: Assets/Scenes/GeneralScene/SelectionDeviceTypeGrapA.unity
     guid: 44c9dc253adc547439efe5f530f28335
   - enabled: 1
     path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_LevelSensor.unity
-    guid: 23eae91df61be1a4f8e8b1645eca1294
+    guid: 37bb6fb617e427d41994772498471094
   - enabled: 1
     path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_JB.unity
-    guid: 0cfe927271b30f147858da2bd3b3a5a3
-  - enabled: 1
-    path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_OtherSensor.unity
-    guid: aa5543768e295474bbbabc60679c5bf2
+    guid: c9cc425b75120bc4fa4be061bec04d25
   - enabled: 1
     path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_PressureSensor.unity
-    guid: 8643f386ad409e341aea98989d66900c
+    guid: 5aed1a23edb1cd44ca1d6797d098d210
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_FlowSensor.unity
+    guid: ccd0b69e9f467f047b9480d4b4c55e82
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_Valve.unity
+    guid: ab408c6eec5cfdb4186e60c03a0ad814
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapA_Scene/PLCBoxGrapA_OtherDevice.unity
+    guid: 128e9a0910f52014291d0026b3484ed4
   - enabled: 1
     path: Assets/Scenes/GeneralScene/SelectionDeviceTypeGrapB.unity
-    guid: aade19f3943633741a12741ede4d2833
+    guid: 4301faef6284f144182f9e2d421a32b7
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapB_Scene/PLCBoxGrapB_FlowSensor.unity
+    guid: dfb17a760708a4f4d95ae5b9d6479730
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapB_Scene/PLCBoxGrapB_JB.unity
+    guid: fccf098c9980e004cb43c9455600fb3f
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapB_Scene/PLCBoxGrapB_LevelSensor.unity
+    guid: 83a75ce6d8312c544992e863a580e4f1
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapB_Scene/PLCBoxGrapB_OtherDevice.unity
+    guid: c08d8b08d8064ea4288722032e37cc30
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapB_Scene/PLCBoxGrapB_PressureSensor.unity
+    guid: 32d30788bda08d7408e98552266ae131
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapB_Scene/PLCBoxGrapB_TemperatureSensor.unity
+    guid: 527e049179fd4c14ba44c3cc875fcbcc
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapB_Scene/PLCBoxGrapB_Valve.unity
+    guid: 0ce8fc8ca608cb24797367e3aac4fec3
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SelectionDeviceTypeGrapC.unity
+    guid: 24e440dcf481fa643863f31834b3a6a8
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapC_Scene/PLCBoxGrapC_FlowSensor.unity
+    guid: fb1bb5e319451384dae191c053b4c560
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapC_Scene/PLCBoxGrapC_JB.unity
+    guid: 19b4bbecdaa24ab40bf82193a3335eb9
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapC_Scene/PLCBoxGrapC_LevelSensor.unity
+    guid: 6286400ce21d1b74ca2afd5c477804d5
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapC_Scene/PLCBoxGrapC_OtherDevice.unity
+    guid: c6cd14943da783945ac1c1774e3cacdd
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapC_Scene/PLCBoxGrapC_PressureSensor.unity
+    guid: 5636ffefc2351cc4daab0ebd83a2d6e6
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapC_Scene/PLCBoxGrapC_TemperatureSensor.unity
+    guid: b2cd123101ac2af49a5f47d9d687616d
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchGrapC_Scene/PLCBoxGrapC_Valve.unity
+    guid: bb40b13fd6b90ec45be36428516be55b
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SelectionDeviceTypeLH.unity
+    guid: 0604e0c335a66d342a8d715f73858a55
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchLH_Scene/PLCBoxLH_JB.unity
+    guid: de3183b6980a8c44d819d5c52432ce5c
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchLH_Scene/PLCBoxLH_FlowSensor.unity
+    guid: b4aa33ce653670f4aa43846d78626d3f
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchLH_Scene/PLCBoxLH_LevelSensor.unity
+    guid: dab12ab006e7274499d319878d1e29ef
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchLH_Scene/PLCBoxLH_OtherDevice.unity
+    guid: ba859b4bd6bf0ba4e99d5146c8012b93
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchLH_Scene/PLCBoxLH_PressureSensor.unity
+    guid: 3ea03fc36afb0ae4596f5dc83eae85f1
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchLH_Scene/PLCBoxLH_TemperatureSensor.unity
+    guid: 78572f0861d026747bd7594a7bcb3376
+  - enabled: 1
+    path: Assets/Scenes/GeneralScene/SearchLH_Scene/PLCBoxLH_Valve.unity
+    guid: 3b872582d8ebd1140a4f11c8f601d981
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 4e27cb49c56077a4e9377e67098f2e89,
       type: 2}

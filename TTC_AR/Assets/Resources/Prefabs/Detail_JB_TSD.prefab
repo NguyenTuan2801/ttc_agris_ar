@@ -294,16 +294,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ef8e4293e35a314ead5c8eef4bfeb24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jB_TSD_Detail_Panel_Prefab: {fileID: 324099074284023006}
-  canvas_Parent: {fileID: 0}
-  jB_TSD_Title: {fileID: 324099075542634906}
-  jb_location_value: {fileID: 324099075677644554}
-  jb_location_title: {fileID: 0}
-  jb_connection_imagePrefab: {fileID: 324099075796937242}
-  jb_location_imagePrefab: {fileID: 324099074891180280}
-  jb_Infor_Item_Prefab: {fileID: 2004918031667048191}
-  scroll_Area_Content: {fileID: 324099075814929707}
+  jB_TSD_Detail_Panel: {fileID: 0}
+  jbNameValue: {fileID: 0}
   scroll_Area: {fileID: 324099075322298613}
+  content: {fileID: 0}
+  jb_Infor_Prefab: {fileID: 0}
+  jb_location_value: {fileID: 324099075677644554}
+  jb_location_imagePrefab: {fileID: 324099074891180280}
+  jb_connection_imagePrefab: {fileID: 324099075796937242}
+  emptySpace: {fileID: 0}
 --- !u!1 &324099074891180278
 GameObject:
   m_ObjectHideFlags: 0
@@ -1080,7 +1079,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.16243185, y: 0}
   m_AnchorMax: {x: 0.8333106, y: 0.9850001}
-  m_AnchoredPosition: {x: 2.0007918, y: 12.596498}
+  m_AnchoredPosition: {x: 1.8533325, y: 12.736389}
   m_SizeDelta: {x: -2.7577, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &324099075814929709
@@ -1481,7 +1480,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 308.05585, y: -661.1472}
+  m_AnchoredPosition: {x: 277.05194, y: -25}
   m_SizeDelta: {x: 850.8162, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7224180130059107278

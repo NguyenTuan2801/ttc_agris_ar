@@ -1,7 +1,8 @@
+using EasyUI.Progress;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using EasyUI.Progress;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -86,7 +87,7 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
         {
             if (tempJBInfo.Any() && !string.IsNullOrEmpty(tempJBInfo[0].Name))
             {
-                initialText = tempJBInfo[0].Name;
+                initialText = $"<size=120%>{tempJBInfo[0].Name}</size>";
                 keyToSelect = initialText.ToLower(); 
             }
             else
@@ -101,7 +102,7 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
                 !string.IsNullOrEmpty(tempDeviceInfo[0].Code) &&
                 !string.IsNullOrEmpty(tempDeviceInfo[0].Function))
             {
-                initialText = $"{tempDeviceInfo[0].Code} - {tempDeviceInfo[0].Function}";
+                initialText = $"<size=120%>{tempDeviceInfo[0].Code}</size> | {tempDeviceInfo[0].Function}";
                 keyToSelect = initialText.ToLower(); 
             }
             else
@@ -115,6 +116,62 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
 
         OnItemSelectedEvt?.Invoke(keyToSelect);
     }
+    //public void Initialize()
+    //{
+    //    if (GlobalVariable_Search_Devices.selectedDeviceType == "JB")
+    //    {
+    //        filter_Type = "JB/TSD";
+    //        tempDeviceInfo = new List<DeviceInformationModel>();
+    //        tempJBInfo = GlobalVariable_Search_Devices.temp_ListJBInformationModel;
+    //        deviceOptions = new List<string>();
+    //        jbOptions = tempJBInfo.Select(jb => $"<size=120%>{jb.Name}</size>").ToList();
+    //        availableOptions = jbOptions;
+    //    }
+    //    else
+    //    {
+    //        filter_Type = "Device";
+    //        tempDeviceInfo = GlobalVariable_Search_Devices.temp_ListDeviceInformationModel
+    //        .Where(device => device.Type == GlobalVariable_Search_Devices.selectedDeviceType)
+    //        .ToList();
+
+    //        tempJBInfo = GlobalVariable_Search_Devices.temp_ListJBInformationModel;
+
+    //        // SỬA ĐÂY: Ghép Code và Function thành một chuỗi duy nhất theo định dạng "{Code} - {Function}"
+    //        deviceOptions = tempDeviceInfo.Select(device => $"<size=120%>{device.Code}</size> | {device.Function}").ToList();
+
+    //        jbOptions = tempJBInfo.Select(jb => jb.Name).ToList();
+
+    //        availableOptions = deviceOptions;
+    //    }
+
+    //    if (scrollRect == null || inputField == null || contentItemSelection == null || itemPrefab == null)
+    //    {
+    //        Debug.LogError("Cannot find necessary components for SearchableDropDown");
+    //        return;
+    //    }
+    //    else
+    //    {
+    //        if (availableOptions.Count == 0)
+    //        {
+    //            Debug.Log("availableOptions.Count: " + availableOptions.Count);
+    //            return;
+    //        }
+    //        else
+    //        {
+    //            Debug.Log(availableOptions.Count);
+
+    //            PopulateDropdown(availableOptions);
+    //            UpdateUI();
+    //            //int onValueChangedListenerCount = inputField.onValueChanged.GetPersistentEventCount();
+
+    //            inputField.onValueChanged.AddListener(OnInputValueChange);
+
+    //            filterDropdownButton.GetComponent<Button>().onClick.AddListener(ToggleDropdown);
+    //        }
+
+    //    }
+    //}
+
     public void Initialize()
     {
         if (GlobalVariable_Search_Devices.selectedDeviceType == "JB")
@@ -122,53 +179,65 @@ public class SearchDeviceAndJBView : MonoBehaviour, ISearchDeviceAndJBView
             filter_Type = "JB/TSD";
             tempDeviceInfo = new List<DeviceInformationModel>();
             tempJBInfo = GlobalVariable_Search_Devices.temp_ListJBInformationModel;
-            deviceOptions = new List<string>();
-            jbOptions = tempJBInfo.Select(jb => jb.Name).ToList();
+            jbOptions = tempJBInfo.Select(jb => $"<size=120%>{jb.Name}</size>").ToList();
             availableOptions = jbOptions;
         }
-        else
+        else if (GlobalVariable_Search_Devices.selectedDeviceType == "OtherDevice")
         {
             filter_Type = "Device";
-            tempDeviceInfo = GlobalVariable_Search_Devices.temp_ListDeviceInformationModel
-            .Where(device => device.Type == GlobalVariable_Search_Devices.selectedDeviceType)
-            .ToList();
 
-            tempJBInfo = GlobalVariable_Search_Devices.temp_ListJBInformationModel;
-
-            // SỬA ĐÂY: Ghép Code và Function thành một chuỗi duy nhất theo định dạng "{Code} - {Function}"
-            deviceOptions = tempDeviceInfo.Select(device => $"{device.Code} - {device.Function}").ToList();
-
-            jbOptions = tempJBInfo.Select(jb => jb.Name).ToList();
-
-            availableOptions = deviceOptions;
-        }
-
-        if (scrollRect == null || inputField == null || contentItemSelection == null || itemPrefab == null)
-        {
-            Debug.LogError("Cannot find necessary components for SearchableDropDown");
-            return;
-        }
-        else
-        {
-            if (availableOptions.Count == 0)
+            if (GlobalVariable_Search_Devices.all_Device_Models == null || GlobalVariable_Search_Devices.all_Device_Models.Count == 0)
             {
-                Debug.Log("availableOptions.Count: " + availableOptions.Count);
-                return;
+                Debug.LogError("all_Device_Models chưa có dữ liệu!");
+                tempDeviceInfo = new List<DeviceInformationModel>();
             }
             else
             {
-                Debug.Log(availableOptions.Count);
+                var excludedTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Cảm biến nhiệt độ", "Cảm biến mức", "JB",
+                "Cảm biến áp suất", "Cảm biến lưu lượng", "Van điều khiển"
+            };
 
-                PopulateDropdown(availableOptions);
-                UpdateUI();
-                //int onValueChangedListenerCount = inputField.onValueChanged.GetPersistentEventCount();
+                tempDeviceInfo = GlobalVariable_Search_Devices.all_Device_Models
+                    .Where(d => !excludedTypes.Contains(d.Type))
+                    .ToList();
 
-                inputField.onValueChanged.AddListener(OnInputValueChange);
-
-                filterDropdownButton.GetComponent<Button>().onClick.AddListener(ToggleDropdown);
+                Debug.Log($"[OtherDevice] Filtered: {tempDeviceInfo.Count} devices (from {GlobalVariable_Search_Devices.all_Device_Models.Count} total)");
             }
 
+            tempJBInfo = GlobalVariable_Search_Devices.temp_ListJBInformationModel;
+            deviceOptions = tempDeviceInfo.Select(device =>
+                $"<size=120%>{device.Code}</size> | {device.Function}").ToList();
+            availableOptions = deviceOptions;
         }
+        else
+        {
+            // Device bình thường
+            filter_Type = "Device";
+            tempDeviceInfo = GlobalVariable_Search_Devices.temp_ListDeviceInformationModel
+                .Where(device => string.Equals(device.Type, GlobalVariable_Search_Devices.selectedDeviceType, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            tempJBInfo = GlobalVariable_Search_Devices.temp_ListJBInformationModel;
+            deviceOptions = tempDeviceInfo.Select(device =>
+                $"<size=120%>{device.Code}</size> | {device.Function}").ToList();
+            availableOptions = deviceOptions;
+        }
+
+        // Phần còn lại giữ nguyên
+        if (availableOptions.Count == 0)
+        {
+            Debug.LogWarning($"No options for {GlobalVariable_Search_Devices.selectedDeviceType}");
+            return;
+        }
+
+        PopulateDropdown(availableOptions);
+        UpdateUI();
+
+        inputField.onValueChanged.RemoveListener(OnInputValueChange);
+        inputField.onValueChanged.AddListener(OnInputValueChange);
+        filterDropdownButton.GetComponent<Button>().onClick.AddListener(ToggleDropdown);
     }
 
     public void OnDeviceFilterClicked()

@@ -13,8 +13,8 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
     [Header("Input Fields")]
     [SerializeField] private TMP_InputField deviceCode_TextField;
     [SerializeField] private TMP_InputField deviceFunction_TextField;
-    [SerializeField] private TMP_InputField deviceIOAddress_TextField;
     [SerializeField] private TMP_InputField deviceType_TextField;
+    [SerializeField] private TMP_InputField deviceIOAddress_TextField;
     [SerializeField] private TMP_InputField deviceModelSeries_TextField;
     [SerializeField] private TMP_InputField deviceManufacturer_TextField;
     [SerializeField] private TMP_InputField devicePartNumber_TextField;
@@ -25,6 +25,8 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
     [SerializeField] private TMP_InputField deviceRange_TextField;
     [SerializeField] private TMP_InputField deviceUnit_TextField;
     [SerializeField] private TMP_InputField deviceAccuracy_TextField;
+    [SerializeField] private TMP_InputField deviceTestError_TextField;
+    [SerializeField] private TMP_InputField deviceLengthOrDN_TextField;
     [SerializeField] private TMP_InputField deviceSupplyVoltage_TextField;
     [SerializeField] private TMP_InputField deviceOutputSignal_TextField;
     [SerializeField] private TMP_InputField deviceIngressProtection_TextField;
@@ -180,8 +182,8 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
             DeviceInformationModel = new DeviceInformationModel(
             code: string.IsNullOrEmpty(deviceCode_TextField.text) ? throw new ArgumentNullException(nameof(deviceCode_TextField.text)) : deviceCode_TextField.text,
             function: string.IsNullOrEmpty(deviceFunction_TextField.text) ? "Chưa cập nhật" : deviceFunction_TextField.text,
-            ioAddress: string.IsNullOrEmpty(deviceIOAddress_TextField.text) ? "Chưa cập nhật" : deviceIOAddress_TextField.text,
             type: string.IsNullOrEmpty(deviceType_TextField.text) ? "Chưa cập nhật" : deviceType_TextField.text,
+            ioAddress: string.IsNullOrEmpty(deviceIOAddress_TextField.text) ? "Chưa cập nhật" : deviceIOAddress_TextField.text,
             modelSeries: string.IsNullOrEmpty(deviceModelSeries_TextField.text) ? "Chưa cập nhật" : deviceModelSeries_TextField.text,
             manufacturer: string.IsNullOrEmpty(deviceManufacturer_TextField.text) ? "Chưa cập nhật" : deviceManufacturer_TextField.text,
             partNumber: string.IsNullOrEmpty(devicePartNumber_TextField.text) ? "Chưa cập nhật" : devicePartNumber_TextField.text,
@@ -192,6 +194,8 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
             range: string.IsNullOrEmpty(deviceRange_TextField.text) ? "Chưa cập nhật" : deviceRange_TextField.text,
             unit: string.IsNullOrEmpty(deviceUnit_TextField.text) ? "Chưa cập nhật" : deviceUnit_TextField.text,
             accuracy: string.IsNullOrEmpty(deviceAccuracy_TextField.text) ? "Chưa cập nhật" : deviceAccuracy_TextField.text,
+            testError: string.IsNullOrEmpty(deviceTestError_TextField.text) ? "Chưa cập nhật" : deviceTestError_TextField.text,
+            lengthOrDN: string.IsNullOrEmpty(deviceLengthOrDN_TextField.text) ? "Chưa cập nhật" : deviceLengthOrDN_TextField.text,
             supplyVoltage: string.IsNullOrEmpty(deviceSupplyVoltage_TextField.text) ? "Chưa cập nhật" : deviceSupplyVoltage_TextField.text,
             outputSignal: string.IsNullOrEmpty(deviceOutputSignal_TextField.text) ? "Chưa cập nhật" : deviceOutputSignal_TextField.text,
             ingressProtection: string.IsNullOrEmpty(deviceIngressProtection_TextField.text) ? "Chưa cập nhật" : deviceIngressProtection_TextField.text,
@@ -199,13 +203,7 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
             processConnection: string.IsNullOrEmpty(deviceProcessConnection_TextField.text) ? "Chưa cập nhật" : deviceProcessConnection_TextField.text,
             responseTime: string.IsNullOrEmpty(deviceResponseTime_TextField.text) ? "Chưa cập nhật" : deviceResponseTime_TextField.text,
             otherSpecifications: string.IsNullOrEmpty(deviceOtherSpecifications_TextField.text) ? "Chưa cập nhật" : deviceOtherSpecifications_TextField.text,
-            installationLocation: string.IsNullOrEmpty(deviceInstallationLocation_TextField.text) ? "Chưa cập nhật" : deviceInstallationLocation_TextField.text,
-            measuredMedium: string.IsNullOrEmpty(deviceMeasuredMedium_TextField.text) ? "Chưa cập nhật" : deviceMeasuredMedium_TextField.text,
-            operatingTemperature: string.IsNullOrEmpty(deviceOperatingTemperature_TextField.text) ? "Chưa cập nhật" : deviceOperatingTemperature_TextField.text,
-            operatingPressure: string.IsNullOrEmpty(deviceOperatingPressure_TextField.text) ? "Chưa cập nhật" : deviceOperatingPressure_TextField.text,
-            calibrationFrequency: string.IsNullOrEmpty(deviceCalibrationFrequency_TextField.text) ? "Chưa cập nhật" : deviceCalibrationFrequency_TextField.text,
-            failureHistory: string.IsNullOrEmpty(deviceFailureHistory_TextField.text) ? "Chưa cập nhật" : deviceFailureHistory_TextField.text,
-            environmentCondition: string.IsNullOrEmpty(deviceEnvironmentCondition_TextField.text) ? "Chưa cập nhật" : deviceEnvironmentCondition_TextField.text,
+
             jbInformationModels: temp_Dictionary_JBInformationModel.Any() ? temp_Dictionary_JBInformationModel.Values.ToList() : new List<JBInformationModel>(),
             moduleInformationModel: !addModuleItem.activeSelf ? temp_ModuleModel : null,
             additionalConnectionImages: temp_Dictionary_Additional_ConnectionModel.Any() ? temp_Dictionary_Additional_ConnectionModel.Values.ToList() : new List<ImageInformationModel>()
@@ -520,6 +518,8 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
         deviceRange_TextField.text = string.IsNullOrEmpty(model.Range) ? "Chưa cập nhật" : model.Range;
         deviceUnit_TextField.text = string.IsNullOrEmpty(model.Unit) ? "Chưa cập nhật" : model.Unit;
         deviceAccuracy_TextField.text = string.IsNullOrEmpty(model.Accuracy) ? "Chưa cập nhật" : model.Accuracy;
+        deviceTestError_TextField.text = string.IsNullOrEmpty(model.TestError) ? "Chưa cập nhật" : model.TestError;
+        deviceLengthOrDN_TextField.text = string.IsNullOrEmpty(model.LengthOrDN) ? "Chưa cập nhật" : model.LengthOrDN;
         deviceSupplyVoltage_TextField.text = string.IsNullOrEmpty(model.SupplyVoltage) ? "Chưa cập nhật" : model.SupplyVoltage;
         deviceOutputSignal_TextField.text = string.IsNullOrEmpty(model.OutputSignal) ? "Chưa cập nhật" : model.OutputSignal;
         deviceIngressProtection_TextField.text = string.IsNullOrEmpty(model.IngressProtection) ? "Chưa cập nhật" : model.IngressProtection;
@@ -527,13 +527,6 @@ public class UpdateDeviceSettingView : MonoBehaviour, IDeviceView
         deviceProcessConnection_TextField.text = string.IsNullOrEmpty(model.ProcessConnection) ? "Chưa cập nhật" : model.ProcessConnection;
         deviceResponseTime_TextField.text = string.IsNullOrEmpty(model.ResponseTime) ? "Chưa cập nhật" : model.ResponseTime;
         deviceOtherSpecifications_TextField.text = string.IsNullOrEmpty(model.OtherSpecifications) ? "Chưa cập nhật" : model.OtherSpecifications;
-        deviceInstallationLocation_TextField.text = string.IsNullOrEmpty(model.InstallationLocation) ? "Chưa cập nhật" : model.InstallationLocation;
-        deviceMeasuredMedium_TextField.text = string.IsNullOrEmpty(model.MeasuredMedium) ? "Chưa cập nhật" : model.MeasuredMedium;
-        deviceOperatingTemperature_TextField.text = string.IsNullOrEmpty(model.OperatingTemperature) ? "Chưa cập nhật" : model.OperatingTemperature;
-        deviceOperatingPressure_TextField.text = string.IsNullOrEmpty(model.OperatingPressure) ? "Chưa cập nhật" : model.OperatingPressure;
-        deviceCalibrationFrequency_TextField.text = string.IsNullOrEmpty(model.CalibrationFrequency) ? "Chưa cập nhật" : model.CalibrationFrequency;
-        deviceFailureHistory_TextField.text = string.IsNullOrEmpty(model.FailureHistory) ? "Chưa cập nhật" : model.FailureHistory;
-        deviceEnvironmentCondition_TextField.text = string.IsNullOrEmpty(model.EnvironmentCondition) ? "Chưa cập nhật" : model.EnvironmentCondition;
 
         foreach (var textField in deviceTextFieldValues)
         {

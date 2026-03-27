@@ -18,8 +18,8 @@ namespace Domain.Entities
     public string Code { get; set; } = string.Empty;
         // Basic Information
         [JsonProperty("function")] public string? Function { get; set; }
-        [JsonProperty("ioAddress")] public string? IOAddress { get; set; }
         [JsonProperty("type")] public string? Type { get; set; }
+        [JsonProperty("ioAddress")] public string? IOAddress { get; set; }
         [JsonProperty("modelSeries")] public string? ModelSeries { get; set; }
         [JsonProperty("manufacturer")] public string? Manufacturer { get; set; }
         [JsonProperty("partNumber")] public string? PartNumber { get; set; }
@@ -32,22 +32,15 @@ namespace Domain.Entities
         [JsonProperty("range")] public string? Range { get; set; }
         [JsonProperty("unit")] public string? Unit { get; set; }
         [JsonProperty("accuracy")] public string? Accuracy { get; set; }
+        [JsonProperty("testError")] public string TestError { get; set; }
+        [JsonProperty("lengthOrDN")] public string LengthOrDN { get; set; }
         [JsonProperty("supplyVoltage")] public string? SupplyVoltage { get; set; }
         [JsonProperty("outputSignal")] public string? OutputSignal { get; set; }
-        [JsonProperty("ingressProtection")] public string? ingressProtection { get; set; }
+        [JsonProperty("ingressProtection")] public string? IngressProtection { get; set; }
         [JsonProperty("connectorType")] public string? ConnectorType { get; set; }
         [JsonProperty("processConnection")] public string? ProcessConnection { get; set; }
         [JsonProperty("responseTime")] public string? ResponseTime { get; set; }
         [JsonProperty("otherSpecifications")] public string? OtherSpecifications { get; set; }
-
-        // Operational Information
-        [JsonProperty("installationLocation")] public string? InstallationLocation { get; set; }
-        [JsonProperty("measuredMedium")] public string? MeasuredMedium { get; set; }
-        [JsonProperty("operatingTemperature")] public string? OperatingTemperature { get; set; }
-        [JsonProperty("operatingPressure")] public string? OperatingPressure { get; set; }
-        [JsonProperty("calibrationFrequency")] public string? CalibrationFrequency { get; set; }
-        [JsonProperty("failureHistory")] public string? FailureHistory { get; set; }
-        [JsonProperty("environmentCondition")] public string? EnvironmentCondition { get; set; }
 
         // Additional Information
         // [JsonProperty("additionalConnectionImages", NullValueHandling = NullValueHandling.Ignore)]
@@ -197,13 +190,13 @@ namespace Domain.Entities
 
 
     [Preserve]
-    public DeviceEntity(int id, string code, string function, string type, string modelSeries, string manufacturer, string partNumber, string serialNumber, string manufacturingYear, string installationDate, string ioAddress, string measurementType, string range, string unit, string accuracy, string supplyVoltage, string outputSignal, string ingressProtection, string connectorType, string processConnection, string responseTime, string otherSpecifications, string installationLocation, string measuredMedium, string operatingTemperature, string operatingPressure, string calibrationFrequency, string failureHistory, string environmentCondition, ModuleEntity? moduleEntity, List<JBEntity>? jbEntities, List<ImageEntity>? additionalConnectionImageEntities)
+    public DeviceEntity(int id, string code, string function, string type, string modelSeries, string manufacturer, string partNumber, string serialNumber, string manufacturingYear, string installationDate, string ioAddress, string measurementType, string range, string unit, string accuracy, string testError, string lengthOrDN, string supplyVoltage, string outputSignal, string ingressProtection, string connectorType, string processConnection, string responseTime, string otherSpecifications, ModuleEntity? moduleEntity, List<JBEntity>? jbEntities, List<ImageEntity>? additionalConnectionImageEntities)
     {
       Id = id;
       Code = string.IsNullOrEmpty(code) ? throw new ArgumentNullException(nameof(code)) : code;
             Function = string.IsNullOrEmpty(function) ? "Chưa cập nhật" : function;
-            IOAddress = string.IsNullOrEmpty(ioAddress) ? "Chưa cập nhật" : ioAddress;
             Type = string.IsNullOrEmpty(type) ? "Chưa cập nhật" : type;
+            IOAddress = string.IsNullOrEmpty(ioAddress) ? "Chưa cập nhật" : ioAddress;           
             ModelSeries = string.IsNullOrEmpty(modelSeries) ? "Chưa cập nhật" : modelSeries;
             Manufacturer = string.IsNullOrEmpty(manufacturer) ? "Chưa cập nhật" : manufacturer;
             PartNumber = string.IsNullOrEmpty(partNumber) ? "Chưa cập nhật" : partNumber;
@@ -214,20 +207,15 @@ namespace Domain.Entities
             Range = string.IsNullOrEmpty(range) ? "Chưa cập nhật" : range;
             Unit = string.IsNullOrEmpty(unit) ? "Chưa cập nhật" : unit;
             Accuracy = string.IsNullOrEmpty(accuracy) ? "Chưa cập nhật" : accuracy;
+            TestError = string.IsNullOrEmpty(testError) ? "Chưa cập nhật" : testError;
+            LengthOrDN = string.IsNullOrEmpty(lengthOrDN) ? "Chưa cập nhật" : lengthOrDN;
             SupplyVoltage = string.IsNullOrEmpty(supplyVoltage) ? "Chưa cập nhật" : supplyVoltage;
             OutputSignal = string.IsNullOrEmpty(outputSignal) ? "Chưa cập nhật" : outputSignal;
-            this.ingressProtection = string.IsNullOrEmpty(ingressProtection) ? "Chưa cập nhật" : ingressProtection;
+            IngressProtection = string.IsNullOrEmpty(ingressProtection) ? "Chưa cập nhật" : ingressProtection;
             ConnectorType = string.IsNullOrEmpty(connectorType) ? "Chưa cập nhật" : connectorType;
             ProcessConnection = string.IsNullOrEmpty(processConnection) ? "Chưa cập nhật" : processConnection;
             ResponseTime = string.IsNullOrEmpty(responseTime) ? "Chưa cập nhật" : responseTime;
             OtherSpecifications = otherSpecifications;
-            InstallationLocation = string.IsNullOrEmpty(installationLocation) ? "Chưa cập nhật" : installationLocation;
-            MeasuredMedium = string.IsNullOrEmpty(measuredMedium) ? "Chưa cập nhật" : measuredMedium;
-            OperatingTemperature = string.IsNullOrEmpty(operatingTemperature) ? "Chưa cập nhật" : operatingTemperature;
-            OperatingPressure = string.IsNullOrEmpty(operatingPressure) ? "Chưa cập nhật" : operatingPressure;
-            CalibrationFrequency = string.IsNullOrEmpty(calibrationFrequency) ? "Chưa cập nhật" : calibrationFrequency;
-            FailureHistory = string.IsNullOrEmpty(failureHistory) ? "Chưa cập nhật" : failureHistory;
-            EnvironmentCondition = string.IsNullOrEmpty(environmentCondition) ? "Chưa cập nhật" : environmentCondition;
             ModuleEntity = moduleEntity ?? null;
       JBEntities = (jbEntities == null || (jbEntities != null && !jbEntities.Any())) ? new List<JBEntity>() : jbEntities;
       AdditionalConnectionImageEntities = (additionalConnectionImageEntities == null
@@ -235,12 +223,12 @@ namespace Domain.Entities
          ? new List<ImageEntity>() : additionalConnectionImageEntities;
     }
     [Preserve]
-        public DeviceEntity(string code, string function, string type, string modelSeries, string manufacturer, string partNumber, string serialNumber, string manufacturingYear, string installationDate, string ioAddress, string measurementType, string range, string unit, string accuracy, string supplyVoltage, string outputSignal, string ingressProtection, string connectorType, string processConnection, string responseTime, string otherSpecifications, string installationLocation, string measuredMedium, string operatingTemperature, string operatingPressure, string calibrationFrequency, string failureHistory, string environmentCondition, ModuleEntity? moduleEntity, List<JBEntity>? jbEntities, List<ImageEntity>? additionalConnectionImageEntities)
+        public DeviceEntity(string code, string function, string type, string modelSeries, string manufacturer, string partNumber, string serialNumber, string manufacturingYear, string installationDate, string ioAddress, string measurementType, string range, string unit, string accuracy, string testError, string lengthOrDN, string supplyVoltage, string outputSignal, string ingressProtection, string connectorType, string processConnection, string responseTime, string otherSpecifications, ModuleEntity? moduleEntity, List<JBEntity>? jbEntities, List<ImageEntity>? additionalConnectionImageEntities)
         {
             Code = string.IsNullOrEmpty(code) ? throw new ArgumentNullException(nameof(code)) : code;
             Function = string.IsNullOrEmpty(function) ? "Chưa cập nhật" : function;
-            IOAddress = string.IsNullOrEmpty(ioAddress) ? "Chưa cập nhật" : ioAddress;
             Type = string.IsNullOrEmpty(type) ? "Chưa cập nhật" : type;
+            IOAddress = string.IsNullOrEmpty(ioAddress) ? "Chưa cập nhật" : ioAddress;            
             ModelSeries = string.IsNullOrEmpty(modelSeries) ? "Chưa cập nhật" : modelSeries;
             Manufacturer = string.IsNullOrEmpty(manufacturer) ? "Chưa cập nhật" : manufacturer;
             PartNumber = string.IsNullOrEmpty(partNumber) ? "Chưa cập nhật" : partNumber;
@@ -251,20 +239,15 @@ namespace Domain.Entities
             Range = string.IsNullOrEmpty(range) ? "Chưa cập nhật" : range;
             Unit = string.IsNullOrEmpty(unit) ? "Chưa cập nhật" : unit;
             Accuracy = string.IsNullOrEmpty(accuracy) ? "Chưa cập nhật" : accuracy;
+            TestError = string.IsNullOrEmpty(testError) ? "Chưa cập nhật" : testError;
+            LengthOrDN = string.IsNullOrEmpty(lengthOrDN) ? "Chưa cập nhật" : lengthOrDN;
             SupplyVoltage = string.IsNullOrEmpty(supplyVoltage) ? "Chưa cập nhật" : supplyVoltage;
             OutputSignal = string.IsNullOrEmpty(outputSignal) ? "Chưa cập nhật" : outputSignal;
-            this.ingressProtection = string.IsNullOrEmpty(ingressProtection) ? "Chưa cập nhật" : ingressProtection;
+            IngressProtection = string.IsNullOrEmpty(ingressProtection) ? "Chưa cập nhật" : ingressProtection;
             ConnectorType = string.IsNullOrEmpty(connectorType) ? "Chưa cập nhật" : connectorType;
             ProcessConnection = string.IsNullOrEmpty(processConnection) ? "Chưa cập nhật" : processConnection;
             ResponseTime = string.IsNullOrEmpty(responseTime) ? "Chưa cập nhật" : responseTime;
             OtherSpecifications = string.IsNullOrEmpty(otherSpecifications) ? "Chưa cập nhật" : otherSpecifications;
-            InstallationLocation = string.IsNullOrEmpty(installationLocation) ? "Chưa cập nhật" : installationLocation;
-            MeasuredMedium = string.IsNullOrEmpty(measuredMedium) ? "Chưa cập nhật" : measuredMedium;
-            OperatingTemperature = string.IsNullOrEmpty(operatingTemperature) ? "Chưa cập nhật" : operatingTemperature;
-            OperatingPressure = string.IsNullOrEmpty(operatingPressure) ? "Chưa cập nhật" : operatingPressure;
-            CalibrationFrequency = string.IsNullOrEmpty(calibrationFrequency) ? "Chưa cập nhật" : calibrationFrequency;
-            FailureHistory = string.IsNullOrEmpty(failureHistory) ? "Chưa cập nhật" : failureHistory;
-            EnvironmentCondition = string.IsNullOrEmpty(environmentCondition) ? "Chưa cập nhật" : environmentCondition;
             ModuleEntity = moduleEntity ?? null;
             JBEntities = (jbEntities == null || (jbEntities != null && !jbEntities.Any())) ? new List<JBEntity>() : jbEntities;
             AdditionalConnectionImageEntities = (additionalConnectionImageEntities == null

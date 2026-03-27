@@ -404,8 +404,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1296,8 +1296,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.000022888, y: -1164}
-  m_SizeDelta: {x: 790, y: 130}
+  m_AnchoredPosition: {x: -0.000022888, y: -1277}
+  m_SizeDelta: {x: 876.1836, y: 154.7981}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &369192254
 MonoBehaviour:
@@ -1566,8 +1566,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 377.14566, y: -63.95623}
-  m_SizeDelta: {x: 345.756, y: 75.8975}
+  m_AnchoredPosition: {x: 329.48, y: -183.8201}
+  m_SizeDelta: {x: 432.5095, y: 75.8975}
   m_Pivot: {x: 0.4506471, y: 0.5}
 --- !u!114 &391257598
 MonoBehaviour:
@@ -2229,7 +2229,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &695204970
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2543,8 +2543,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0019205, y: -305}
-  m_SizeDelta: {x: 1491.1, y: 1837.6245}
+  m_AnchoredPosition: {x: -0.0019205, y: -266.9244}
+  m_SizeDelta: {x: 1491.1, y: 1761.4734}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &788517122
 MonoBehaviour:
@@ -2839,7 +2839,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.20998177, y: -646.85645}
+  m_AnchoredPosition: {x: -0.20998177, y: -694.8565}
   m_SizeDelta: {x: 1134.5856, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &860194577
@@ -3577,7 +3577,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.21027705, y: -879.82}
+  m_AnchoredPosition: {x: -0.21027705, y: -954.8201}
   m_SizeDelta: {x: 1134.586, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1117824330
@@ -4040,7 +4040,6 @@ MonoBehaviour:
   userNameField: {fileID: 860194577}
   passwordField: {fileID: 1117824330}
   loginButton: {fileID: 369192254}
-  registerButton: {fileID: 0}
   targetSceneName: SelectionScene
   ShowPasswordButton: {fileID: 1434479091}
   HidePasswordButton: {fileID: 1800520687}
@@ -5479,7 +5478,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -229.10999, y: -535.72815}
+  m_AnchoredPosition: {x: -229.10999, y: -583.72815}
   m_SizeDelta: {x: 675, y: 89}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1696164088
@@ -5615,7 +5614,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -230, y: -773}
+  m_AnchoredPosition: {x: -230, y: -848.0001}
   m_SizeDelta: {x: 675, y: 89}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1698202919
@@ -6704,7 +6703,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 5}
+  m_AnchoredPosition: {x: 0, y: 7}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1867466934
@@ -6755,8 +6754,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 30
@@ -7241,7 +7240,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00032181, y: 635}
+  m_AnchoredPosition: {x: 0.000015261, y: 521.17993}
   m_SizeDelta: {x: 803.5106, y: 194.6287}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2092421070
@@ -7602,7 +7601,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -492.30994, y: 43.4}
+  m_AnchoredPosition: {x: -492.30994, y: -68.820114}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2108885461

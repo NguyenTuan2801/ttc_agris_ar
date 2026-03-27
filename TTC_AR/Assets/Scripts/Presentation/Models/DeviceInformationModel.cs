@@ -15,8 +15,8 @@ public class DeviceInformationModel
 
   // Basic Information
   [JsonProperty("function")] public string Function { get; set; }
-  [JsonProperty("ioAddress")] public string IOAddress { get; set; }
   [JsonProperty("type")] public string Type { get; set; }
+  [JsonProperty("ioAddress")] public string IOAddress { get; set; }
   [JsonProperty("modelSeries")] public string ModelSeries { get; set; }
   [JsonProperty("manufacturer")] public string Manufacturer { get; set; }
   [JsonProperty("partNumber")] public string PartNumber { get; set; }
@@ -29,6 +29,8 @@ public class DeviceInformationModel
   [JsonProperty("range")] public string Range { get; set; }
   [JsonProperty("unit")] public string Unit { get; set; }
   [JsonProperty("accuracy")] public string Accuracy { get; set; }
+  [JsonProperty("testError")] public string TestError { get; set; }
+  [JsonProperty("lengthOrDN")] public string LengthOrDN { get; set; }
   [JsonProperty("supplyVoltage")] public string SupplyVoltage { get; set; }
   [JsonProperty("outputSignal")] public string OutputSignal { get; set; }
   [JsonProperty("ingressProtection")] public string IngressProtection { get; set; }
@@ -36,15 +38,6 @@ public class DeviceInformationModel
   [JsonProperty("processConnection")] public string ProcessConnection { get; set; }
   [JsonProperty("responseTime")] public string ResponseTime { get; set; }
   [JsonProperty("otherSpecifications")] public string OtherSpecifications { get; set; }
-
-  // Operational Information
-  [JsonProperty("installationLocation")] public string InstallationLocation { get; set; }
-  [JsonProperty("measuredMedium")] public string MeasuredMedium { get; set; }
-  [JsonProperty("operatingTemperature")] public string OperatingTemperature { get; set; }
-  [JsonProperty("operatingPressure")] public string OperatingPressure { get; set; }
-  [JsonProperty("calibrationFrequency")] public string CalibrationFrequency { get; set; }
-  [JsonProperty("failureHistory")] public string FailureHistory { get; set; }
-  [JsonProperty("environmentCondition")] public string EnvironmentCondition { get; set; }
 
   // Additional Information
   [JsonProperty("module")]
@@ -58,23 +51,25 @@ public class DeviceInformationModel
 
     [Preserve]
 
-    public DeviceInformationModel(int id, string code, string? function, string? type, string? modelSeries, string? manufacturer, string? partNumber, string? serialNumber, string? manufacturingYear, string? installationDate, string? ioAddress, string measurementType, string? range, string? unit, string? accuracy, string? supplyVoltage, string? outputSignal, string? ingressProtection, string? connectorType, string? processConnection, string? responseTime, string? otherSpecifications, string? installationLocation, string? measuredMedium, string? operatingTemperature, string? operatingPressure, string? calibrationFrequency, string? failureHistory, string? environmentCondition, ModuleInformationModel? moduleInformationModel, List<JBInformationModel>? jbInformationModels, List<ImageInformationModel>? additionalConnectionImages)
+    public DeviceInformationModel(int id, string code, string? function, string? type, string? modelSeries, string? manufacturer, string? partNumber, string? serialNumber, string? manufacturingYear, string? installationDate, string? ioAddress, string measurementType, string? range, string? unit, string? accuracy, string? testError, string? lengthOrDN, string? supplyVoltage, string? outputSignal, string? ingressProtection, string? connectorType, string? processConnection, string? responseTime, string? otherSpecifications, ModuleInformationModel? moduleInformationModel, List<JBInformationModel>? jbInformationModels, List<ImageInformationModel>? additionalConnectionImages)
     {
         Id = id;
         Code = code;
         Function = function;
         Type = type;
+        IOAddress = ioAddress;
         ModelSeries = modelSeries;
         Manufacturer = manufacturer;
         PartNumber = partNumber;
         SerialNumber = serialNumber;
         ManufacturingYear = manufacturingYear;
         InstallationDate = installationDate;
-        IOAddress = ioAddress;
         MeasurementType = measurementType;
         Range = range;
         Unit = unit;
         Accuracy = accuracy;
+        TestError = testError;
+        LengthOrDN = lengthOrDN;
         SupplyVoltage = supplyVoltage;
         OutputSignal = outputSignal;
         IngressProtection = ingressProtection;
@@ -82,35 +77,30 @@ public class DeviceInformationModel
         ProcessConnection = processConnection;
         ResponseTime = responseTime;
         OtherSpecifications = otherSpecifications;
-        InstallationLocation = installationLocation;
-        MeasuredMedium = measuredMedium;
-        OperatingTemperature = operatingTemperature;
-        OperatingPressure = operatingPressure;
-        CalibrationFrequency = calibrationFrequency;
-        FailureHistory = failureHistory;
-        EnvironmentCondition = environmentCondition;
         ModuleInformationModel = moduleInformationModel;
         JBInformationModels = jbInformationModels;
         AdditionalConnectionImages = additionalConnectionImages;
     }
 
 
-  public DeviceInformationModel(string code, string? function, string? type, string? modelSeries, string? manufacturer, string? partNumber, string? serialNumber, string? manufacturingYear, string? installationDate, string? ioAddress, string measurementType, string? range, string? unit, string? accuracy, string? supplyVoltage, string? outputSignal, string? ingressProtection, string? connectorType, string? processConnection, string? responseTime, string? otherSpecifications, string? installationLocation, string? measuredMedium, string? operatingTemperature, string? operatingPressure, string? calibrationFrequency, string? failureHistory, string? environmentCondition, ModuleInformationModel? moduleInformationModel, List<JBInformationModel>? jbInformationModels, List<ImageInformationModel>? additionalConnectionImages)
+  public DeviceInformationModel(string code, string? function, string? type, string? modelSeries, string? manufacturer, string? partNumber, string? serialNumber, string? manufacturingYear, string? installationDate, string? ioAddress, string measurementType, string? range, string? unit, string? accuracy, string? testError, string? lengthOrDN, string? supplyVoltage, string? outputSignal, string? ingressProtection, string? connectorType, string? processConnection, string? responseTime, string? otherSpecifications, ModuleInformationModel? moduleInformationModel, List<JBInformationModel>? jbInformationModels, List<ImageInformationModel>? additionalConnectionImages)
     {
         Code = code;
         Function = function;
         Type = type;
+        IOAddress = ioAddress;
         ModelSeries = modelSeries;
         Manufacturer = manufacturer;
         PartNumber = partNumber;
         SerialNumber = serialNumber;
         ManufacturingYear = manufacturingYear;
-        InstallationDate = installationDate;
-        IOAddress = ioAddress;
+        InstallationDate = installationDate;       
         MeasurementType = measurementType;
         Range = range;
         Unit = unit;
         Accuracy = accuracy;
+        TestError = testError;
+        LengthOrDN = lengthOrDN;
         SupplyVoltage = supplyVoltage;
         OutputSignal = outputSignal;
         IngressProtection = ingressProtection;
@@ -118,13 +108,6 @@ public class DeviceInformationModel
         ProcessConnection = processConnection;
         ResponseTime = responseTime;
         OtherSpecifications = otherSpecifications;
-        InstallationLocation = installationLocation;
-        MeasuredMedium = measuredMedium;
-        OperatingTemperature = operatingTemperature;
-        OperatingPressure = operatingPressure;
-        CalibrationFrequency = calibrationFrequency;
-        FailureHistory = failureHistory;
-        EnvironmentCondition = environmentCondition;
         ModuleInformationModel = moduleInformationModel;
         JBInformationModels = jbInformationModels;
         AdditionalConnectionImages = additionalConnectionImages;
@@ -152,8 +135,8 @@ public class DeviceGeneralModel
 
     // Basic Information
     [JsonProperty("function")] public string Function { get; set; }
-    [JsonProperty("ioAddress")] public string IOAddress { get; set; }
     [JsonProperty("type")] public string Type { get; set; }
+    [JsonProperty("ioAddress")] public string IOAddress { get; set; }   
     [JsonProperty("modelSeries")] public string ModelSeries { get; set; }
     [JsonProperty("manufacturer")] public string Manufacturer { get; set; }
     [JsonProperty("partNumber")] public string PartNumber { get; set; }
@@ -166,6 +149,8 @@ public class DeviceGeneralModel
     [JsonProperty("range")] public string Range { get; set; }
     [JsonProperty("unit")] public string Unit { get; set; }
     [JsonProperty("accuracy")] public string Accuracy { get; set; }
+    [JsonProperty("testError")] public string TestError { get; set; }
+    [JsonProperty("lengthOrDN")] public string LengthOrDN { get; set; }
     [JsonProperty("supplyVoltage")] public string SupplyVoltage { get; set; }
     [JsonProperty("outputSignal")] public string OutputSignal { get; set; }
     [JsonProperty("ingressProtection")] public string IngressProtection { get; set; }
@@ -173,15 +158,6 @@ public class DeviceGeneralModel
     [JsonProperty("processConnection")] public string ProcessConnection { get; set; }
     [JsonProperty("responseTime")] public string ResponseTime { get; set; }
     [JsonProperty("otherSpecifications")] public string OtherSpecifications { get; set; }
-
-    // Operational Information
-    [JsonProperty("installationLocation")] public string InstallationLocation { get; set; }
-    [JsonProperty("measuredMedium")] public string MeasuredMedium { get; set; }
-    [JsonProperty("operatingTemperature")] public string OperatingTemperature { get; set; }
-    [JsonProperty("operatingPressure")] public string OperatingPressure { get; set; }
-    [JsonProperty("calibrationFrequency")] public string CalibrationFrequency { get; set; }
-    [JsonProperty("failureHistory")] public string FailureHistory { get; set; }
-    [JsonProperty("environmentCondition")] public string EnvironmentCondition { get; set; }
 
     // Additional Information
     [JsonProperty("module")]
@@ -195,23 +171,25 @@ public class DeviceGeneralModel
 
   [Preserve]
 
-    public DeviceGeneralModel(string? id, string? code, string? function, string? type, string? modelSeries, string? manufacturer, string? partNumber, string? serialNumber, string? manufacturingYear, string? installationDate, string? ioAddress, string measurementType, string? range, string? unit, string? accuracy, string? supplyVoltage, string? outputSignal, string? ingressProtection, string? connectorType, string? processConnection, string? responseTime, string? otherSpecifications, string? installationLocation, string? measuredMedium, string? operatingTemperature, string? operatingPressure, string? calibrationFrequency, string? failureHistory, string? environmentCondition, ModuleBasicModel? moduleBasicModel, JBBasicModel jbBasicModels, List<ImageBasicModel>? additionalImageModels)
+    public DeviceGeneralModel(string? id, string? code, string? function, string? type, string? modelSeries, string? manufacturer, string? partNumber, string? serialNumber, string? manufacturingYear, string? installationDate, string? ioAddress, string measurementType, string? range, string? unit, string? accuracy, string? testError, string? lengthOrDN, string? supplyVoltage, string? outputSignal, string? ingressProtection, string? connectorType, string? processConnection, string? responseTime, string? otherSpecifications, ModuleBasicModel? moduleBasicModel, JBBasicModel jbBasicModels, List<ImageBasicModel>? additionalImageModels)
     {
         Id = id;
         Code = code;
         Function = function;
+        IOAddress = ioAddress;
         Type = type;
         ModelSeries = modelSeries;
         Manufacturer = manufacturer;
         PartNumber = partNumber;
         SerialNumber = serialNumber;
         ManufacturingYear = manufacturingYear;
-        InstallationDate = installationDate;
-        IOAddress = ioAddress;
+        InstallationDate = installationDate;       
         MeasurementType = measurementType;
         Range = range;
         Unit = unit;
         Accuracy = accuracy;
+        TestError = testError;
+        LengthOrDN = lengthOrDN;
         SupplyVoltage = supplyVoltage;
         OutputSignal = outputSignal;
         IngressProtection = ingressProtection;
@@ -219,13 +197,6 @@ public class DeviceGeneralModel
         ProcessConnection = processConnection;
         ResponseTime = responseTime;
         OtherSpecifications = otherSpecifications;
-        InstallationLocation = installationLocation;
-        MeasuredMedium = measuredMedium;
-        OperatingTemperature = operatingTemperature;
-        OperatingPressure = operatingPressure;
-        CalibrationFrequency = calibrationFrequency;
-        FailureHistory = failureHistory;
-        EnvironmentCondition = environmentCondition;
         ModuleBasicModel = moduleBasicModel;
         JBBasicModel = jbBasicModels;
         AdditionalImageModels = additionalImageModels;
@@ -241,8 +212,8 @@ public class DevicePostGeneralModel
   public string? Code { get; set; }
     // Basic Information
     [JsonProperty("function")] public string Function { get; set; }
-    [JsonProperty("ioAddress")] public string IOAddress { get; set; }
     [JsonProperty("type")] public string Type { get; set; }
+    [JsonProperty("ioAddress")] public string IOAddress { get; set; }   
     [JsonProperty("modelSeries")] public string ModelSeries { get; set; }
     [JsonProperty("manufacturer")] public string Manufacturer { get; set; }
     [JsonProperty("partNumber")] public string PartNumber { get; set; }
@@ -255,6 +226,8 @@ public class DevicePostGeneralModel
     [JsonProperty("range")] public string Range { get; set; }
     [JsonProperty("unit")] public string Unit { get; set; }
     [JsonProperty("accuracy")] public string Accuracy { get; set; }
+    [JsonProperty("testError")] public string TestError { get; set; }
+    [JsonProperty("lengthOrDN")] public string LengthOrDN { get; set; }
     [JsonProperty("supplyVoltage")] public string SupplyVoltage { get; set; }
     [JsonProperty("outputSignal")] public string OutputSignal { get; set; }
     [JsonProperty("ingressProtection")] public string IngressProtection { get; set; }
@@ -262,15 +235,6 @@ public class DevicePostGeneralModel
     [JsonProperty("processConnection")] public string ProcessConnection { get; set; }
     [JsonProperty("responseTime")] public string ResponseTime { get; set; }
     [JsonProperty("otherSpecifications")] public string OtherSpecifications { get; set; }
-
-    // Operational Information
-    [JsonProperty("installationLocation")] public string InstallationLocation { get; set; }
-    [JsonProperty("measuredMedium")] public string MeasuredMedium { get; set; }
-    [JsonProperty("operatingTemperature")] public string OperatingTemperature { get; set; }
-    [JsonProperty("operatingPressure")] public string OperatingPressure { get; set; }
-    [JsonProperty("calibrationFrequency")] public string CalibrationFrequency { get; set; }
-    [JsonProperty("failureHistory")] public string FailureHistory { get; set; }
-    [JsonProperty("environmentCondition")] public string EnvironmentCondition { get; set; }
 
     // Additional Information
     [JsonProperty("module")]
@@ -284,22 +248,24 @@ public class DevicePostGeneralModel
 
   [Preserve]
 
-    public DevicePostGeneralModel(string? code, string? function, string? type, string? modelSeries, string? manufacturer, string? partNumber, string? serialNumber, string? manufacturingYear, string? installationDate, string? ioAddress, string measurementType, string? range, string? unit, string? accuracy, string? supplyVoltage, string? outputSignal, string? ingressProtection, string? connectorType, string? processConnection, string? responseTime, string? otherSpecifications, string? installationLocation, string? measuredMedium, string? operatingTemperature, string? operatingPressure, string? calibrationFrequency, string? failureHistory, string? environmentCondition, ModuleBasicModel? moduleBasicModel, JBBasicModel jbBasicModels, List<ImageBasicModel>? additionalImageModel)
+    public DevicePostGeneralModel(string? code, string? function, string? type, string? modelSeries, string? manufacturer, string? partNumber, string? serialNumber, string? manufacturingYear, string? installationDate, string? ioAddress, string measurementType, string? range, string? unit, string? accuracy, string? testError, string? lengthOrDN, string? supplyVoltage, string? outputSignal, string? ingressProtection, string? connectorType, string? processConnection, string? responseTime, string? otherSpecifications, ModuleBasicModel? moduleBasicModel, JBBasicModel jbBasicModels, List<ImageBasicModel>? additionalImageModel)
     {
         Code = code;
         Function = function;
         Type = type;
+        IOAddress = ioAddress;
         ModelSeries = modelSeries;
         Manufacturer = manufacturer;
         PartNumber = partNumber;
         SerialNumber = serialNumber;
         ManufacturingYear = manufacturingYear;
-        InstallationDate = installationDate;
-        IOAddress = ioAddress;
+        InstallationDate = installationDate;       
         MeasurementType = measurementType;
         Range = range;
         Unit = unit;
         Accuracy = accuracy;
+        TestError = testError;
+        LengthOrDN = lengthOrDN;
         SupplyVoltage = supplyVoltage;
         OutputSignal = outputSignal;
         IngressProtection = ingressProtection;
@@ -307,13 +273,6 @@ public class DevicePostGeneralModel
         ProcessConnection = processConnection;
         ResponseTime = responseTime;
         OtherSpecifications = otherSpecifications;
-        InstallationLocation = installationLocation;
-        MeasuredMedium = measuredMedium;
-        OperatingTemperature = operatingTemperature;
-        OperatingPressure = operatingPressure;
-        CalibrationFrequency = calibrationFrequency;
-        FailureHistory = failureHistory;
-        EnvironmentCondition = environmentCondition;
         ModuleBasicModel = moduleBasicModel;
         JBBasicModel = jbBasicModels;
         AdditionalConnectionBasicModel = additionalImageModel;

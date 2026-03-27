@@ -16,7 +16,8 @@ public class Open_Selection_DeviceType : MonoBehaviour
     {
         GrapA_Button.onClick.AddListener(OpenSelectionDeviceGrapA);
         GrapB_Button.onClick.AddListener(OpenSelectionDeviceGrapB);
-
+        GrapC_Button.onClick.AddListener(OpenSelectionDeviceGrapC);
+        LH_Button.onClick.AddListener(OpenSelectionDeviceLH);
     }
 
     private void OpenSelectionDeviceGrapA()
@@ -27,6 +28,16 @@ public class Open_Selection_DeviceType : MonoBehaviour
     private void OpenSelectionDeviceGrapB()
     {
         SceneManager.LoadScene("SelectionDeviceTypeGrapB");
+    }
+
+    private void OpenSelectionDeviceGrapC()
+    {
+        SceneManager.LoadScene("SelectionDeviceTypeGrapC");
+    }
+
+    private void OpenSelectionDeviceLH()
+    {
+        SceneManager.LoadScene("SelectionDeviceTypeLH");
     }
 
     // Update is called once per frame

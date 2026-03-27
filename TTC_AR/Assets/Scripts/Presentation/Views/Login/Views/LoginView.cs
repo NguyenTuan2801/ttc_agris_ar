@@ -157,7 +157,7 @@ public class LoginView : MonoBehaviour, ILoginView
     public IEnumerator NavigateToScene(string sceneName)
     {
         SetLoginSuccessData();
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         yield return SceneManager.LoadSceneAsync(sceneName);
     }
 
@@ -181,7 +181,7 @@ public class LoginView : MonoBehaviour, ILoginView
 
     private IEnumerator HideProgressBar()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         Progress.Hide();
     }
 

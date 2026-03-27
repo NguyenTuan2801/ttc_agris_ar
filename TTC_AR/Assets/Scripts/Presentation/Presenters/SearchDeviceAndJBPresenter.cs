@@ -9,6 +9,7 @@ using ApplicationLayer.Dtos.AdapterSpecification;
 using ApplicationLayer.Dtos.Rack;
 using System.Threading.Tasks;
 using UnityEngine.UI;
+using UnityEngine;
 public class SearchDeviceAndJBPresenter
 {
     private readonly ISearchDeviceAndJBView _view;
@@ -31,67 +32,43 @@ public class SearchDeviceAndJBPresenter
         GlobalVariable.APIRequestType.Add("GET_JB_List_Information");
         GlobalVariable.APIRequestType.Add("GET_Device_List_Information_FromGrapper");
         _view.ShowLoading("Đang tải dữ liệu...");
+
         try
         {
-            UnityEngine.Debug.Log("Run Presenter");
-
             var jBGeneralDtosTask = _JBService.GetListJBInformationAsync(grapperId);
-            UnityEngine.Debug.Log("Run Presenter JB Successfully");
-
             var deviceResponseDtosTask = _DeviceService.GetListDeviceInformationFromGrapperAsync(grapperId);
 
-            UnityEngine.Debug.Log("Run Presenter Device Successfully");
+            await Task.WhenAll(jBGeneralDtosTask, deviceResponseDtosTask);
 
-            await Task.WhenAll(
-                jBGeneralDtosTask,
-            deviceResponseDtosTask);
-
-            if (jBGeneralDtosTask.IsFaulted || deviceResponseDtosTask.IsFaulted)
+            // XỬ LÝ JB
+            if (jBGeneralDtosTask.Result != null)
             {
-                _view.ShowError("Tải dữ liệu thất bại!");
-                return;
-            }
+                var models = jBGeneralDtosTask.Result
+                    .Select(dto => ConvertJBFromGeneralDto(dto))
+                    .ToList();
 
-            var jBGeneralDtos = await jBGeneralDtosTask;
-            var deviceResponseDtos = await deviceResponseDtosTask;
-
-            if (jBGeneralDtos != null)
-            {
-                var models = new List<JBInformationModel>();
-                if (jBGeneralDtos.Any())
-                {
-                    models = jBGeneralDtos.Select(dto => ConvertJBFromGeneralDto(dto)).ToList();
-                }
                 GlobalVariable_Search_Devices.temp_ListJBInformationModel = models;
                 GlobalVariable_Search_Devices.temp_Dictionary_JBInformationModel = models
                     .ToDictionary(jb => jb.Name, jb => jb);
             }
-            else
+
+            // XỬ LÝ DEVICE
+            if (deviceResponseDtosTask.Result != null)
             {
-                _view.ShowError("Tải dữ liệu thất bại!");
-                return;
+                var models = deviceResponseDtosTask.Result
+                    .Select(dto => ConvertDeviceFromResponseDto(dto))
+                    .ToList();
+
+                GlobalVariable_Search_Devices.all_Device_Models = new List<DeviceInformationModel>(models);   // ← Quan trọng
+                GlobalVariable_Search_Devices.temp_ListDeviceInformationModel = new List<DeviceInformationModel>(models);
             }
 
-            if (deviceResponseDtos != null)
-            {
-                var models = new List<DeviceInformationModel>();
-                if (deviceResponseDtos.Any())
-                {
-                    models = deviceResponseDtos.Select(dto => ConvertDeviceFromResponseDto(dto)).ToList();
-                }
-                GlobalVariable_Search_Devices.temp_ListDeviceInformationModel = models;
-            }
-            else
-            {
-                _view.ShowError("Tải dữ liệu thất bại");
-                return;
-            }
             _view.ShowSuccess();
             _view.SetInit();
         }
         catch (Exception ex)
         {
-            UnityEngine.Debug.LogError($"Error in LoadDataForSearching: {ex.Message}");
+            Debug.LogError($"Error in LoadDataForSearching: {ex.Message}");
             _view.ShowError("Tải dữ liệu thất bại");
         }
         finally
@@ -101,7 +78,6 @@ public class SearchDeviceAndJBPresenter
             GlobalVariable.APIRequestType.Remove("GET_Device_List_Information_FromGrapper");
         }
     }
-
     public async Task LoadImageAsync(string name, Image imagePrefab)
     {
         await LoadImage.Instance.LoadImageFromUrlAsync(name, imagePrefab);
@@ -133,31 +109,26 @@ public class SearchDeviceAndJBPresenter
             code: dto.Code,
             function: dto.Function,
             type: dto.Type,
+            ioAddress: dto.IOAddress,
             modelSeries: dto.ModelSeries,
             manufacturer: dto.Manufacturer,
             partNumber: dto.PartNumber,
             serialNumber: dto.SerialNumber,
             manufacturingYear: dto.ManufacturingYear,
-            installationDate: dto.InstallationDate,
-            ioAddress: dto.IOAddress,
+            installationDate: dto.InstallationDate,            
             measurementType: dto.MeasurementType,
             range: dto.Range,
             unit: dto.Unit,
             accuracy: dto.Accuracy,
+            testError: dto.TestError,
+            lengthOrDN: dto.LengthOrDN,
             supplyVoltage: dto.SupplyVoltage,
             outputSignal: dto.OutputSignal,
-            ingressProtection: dto.ingressProtection,
+            ingressProtection: dto.IngressProtection,
             connectorType: dto.ConnectorType,
             processConnection: dto.ProcessConnection,
             responseTime: dto.ResponseTime,
             otherSpecifications: dto.OtherSpecifications,
-            installationLocation: dto.InstallationLocation,
-            measuredMedium: dto.MeasuredMedium,
-            operatingTemperature: dto.OperatingTemperature,
-            operatingPressure: dto.OperatingPressure,
-            calibrationFrequency: dto.CalibrationFrequency,
-            failureHistory: dto.FailureHistory,
-            environmentCondition: dto.EnvironmentCondition,
             jbInformationModels: dto.JBBasicDtos.Any() ? dto.JBBasicDtos.Select(jb => new JBInformationModel(
                 id: jb.Id,
                 name: jb.Name
