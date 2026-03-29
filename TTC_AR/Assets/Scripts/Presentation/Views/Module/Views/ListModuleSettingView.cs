@@ -18,6 +18,11 @@ public class ListModuleSettingView : MonoBehaviour, IModuleView
     public ScrollRect scrollView;
     private List<GameObject> listModuleItems = new List<GameObject>();
 
+    [Header("Search")]
+    public TMP_InputField searchInputField; // Thanh tìm kiếm
+    public Button clearButton; // Nút xóa nội dung tìm kiếm
+    private List<ModuleInformationModel> allModules = new List<ModuleInformationModel>(); // Lưu dữ liệu gốc
+
     public GameObject DialogOneButton;
     public GameObject DialogTwoButton;
     private ModulePresenter _presenter;
@@ -28,6 +33,13 @@ public class ListModuleSettingView : MonoBehaviour, IModuleView
     {
         _presenter = new ModulePresenter(this,
         ManagerLocator.Instance.ModuleManager._IModuleService);
+
+        // Đăng ký sự kiện cho nút xóa nội dung tìm kiếm
+        if (clearButton != null)
+        {
+            clearButton.onClick.RemoveAllListeners();
+            clearButton.onClick.AddListener(ClearSearchInput);
+        }
     }
     void OnEnable()
     {
@@ -59,29 +71,27 @@ public class ListModuleSettingView : MonoBehaviour, IModuleView
     }
     public void DisplayList(List<ModuleInformationModel> models)
     {
-        if (models.Any())
+        // Lưu dữ liệu gốc để sử dụng cho tìm kiếm
+        allModules = models ?? new List<ModuleInformationModel>();
+        RefreshList();
+
+        if (allModules.Any())
         {
-            foreach (var model in models)
-            {
-                // int ModuleIndex = models.IndexOf(model);
-                // Debug.Log(ModuleIndex);
-                var newModuleItem = Instantiate(Module_Item_Prefab, Parent_Vertical_Layout_Group.transform);
-                newModuleItem.SetActive(true);
-                Transform newModuleItemTransform = newModuleItem.transform;
-                Transform newModuleItemPreviewInforGroup = newModuleItemTransform.GetChild(0);
-                newModuleItemPreviewInforGroup.Find("Preview_Module_Name").GetComponent<TMP_Text>().text = model.Name;
-                Transform newModuleItemPreviewButtonGroup = newModuleItemTransform.GetChild(1);
-                listModuleItems.Add(newModuleItem);
-                newModuleItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>().onClick.AddListener(() => EditModuleItem(model.Id));
-                newModuleItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleModuleItem(newModuleItem, model));
-            }
+            CreateModuleItems(allModules); // Hiển thị tất cả Module IO ban đầu           
         }
         else
         {
-            Debug.Log("No Mccs found");
+            Debug.Log("No Modules found");
         }
         Module_Item_Prefab.SetActive(false);
         scrollView.verticalNormalizedPosition = 1f;
+
+        // Đăng ký sự kiện tìm kiếm
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.RemoveAllListeners();
+            searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+        }
     }
 
     private void EditModuleItem(int id)
@@ -218,4 +228,59 @@ public class ListModuleSettingView : MonoBehaviour, IModuleView
     public void DisplayCreateResult(bool success) { }
     public void DisplayUpdateResult(bool success) { }
     public void DisplayDeleteResult(bool success) { }
+
+    // Tạo các item Module
+    private void CreateModuleItems(List<ModuleInformationModel> modules)
+    {
+        foreach (var model in modules)
+        {
+            var newModuleItem = Instantiate(Module_Item_Prefab, Parent_Vertical_Layout_Group.transform);
+            newModuleItem.SetActive(true);
+
+            // Lưu tên để dễ filter sau này
+            newModuleItem.name = model.Name;
+
+            Transform newModuleItemTransform = newModuleItem.transform;
+            Transform newModuleItemPreviewInforGroup = newModuleItemTransform.GetChild(0);
+            newModuleItemPreviewInforGroup.Find("Preview_Module_Name").GetComponent<TMP_Text>().text = model.Name;
+
+            Transform newModuleItemPreviewButtonGroup = newModuleItemTransform.GetChild(1);
+
+            newModuleItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>()
+                .onClick.AddListener(() => EditModuleItem(model.Id));
+
+            newModuleItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>()
+                .onClick.AddListener(() => DeleModuleItem(newModuleItem, model));
+
+            listModuleItems.Add(newModuleItem);
+        }
+    }
+
+    // Hàm xử lý nội dung tìm kiếm
+    private void OnSearchValueChanged(string input)
+    {
+        string searchText = input.ToLower().Trim();
+
+        foreach (var item in listModuleItems)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                item.SetActive(true);
+            }
+            else
+            {
+                bool match = item.name.ToLower().Contains(searchText);
+                item.SetActive(match);
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Parent_Vertical_Layout_Group.GetComponent<RectTransform>());
+        scrollView.verticalNormalizedPosition = 1f;
+    }
+
+    private void ClearSearchInput()
+    {
+        searchInputField.text = string.Empty;
+        OnSearchValueChanged(string.Empty);
+    }
+
 }

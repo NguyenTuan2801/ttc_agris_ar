@@ -20,6 +20,11 @@ public class ListJBSettingView : MonoBehaviour, IJBView
     public ScrollRect scrollView;
     private List<GameObject> listJBItems = new List<GameObject>();
 
+    [Header("Search")]
+    public TMP_InputField searchInputField; // Thanh tìm kiếm
+    public Button clearButton; // Nút xóa nội dung tìm kiếm
+    private List<JBInformationModel> allJBs = new List<JBInformationModel>(); // Lưu dữ liệu gốc
+
     public GameObject DialogOneButton;
     public GameObject DialogTwoButton;
     private JBPresenter _presenter;
@@ -30,6 +35,13 @@ public class ListJBSettingView : MonoBehaviour, IJBView
     void Awake()
     {
         _presenter = new JBPresenter(this, ManagerLocator.Instance.JBManager._IJBService);
+
+        // Đăng ký sự kiện cho nút xóa nội dung tìm kiếm
+        if (clearButton != null)
+        {
+            clearButton.onClick.RemoveAllListeners();
+            clearButton.onClick.AddListener(ClearSearchInput);
+        }
     }
     void OnEnable()
     {
@@ -61,28 +73,13 @@ public class ListJBSettingView : MonoBehaviour, IJBView
     }
     public void DisplayList(List<JBInformationModel> models)
     {
-        if (models.Any())
-        {
-            JB_Item_Prefab.SetActive(true);
-            foreach (var model in models)
-            {
-                // int JBIndex = models.IndexOf(model);
-                // Debug.Log(JBIndex);
+        // Lưu dữ liệu gốc để sử dụng cho tìm kiếm
+        allJBs = models ?? new List<JBInformationModel>();
+        RefreshList();
 
-                var newJBItem = Instantiate(JB_Item_Prefab, Parent_Vertical_Layout_Group.transform);
-                newJBItem.SetActive(true);
-                Transform newJBItemTransform = newJBItem.transform;
-                Transform newJBItemPreviewInforGroup = newJBItemTransform.GetChild(0);
-                newJBItemPreviewInforGroup.Find("Preview_JB_Name").GetComponent<TMP_Text>().text = model.Name;
-                Transform newJBItemPreviewButtonGroup = newJBItemTransform.GetChild(1);
-                listJBItems.Add(newJBItem);
-                var editButton = newJBItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>();
-                var deleteButton = newJBItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>();
-                editButton.onClick.RemoveAllListeners();
-                deleteButton.onClick.RemoveAllListeners();
-                editButton.onClick.AddListener(() => EditJBItem(model.Id));
-                deleteButton.onClick.AddListener(() => DeleJBItem(newJBItem, model));
-            }
+        if (allJBs.Any())
+        {
+            CreateJBItems(allJBs); // Hiển thị tất cả Module IO ban đầu           
         }
         else
         {
@@ -90,6 +87,13 @@ public class ListJBSettingView : MonoBehaviour, IJBView
         }
         JB_Item_Prefab.SetActive(false);
         scrollView.verticalNormalizedPosition = 1f;
+
+        // Đăng ký sự kiện tìm kiếm
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.RemoveAllListeners();
+            searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+        }
     }
 
     private void EditJBItem(int id)
@@ -228,4 +232,60 @@ public class ListJBSettingView : MonoBehaviour, IJBView
     public void DisplayCreateResult(bool success) { }
     public void DisplayUpdateResult(bool success) { }
     public void DisplayDeleteResult(bool success) { }
+
+    // Tạo các item Module
+    private void CreateJBItems(List<JBInformationModel> jbs)
+    {
+        JB_Item_Prefab.SetActive(true);
+        foreach (var model in jbs)
+        {
+            // int JBIndex = models.IndexOf(model);
+            // Debug.Log(JBIndex);
+
+            var newJBItem = Instantiate(JB_Item_Prefab, Parent_Vertical_Layout_Group.transform);
+            newJBItem.SetActive(true);
+
+            newJBItem.name = model.Name;
+
+            Transform newJBItemTransform = newJBItem.transform;
+            Transform newJBItemPreviewInforGroup = newJBItemTransform.GetChild(0);
+            newJBItemPreviewInforGroup.Find("Preview_JB_Name").GetComponent<TMP_Text>().text = model.Name;
+            Transform newJBItemPreviewButtonGroup = newJBItemTransform.GetChild(1);
+            listJBItems.Add(newJBItem);
+            var editButton = newJBItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>();
+            var deleteButton = newJBItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>();
+            editButton.onClick.RemoveAllListeners();
+            deleteButton.onClick.RemoveAllListeners();
+            editButton.onClick.AddListener(() => EditJBItem(model.Id));
+            deleteButton.onClick.AddListener(() => DeleJBItem(newJBItem, model));
+
+            listJBItems.Add(newJBItem);
+        }
+    }
+
+    private void OnSearchValueChanged(string input)
+    {
+        string searchText = input.ToLower().Trim();
+
+        foreach (var item in listJBItems)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                item.SetActive(true);
+            }
+            else
+            {
+                bool match = item.name.ToLower().Contains(searchText);
+                item.SetActive(match);
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Parent_Vertical_Layout_Group.GetComponent<RectTransform>());
+        scrollView.verticalNormalizedPosition = 1f;
+    }
+
+    private void ClearSearchInput()
+    {
+        searchInputField.text = string.Empty;
+        OnSearchValueChanged(string.Empty);
+    }
 }
