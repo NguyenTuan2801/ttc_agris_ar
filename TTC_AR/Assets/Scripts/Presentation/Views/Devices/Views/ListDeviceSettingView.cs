@@ -18,6 +18,11 @@ public class ListDeviceSettingView : MonoBehaviour, IDeviceView
     public ScrollRect scrollView;
     private List<GameObject> listDeviceItems = new List<GameObject>();
 
+    [Header("Search")]
+    public TMP_InputField searchInputField; // Thanh tìm kiếm
+    public Button clearButton; // Nút xóa nội dung tìm kiếm
+    private List<DeviceInformationModel> allDevices = new List<DeviceInformationModel>(); // Lưu dữ liệu gốc
+
     public GameObject DialogOneButton;
     public GameObject DialogTwoButton;
     private DevicePresenter _presenter;
@@ -31,6 +36,13 @@ public class ListDeviceSettingView : MonoBehaviour, IDeviceView
         _presenter = new DevicePresenter(this,
         ManagerLocator.Instance.DeviceManager._IDeviceService);
         // DeviceManager._IDeviceService
+
+        // Đăng ký sự kiện cho nút xóa nội dung tìm kiếm
+        if (clearButton != null)
+        {
+            clearButton.onClick.RemoveAllListeners();
+            clearButton.onClick.AddListener(ClearSearchInput);
+        }
     }
     void OnEnable()
     {
@@ -63,21 +75,13 @@ public class ListDeviceSettingView : MonoBehaviour, IDeviceView
     }
     public void DisplayList(List<DeviceInformationModel> models)
     {
-        if (models.Any())
+        // Lưu dữ liệu gốc để sử dụng cho tìm kiếm
+        allDevices = models ?? new List<DeviceInformationModel>();
+        RefreshList();
+
+        if (allDevices.Any())
         {
-            foreach (var model in models)
-            {
-                int DeviceIndex = models.IndexOf(model);
-                // Debug.Log(DeviceIndex);
-                var newDeviceItem = Instantiate(Device_Item_Prefab, Parent_Vertical_Layout_Group.transform);
-                Transform newDeviceItemTransform = newDeviceItem.transform;
-                Transform newDeviceItemPreviewInforGroup = newDeviceItemTransform.GetChild(0);
-                newDeviceItemPreviewInforGroup.Find("Preview_Device_Code").GetComponent<TMP_Text>().text = model.Code;
-                Transform newDeviceItemPreviewButtonGroup = newDeviceItemTransform.GetChild(1);
-                listDeviceItems.Add(newDeviceItem);
-                newDeviceItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>().onClick.AddListener(() => EditDeviceItem(model.Id));
-                newDeviceItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleDeviceItem(newDeviceItem, model));
-            }
+            CreateDeviceItems(allDevices);           
         }
         else
         {
@@ -85,6 +89,13 @@ public class ListDeviceSettingView : MonoBehaviour, IDeviceView
         }
         Device_Item_Prefab.SetActive(false);
         scrollRect.verticalNormalizedPosition = 1;
+
+        // Đăng ký sự kiện tìm kiếm
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.RemoveAllListeners();
+            searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+        }
     }
 
     private void EditDeviceItem(int id)
@@ -225,4 +236,68 @@ public class ListDeviceSettingView : MonoBehaviour, IDeviceView
     public void DisplayCreateResult(bool success) { }
     public void DisplayUpdateResult(bool success) { }
     public void DisplayDeleteResult(bool success) { }
+
+    private void CreateDeviceItems(List<DeviceInformationModel> devices)
+    {
+        foreach (var model in devices)
+        {
+            int DeviceIndex = devices.IndexOf(model);
+            // Debug.Log(DeviceIndex);
+            var newDeviceItem = Instantiate(Device_Item_Prefab, Parent_Vertical_Layout_Group.transform);
+            newDeviceItem.SetActive(true);
+            newDeviceItem.name = model.Code;
+            Transform newDeviceItemTransform = newDeviceItem.transform;
+            Transform newDeviceItemPreviewInforGroup = newDeviceItemTransform.GetChild(0);
+            newDeviceItemPreviewInforGroup.Find("Preview_Device_Code").GetComponent<TMP_Text>().text = model.Code;
+            TMP_Text grapperText = newDeviceItemPreviewInforGroup.Find("Preview_Device_GrapLocation")?.GetComponent<TMP_Text>();
+            if (grapperText != null)
+            {
+                grapperText.text = GetGrapperName(grapperId);
+            }
+            Transform newDeviceItemPreviewButtonGroup = newDeviceItemTransform.GetChild(1);
+            listDeviceItems.Add(newDeviceItem);
+            newDeviceItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>().onClick.AddListener(() => EditDeviceItem(model.Id));
+            newDeviceItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleDeviceItem(newDeviceItem, model));
+            listDeviceItems.Add(newDeviceItem);
+        }
+    }
+
+    // Hàm xử lý nội dung tìm kiếm
+    private void OnSearchValueChanged(string input)
+    {
+        string searchText = input.ToLower().Trim();
+
+        foreach (var item in listDeviceItems)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                item.SetActive(true);
+            }
+            else
+            {
+                bool match = item.name.ToLower().Contains(searchText);
+                item.SetActive(match);
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Parent_Vertical_Layout_Group.GetComponent<RectTransform>());
+        scrollView.verticalNormalizedPosition = 1f;
+    }
+
+    private void ClearSearchInput()
+    {
+        searchInputField.text = string.Empty;
+        OnSearchValueChanged(string.Empty);
+    }
+
+    private string GetGrapperName(int id)
+    {
+        switch (id)
+        {
+            case 1: return "Grapper A";
+            case 2: return "Grapper B";
+            case 3: return "Grapper C";
+            case 4: return "Lò hơi";
+            default: return "Khu vực khác";
+        }
+    }
 }

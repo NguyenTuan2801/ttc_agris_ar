@@ -243,6 +243,11 @@ public class ListModuleSettingView : MonoBehaviour, IModuleView
             Transform newModuleItemTransform = newModuleItem.transform;
             Transform newModuleItemPreviewInforGroup = newModuleItemTransform.GetChild(0);
             newModuleItemPreviewInforGroup.Find("Preview_Module_Name").GetComponent<TMP_Text>().text = model.Name;
+            TMP_Text grapperText = newModuleItemPreviewInforGroup.Find("Preview_Module_GrapLocation")?.GetComponent<TMP_Text>();
+            if (grapperText != null)
+            {
+                grapperText.text = GetGrapperName(grapperId);
+            }
 
             Transform newModuleItemPreviewButtonGroup = newModuleItemTransform.GetChild(1);
 
@@ -283,4 +288,15 @@ public class ListModuleSettingView : MonoBehaviour, IModuleView
         OnSearchValueChanged(string.Empty);
     }
 
+    private string GetGrapperName(int id)
+    {
+        switch (id)
+        {
+            case 1: return "Grapper A";
+            case 2: return "Grapper B";
+            case 3: return "Grapper C";
+            case 4: return "Lò hơi";
+            default: return "Khu vực khác";
+        }
+    }
 }

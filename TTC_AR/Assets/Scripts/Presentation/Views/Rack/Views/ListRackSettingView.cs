@@ -17,6 +17,11 @@ public class ListRackSettingView : MonoBehaviour, IRackView
     public ScrollRect scrollView;
     private List<GameObject> listRackItems = new List<GameObject>();
 
+    [Header("Search")]
+    public TMP_InputField searchInputField; // Thanh tìm kiếm
+    public Button clearButton; // Nút xóa nội dung tìm kiếm
+    private List<RackInformationModel> allRacks = new List<RackInformationModel>(); // Lưu dữ liệu gốc
+
     public GameObject DialogOneButton;
     public GameObject DialogTwoButton;
     private RackPresenter _presenter;
@@ -29,6 +34,12 @@ public class ListRackSettingView : MonoBehaviour, IRackView
         _presenter = new RackPresenter(this,
         ManagerLocator.Instance.RackManager._IRackService);
 
+        // Đăng ký sự kiện cho nút xóa nội dung tìm kiếm
+        if (clearButton != null)
+        {
+            clearButton.onClick.RemoveAllListeners();
+            clearButton.onClick.AddListener(ClearSearchInput);
+        }
     }
     void OnEnable()
     {
@@ -60,22 +71,13 @@ public class ListRackSettingView : MonoBehaviour, IRackView
     }
     public void DisplayList(List<RackInformationModel> models)
     {
-        if (models.Any())
+        // Lưu dữ liệu gốc để sử dụng cho tìm kiếm
+        allRacks = models ?? new List<RackInformationModel>();
+        RefreshList();
+
+        if (allRacks.Any())
         {
-            foreach (var model in models)
-            {
-                // int RackIndex = models.IndexOf(model);
-                // Debug.Log(RackIndex);
-                var newRackItem = Instantiate(Rack_Item_Prefab, Parent_Vertical_Layout_Group.transform);
-                newRackItem.SetActive(true);
-                Transform newRackItemTransform = newRackItem.transform;
-                Transform newRackItemPreviewInforGroup = newRackItemTransform.GetChild(0);
-                newRackItemPreviewInforGroup.Find("Preview_Rack_Name").GetComponent<TMP_Text>().text = model.Name;
-                Transform newRackItemPreviewButtonGroup = newRackItemTransform.GetChild(1);
-                listRackItems.Add(newRackItem);
-                newRackItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>().onClick.AddListener(() => EditRackItem(model.Id));
-                newRackItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleRackItem(newRackItem, model));
-            }
+            CreateRackItems(allRacks);            
         }
         else
         {
@@ -83,6 +85,13 @@ public class ListRackSettingView : MonoBehaviour, IRackView
         }
         Rack_Item_Prefab.SetActive(false);
         scrollView.verticalNormalizedPosition = 1f; // Scroll to the top
+
+        // Đăng ký sự kiện tìm kiếm
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.RemoveAllListeners();
+            searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+        }
     }
 
     private void EditRackItem(int id)
@@ -220,4 +229,68 @@ public class ListRackSettingView : MonoBehaviour, IRackView
     public void DisplayCreateResult(bool success) { }
     public void DisplayUpdateResult(bool success) { }
     public void DisplayDeleteResult(bool success) { }
+
+    private void CreateRackItems(List<RackInformationModel> racks)
+    {
+        foreach (var model in racks)
+        {
+            // int RackIndex = models.IndexOf(model);
+            // Debug.Log(RackIndex);
+            var newRackItem = Instantiate(Rack_Item_Prefab, Parent_Vertical_Layout_Group.transform);
+            newRackItem.SetActive(true);
+            newRackItem.name = model.Name;
+            Transform newRackItemTransform = newRackItem.transform;
+            Transform newRackItemPreviewInforGroup = newRackItemTransform.GetChild(0);
+            newRackItemPreviewInforGroup.Find("Preview_Rack_Name").GetComponent<TMP_Text>().text = model.Name;
+            TMP_Text grapperText = newRackItemPreviewInforGroup.Find("Preview_Rack_GrapLocation")?.GetComponent<TMP_Text>();
+            if (grapperText != null)
+            {
+                grapperText.text = GetGrapperName(grapperId);
+            }
+            Transform newRackItemPreviewButtonGroup = newRackItemTransform.GetChild(1);
+            listRackItems.Add(newRackItem);
+            newRackItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>().onClick.AddListener(() => EditRackItem(model.Id));
+            newRackItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleRackItem(newRackItem, model));
+            listRackItems.Add(newRackItem);
+        }
+    }
+
+    // Hàm xử lý nội dung tìm kiếm
+    private void OnSearchValueChanged(string input)
+    {
+        string searchText = input.ToLower().Trim();
+
+        foreach (var item in listRackItems)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                item.SetActive(true);
+            }
+            else
+            {
+                bool match = item.name.ToLower().Contains(searchText);
+                item.SetActive(match);
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Parent_Vertical_Layout_Group.GetComponent<RectTransform>());
+        scrollView.verticalNormalizedPosition = 1f;
+    }
+
+    private void ClearSearchInput()
+    {
+        searchInputField.text = string.Empty;
+        OnSearchValueChanged(string.Empty);
+    }
+
+    private string GetGrapperName(int id)
+    {
+        switch (id)
+        {
+            case 1: return "Grapper A";
+            case 2: return "Grapper B";
+            case 3: return "Grapper C";
+            case 4: return "Lò hơi";
+            default: return "Khu vực khác";
+        }
+    }
 }

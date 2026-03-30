@@ -23,6 +23,11 @@ public class ListModuleSpecificationSettingView : MonoBehaviour, IModuleSpecific
     public GameObject DialogOneButton;
     public GameObject DialogTwoButton;
 
+    [Header("Search")]
+    public TMP_InputField searchInputField; // Thanh tìm kiếm
+    public Button clearButton; // Nút xóa nội dung tìm kiếm
+    private List<ModuleSpecificationModel> allModuleSpecifications = new List<ModuleSpecificationModel>(); // Lưu dữ liệu gốc
+
     private ModuleSpecificationPresenter _presenter;
     private List<GameObject> listModuleSpecificationItems = new List<GameObject>();
     private int companyId;
@@ -35,6 +40,13 @@ public class ListModuleSpecificationSettingView : MonoBehaviour, IModuleSpecific
         // var DeviceManager = FindObjectOfType<DeviceManager>();
         _presenter = new ModuleSpecificationPresenter(this, ManagerLocator.Instance.ModuleSpecificationManager._IModuleSpecificationService);
         // DeviceManager._IDeviceService
+
+        // Đăng ký sự kiện cho nút xóa nội dung tìm kiếm
+        if (clearButton != null)
+        {
+            clearButton.onClick.RemoveAllListeners();
+            clearButton.onClick.AddListener(ClearSearchInput);
+        }
     }
 
     void OnEnable()
@@ -67,30 +79,13 @@ public class ListModuleSpecificationSettingView : MonoBehaviour, IModuleSpecific
     }
     public void DisplayList(List<ModuleSpecificationModel> models)
     {
-        if (models.Any())
+        // Lưu dữ liệu gốc để sử dụng cho tìm kiếm
+        allModuleSpecifications = models ?? new List<ModuleSpecificationModel>();
+        RefreshList();
+
+        if (allModuleSpecifications.Any())
         {
-            foreach (var model in models)
-            {
-                int ModuleSpecificationIndex = models.IndexOf(model);
-
-                var newModuleSpecificationItem = Instantiate(ModuleSpecification_Item_Prefab, Parent_Vertical_Layout_Group.transform);
-
-                Transform newModuleSpecificationItemTransform = newModuleSpecificationItem.transform;
-                Transform newModuleSpecificationItemPreviewInforGroup = newModuleSpecificationItemTransform.GetChild(0);
-                newModuleSpecificationItemPreviewInforGroup.Find("Preview_ModuleSpecification_Code").GetComponent<TMP_Text>().text = model.Code;
-                Transform newModuleSpecificationItemPreviewButtonGroup = newModuleSpecificationItemTransform.GetChild(1);
-                listModuleSpecificationItems.Add(newModuleSpecificationItem);
-
-                var editButton = newModuleSpecificationItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>();
-                // var deleteButton = newModuleSpecificationItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>();
-
-                editButton.onClick.RemoveAllListeners();
-                // deleteButton.onClick.RemoveAllListeners();
-
-                editButton.onClick.AddListener(() => EditModuleSpecificationItem(model.Id));
-
-                // deleteButton.onClick.AddListener(() => DeleModuleSpecificationItem(newModuleSpecificationItem, model));
-            }
+            CreateModuleSpecificationItems(allModuleSpecifications);           
         }
         else
         {
@@ -100,6 +95,13 @@ public class ListModuleSpecificationSettingView : MonoBehaviour, IModuleSpecific
 
         ModuleSpecification_Item_Prefab.SetActive(false);
         scrollView.verticalNormalizedPosition = 1f;
+
+        // Đăng ký sự kiện tìm kiếm
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.RemoveAllListeners();
+            searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+        }
     }
 
     private void EditModuleSpecificationItem(int id)
@@ -210,8 +212,6 @@ public class ListModuleSpecificationSettingView : MonoBehaviour, IModuleSpecific
     {
         Progress.Hide();
     }
-
-
     public void ShowLoading(string title) => ShowProgressBar(title, "Đang tải dữ liệu...");
     public void HideLoading() => HideProgressBar();
     public void ShowError(string message)
@@ -243,10 +243,65 @@ public class ListModuleSpecificationSettingView : MonoBehaviour, IModuleSpecific
         StartCoroutine(Show_Toast.Instance.Set_Instance_Status_False());
     }
 
-
     // Không dùng trong ListView
     public void DisplayDetail(ModuleSpecificationModel model) { }
     public void DisplayCreateResult(bool success) { }
     public void DisplayUpdateResult(bool success) { }
     public void DisplayDeleteResult(bool success) { }
+
+    private void CreateModuleSpecificationItems(List<ModuleSpecificationModel> moduleSpecifications)
+    {
+        foreach (var model in moduleSpecifications)
+        {
+            int ModuleSpecificationIndex = moduleSpecifications.IndexOf(model);
+
+            var newModuleSpecificationItem = Instantiate(ModuleSpecification_Item_Prefab, Parent_Vertical_Layout_Group.transform);
+            newModuleSpecificationItem.SetActive(true);
+            newModuleSpecificationItem.name = model.Code;
+
+            Transform newModuleSpecificationItemTransform = newModuleSpecificationItem.transform;
+            Transform newModuleSpecificationItemPreviewInforGroup = newModuleSpecificationItemTransform.GetChild(0);
+            newModuleSpecificationItemPreviewInforGroup.Find("Preview_ModuleSpecification_Code").GetComponent<TMP_Text>().text = model.Code;
+            Transform newModuleSpecificationItemPreviewButtonGroup = newModuleSpecificationItemTransform.GetChild(1);
+            listModuleSpecificationItems.Add(newModuleSpecificationItem);
+
+            var editButton = newModuleSpecificationItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>();
+            // var deleteButton = newModuleSpecificationItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>();
+
+            editButton.onClick.RemoveAllListeners();
+            // deleteButton.onClick.RemoveAllListeners();
+
+            editButton.onClick.AddListener(() => EditModuleSpecificationItem(model.Id));
+
+            // deleteButton.onClick.AddListener(() => DeleModuleSpecificationItem(newModuleSpecificationItem, model));
+            listModuleSpecificationItems.Add(newModuleSpecificationItem);
+        }
+    }
+
+    // Hàm xử lý nội dung tìm kiếm
+    private void OnSearchValueChanged(string input)
+    {
+        string searchText = input.ToLower().Trim();
+
+        foreach (var item in listModuleSpecificationItems)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                item.SetActive(true);
+            }
+            else
+            {
+                bool match = item.name.ToLower().Contains(searchText);
+                item.SetActive(match);
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Parent_Vertical_Layout_Group.GetComponent<RectTransform>());
+        scrollView.verticalNormalizedPosition = 1f;
+    }
+
+    private void ClearSearchInput()
+    {
+        searchInputField.text = string.Empty;
+        OnSearchValueChanged(string.Empty);
+    }
 }

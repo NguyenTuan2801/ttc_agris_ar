@@ -19,6 +19,10 @@ public class ListAdapterSpecificationSettingView : MonoBehaviour, IAdapterSpecif
     public ScrollRect scrollView;
     private List<GameObject> listAdapterSpecificationItems = new List<GameObject>();
 
+    [Header("Search")]
+    public TMP_InputField searchInputField; // Thanh tìm kiếm
+    public Button clearButton; // Nút xóa nội dung tìm kiếm
+    private List<AdapterSpecificationModel> allAdapterSpecifications = new List<AdapterSpecificationModel>(); // Lưu dữ liệu gốc
 
     public GameObject DialogOneButton;
     public GameObject DialogTwoButton;
@@ -32,6 +36,13 @@ public class ListAdapterSpecificationSettingView : MonoBehaviour, IAdapterSpecif
         // var DeviceManager = FindObjectOfType<DeviceManager>();
         _presenter = new AdapterSpecificationPresenter(this, ManagerLocator.Instance.AdapterSpecificationManager._IAdapterSpecificationService);
         // DeviceManager._IDeviceService
+
+        // Đăng ký sự kiện cho nút xóa nội dung tìm kiếm
+        if (clearButton != null)
+        {
+            clearButton.onClick.RemoveAllListeners();
+            clearButton.onClick.AddListener(ClearSearchInput);
+        }
     }
 
     void OnEnable()
@@ -65,21 +76,13 @@ public class ListAdapterSpecificationSettingView : MonoBehaviour, IAdapterSpecif
     }
     public void DisplayList(List<AdapterSpecificationModel> models)
     {
-        if (models.Any())
+        // Lưu dữ liệu gốc để sử dụng cho tìm kiếm
+        allAdapterSpecifications = models ?? new List<AdapterSpecificationModel>();
+        RefreshList();
+
+        if (allAdapterSpecifications.Any())
         {
-            foreach (var model in models)
-            {
-                int AdapterSpecificationIndex = models.IndexOf(model);
-                Debug.Log(AdapterSpecificationIndex);
-                var newAdapterSpecificationItem = Instantiate(AdapterSpecification_Item_Prefab, Parent_Vertical_Layout_Group.transform);
-                Transform newAdapterSpecificationItemTransform = newAdapterSpecificationItem.transform;
-                Transform newAdapterSpecificationItemPreviewInforGroup = newAdapterSpecificationItemTransform.GetChild(0);
-                newAdapterSpecificationItemPreviewInforGroup.Find("Preview_AdapterSpecification_Code").GetComponent<TMP_Text>().text = model.Code;
-                Transform newAdapterSpecificationItemPreviewButtonGroup = newAdapterSpecificationItemTransform.GetChild(1);
-                listAdapterSpecificationItems.Add(newAdapterSpecificationItem);
-                newAdapterSpecificationItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>().onClick.AddListener(() => EditAdapterSpecificationItem(model.Id));
-                // newAdapterSpecificationItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleAdapterSpecificationItem(newAdapterSpecificationItem, model));
-            }
+            CreateAdapterSpecificationItems(allAdapterSpecifications);          
         }
         else
         {
@@ -87,6 +90,12 @@ public class ListAdapterSpecificationSettingView : MonoBehaviour, IAdapterSpecif
         }
         AdapterSpecification_Item_Prefab.SetActive(false);
 
+        // Đăng ký sự kiện tìm kiếm
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.RemoveAllListeners();
+            searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+        }
     }
 
     private void EditAdapterSpecificationItem(int id)
@@ -178,10 +187,6 @@ public class ListAdapterSpecificationSettingView : MonoBehaviour, IAdapterSpecif
         });
     }
 
-
-
-
-
     private void ShowProgressBar(string title, string details)
     {
         Progress.Show(title, ProgressColor.Blue, true);
@@ -191,8 +196,6 @@ public class ListAdapterSpecificationSettingView : MonoBehaviour, IAdapterSpecif
     {
         Progress.Hide();
     }
-
-
 
     public void ShowLoading(string title) => ShowProgressBar(title, "Đang tải dữ liệu...");
     public void HideLoading() => HideProgressBar();
@@ -206,7 +209,6 @@ public class ListAdapterSpecificationSettingView : MonoBehaviour, IAdapterSpecif
         {
             OpenErrorDialog();
         }
-
     }
     public void ShowSuccess(string message)
     {
@@ -230,4 +232,51 @@ public class ListAdapterSpecificationSettingView : MonoBehaviour, IAdapterSpecif
     public void DisplayCreateResult(bool success) { }
     public void DisplayUpdateResult(bool success) { }
     public void DisplayDeleteResult(bool success) { }
+
+    private void CreateAdapterSpecificationItems(List<AdapterSpecificationModel> adapterSpecifications)
+    {
+        foreach (var model in adapterSpecifications)
+        {
+            int AdapterSpecificationIndex = adapterSpecifications.IndexOf(model);
+            Debug.Log(AdapterSpecificationIndex);
+            var newAdapterSpecificationItem = Instantiate(AdapterSpecification_Item_Prefab, Parent_Vertical_Layout_Group.transform);
+            newAdapterSpecificationItem.SetActive(true);
+            newAdapterSpecificationItem.name = model.Code;
+            Transform newAdapterSpecificationItemTransform = newAdapterSpecificationItem.transform;
+            Transform newAdapterSpecificationItemPreviewInforGroup = newAdapterSpecificationItemTransform.GetChild(0);
+            newAdapterSpecificationItemPreviewInforGroup.Find("Preview_AdapterSpecification_Code").GetComponent<TMP_Text>().text = model.Code;
+            Transform newAdapterSpecificationItemPreviewButtonGroup = newAdapterSpecificationItemTransform.GetChild(1);
+            listAdapterSpecificationItems.Add(newAdapterSpecificationItem);
+            newAdapterSpecificationItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>().onClick.AddListener(() => EditAdapterSpecificationItem(model.Id));
+            // newAdapterSpecificationItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleAdapterSpecificationItem(newAdapterSpecificationItem, model));
+            listAdapterSpecificationItems.Add(newAdapterSpecificationItem);
+        }
+    }
+
+    // Hàm xử lý nội dung tìm kiếm
+    private void OnSearchValueChanged(string input)
+    {
+        string searchText = input.ToLower().Trim();
+
+        foreach (var item in listAdapterSpecificationItems)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                item.SetActive(true);
+            }
+            else
+            {
+                bool match = item.name.ToLower().Contains(searchText);
+                item.SetActive(match);
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Parent_Vertical_Layout_Group.GetComponent<RectTransform>());
+        scrollView.verticalNormalizedPosition = 1f;
+    }
+
+    private void ClearSearchInput()
+    {
+        searchInputField.text = string.Empty;
+        OnSearchValueChanged(string.Empty);
+    }
 }

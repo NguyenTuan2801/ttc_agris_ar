@@ -19,6 +19,10 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
     public ScrollRect scrollView;
     private List<GameObject> listFieldDeviceItems = new List<GameObject>();
 
+    [Header("Search")]
+    public TMP_InputField searchInputField; // Thanh tìm kiếm
+    public Button clearButton; // Nút xóa nội dung tìm kiếm
+    private List<FieldDeviceInformationModel> allFieldDevices = new List<FieldDeviceInformationModel>(); // Lưu dữ liệu gốc
 
     public GameObject DialogOneButton;
     public GameObject DialogTwoButton;
@@ -31,6 +35,13 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
     {
         _presenter = new FieldDevicePresenter(
             this, ManagerLocator.Instance.FieldDeviceManager._IFieldDeviceService);
+
+        // Đăng ký sự kiện cho nút xóa nội dung tìm kiếm
+        if (clearButton != null)
+        {
+            clearButton.onClick.RemoveAllListeners();
+            clearButton.onClick.AddListener(ClearSearchInput);
+        }
     }
 
     void OnEnable()
@@ -63,26 +74,13 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
     }
     public void DisplayList(List<FieldDeviceInformationModel> models)
     {
-        if (models.Any())
+        // Lưu dữ liệu gốc để sử dụng cho tìm kiếm
+        allFieldDevices = models ?? new List<FieldDeviceInformationModel>();
+        RefreshList();
+
+        if (allFieldDevices.Any())
         {
-            foreach (var model in models)
-            {
-                // int FieldDeviceIndex = models.IndexOf(model);
-                // Debug.Log(FieldDeviceIndex);
-                var newFieldDeviceItem = Instantiate(FieldDevice_Item_Prefab, Parent_Vertical_Layout_Group.transform);
-                newFieldDeviceItem.SetActive(true);
-                Transform newFieldDeviceItemTransform = newFieldDeviceItem.transform;
-                Transform newFieldDeviceItemPreviewInforGroup = newFieldDeviceItemTransform.GetChild(0);
-                newFieldDeviceItemPreviewInforGroup.Find("Preview_FieldDevice_Name").GetComponent<TMP_Text>().text = model.Name;
-                Transform newFieldDeviceItemPreviewButtonGroup = newFieldDeviceItemTransform.GetChild(1);
-                listFieldDeviceItems.Add(newFieldDeviceItem);
-                var editButton = newFieldDeviceItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>();
-                var deleteButton = newFieldDeviceItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>();
-                editButton.onClick.RemoveAllListeners();
-                deleteButton.onClick.RemoveAllListeners();
-                editButton.onClick.AddListener(() => EditFieldDeviceItem(model.Id));
-                deleteButton.onClick.AddListener(() => DeleFieldDeviceItem(newFieldDeviceItem, model));
-            }
+            CreateFieldDeviceItems(allFieldDevices);           
         }
         else
         {
@@ -90,6 +88,13 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
         }
         FieldDevice_Item_Prefab.SetActive(false);
         scrollView.verticalNormalizedPosition = 1f;
+
+        // Đăng ký sự kiện tìm kiếm
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.RemoveAllListeners();
+            searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+        }
     }
 
     private void EditFieldDeviceItem(int id)
@@ -188,7 +193,6 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
 
     }
 
-
     private void ShowProgressBar(string title, string details)
     {
         Progress.Show(title, ProgressColor.Blue, true);
@@ -198,8 +202,6 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
     {
         Progress.Hide();
     }
-
-
 
     public void ShowLoading(string title) => ShowProgressBar(title, "Đang tải dữ liệu...");
     public void HideLoading() => HideProgressBar();
@@ -238,4 +240,72 @@ public class ListFieldDeviceSettingView : MonoBehaviour, IFieldDeviceView
     public void DisplayCreateResult(bool success) { }
     public void DisplayUpdateResult(bool success) { }
     public void DisplayDeleteResult(bool success) { }
+
+    private void CreateFieldDeviceItems(List<FieldDeviceInformationModel> fieldDevices)
+    {
+        foreach (var model in fieldDevices)
+        {
+            // int FieldDeviceIndex = models.IndexOf(model);
+            // Debug.Log(FieldDeviceIndex);
+            var newFieldDeviceItem = Instantiate(FieldDevice_Item_Prefab, Parent_Vertical_Layout_Group.transform);
+            newFieldDeviceItem.SetActive(true);
+            newFieldDeviceItem.name = model.Name;
+            Transform newFieldDeviceItemTransform = newFieldDeviceItem.transform;
+            Transform newFieldDeviceItemPreviewInforGroup = newFieldDeviceItemTransform.GetChild(0);
+            newFieldDeviceItemPreviewInforGroup.Find("Preview_FieldDevice_Name").GetComponent<TMP_Text>().text = model.Name;
+            TMP_Text grapperText = newFieldDeviceItemPreviewInforGroup.Find("Preview_FieldDevice_GrapLocation")?.GetComponent<TMP_Text>();
+            if (grapperText != null)
+            {
+                grapperText.text = GetGrapperName(grapperId);
+            }
+            Transform newFieldDeviceItemPreviewButtonGroup = newFieldDeviceItemTransform.GetChild(1);
+            listFieldDeviceItems.Add(newFieldDeviceItem);
+            var editButton = newFieldDeviceItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>();
+            var deleteButton = newFieldDeviceItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>();
+            editButton.onClick.RemoveAllListeners();
+            deleteButton.onClick.RemoveAllListeners();
+            editButton.onClick.AddListener(() => EditFieldDeviceItem(model.Id));
+            deleteButton.onClick.AddListener(() => DeleFieldDeviceItem(newFieldDeviceItem, model));
+            listFieldDeviceItems.Add(newFieldDeviceItem);
+        }
+    }
+
+    // Hàm xử lý nội dung tìm kiếm
+    private void OnSearchValueChanged(string input)
+    {
+        string searchText = input.ToLower().Trim();
+
+        foreach (var item in listFieldDeviceItems)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                item.SetActive(true);
+            }
+            else
+            {
+                bool match = item.name.ToLower().Contains(searchText);
+                item.SetActive(match);
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Parent_Vertical_Layout_Group.GetComponent<RectTransform>());
+        scrollView.verticalNormalizedPosition = 1f;
+    }
+
+    private void ClearSearchInput()
+    {
+        searchInputField.text = string.Empty;
+        OnSearchValueChanged(string.Empty);
+    }
+
+    private string GetGrapperName(int id)
+    {
+        switch (id)
+        {
+            case 1: return "Grapper A";
+            case 2: return "Grapper B";
+            case 3: return "Grapper C";
+            case 4: return "Lò hơi";
+            default: return "Khu vực khác";
+        }
+    }
 }

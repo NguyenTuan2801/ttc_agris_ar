@@ -20,6 +20,10 @@ public class ListMccSettingView : MonoBehaviour, IMccView
     public ScrollRect scrollView;
     private List<GameObject> listMccItems = new List<GameObject>();
 
+    [Header("Search")]
+    public TMP_InputField searchInputField; // Thanh tìm kiếm
+    public Button clearButton; // Nút xóa nội dung tìm kiếm
+    private List<MccInformationModel> allMccs = new List<MccInformationModel>(); // Lưu dữ liệu gốc
 
     public GameObject DialogOneButton;
     public GameObject DialogTwoButton;
@@ -31,8 +35,13 @@ public class ListMccSettingView : MonoBehaviour, IMccView
 
     void Awake()
     {
-
         _presenter = new MccPresenter(this, ManagerLocator.Instance.MccManager._IMccService);
+        // Đăng ký sự kiện cho nút xóa nội dung tìm kiếm
+        if (clearButton != null)
+        {
+            clearButton.onClick.RemoveAllListeners();
+            clearButton.onClick.AddListener(ClearSearchInput);
+        }
     }
     void OnEnable()
     {
@@ -64,22 +73,13 @@ public class ListMccSettingView : MonoBehaviour, IMccView
     }
     public void DisplayList(List<MccInformationModel> models)
     {
-        if (models.Any())
+        // Lưu dữ liệu gốc để sử dụng cho tìm kiếm
+        allMccs = models ?? new List<MccInformationModel>();
+        RefreshList();
+
+        if (allMccs.Any())
         {
-            foreach (var model in models)
-            {
-                // int MccIndex = models.IndexOf(model);
-                //  Debug.Log(MccIndex);
-                var newMccItem = Instantiate(Mcc_Item_Prefab, Parent_Vertical_Layout_Group.transform);
-                newMccItem.SetActive(true);
-                Transform newMccItemTransform = newMccItem.transform;
-                Transform newMccItemPreviewInforGroup = newMccItemTransform.GetChild(0);
-                newMccItemPreviewInforGroup.Find("Preview_Mcc_CabinetCode").GetComponent<TMP_Text>().text = model.CabinetCode;
-                Transform newMccItemPreviewButtonGroup = newMccItemTransform.GetChild(1);
-                listMccItems.Add(newMccItem);
-                newMccItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>().onClick.AddListener(() => EditMccItem(model.Id));
-                newMccItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleMccItem(newMccItem, model));
-            }
+            CreateMccItems(allMccs);           
         }
         else
         {
@@ -87,6 +87,13 @@ public class ListMccSettingView : MonoBehaviour, IMccView
         }
         Mcc_Item_Prefab.SetActive(false);
         scrollView.verticalNormalizedPosition = 1f; // Scroll to the top
+
+        // Đăng ký sự kiện tìm kiếm
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.RemoveAllListeners();
+            searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+        }
     }
 
     private void EditMccItem(int id)
@@ -231,9 +238,6 @@ public class ListMccSettingView : MonoBehaviour, IMccView
     {
         Progress.Hide();
     }
-
-
-
     public void ShowLoading(string title) => ShowProgressBar(title, "Đang tải dữ liệu...");
     public void HideLoading() => HideProgressBar();
     public void ShowError(string message)
@@ -283,5 +287,69 @@ public class ListMccSettingView : MonoBehaviour, IMccView
 
     public void DisplayFieldDeviceList(List<FieldDeviceInformationModel> models)
     {
+    }
+
+    private void CreateMccItems(List<MccInformationModel> mccs)
+    {
+        foreach (var model in mccs)
+        {
+            // int MccIndex = models.IndexOf(model);
+            //  Debug.Log(MccIndex);
+            var newMccItem = Instantiate(Mcc_Item_Prefab, Parent_Vertical_Layout_Group.transform);
+            newMccItem.SetActive(true);
+            newMccItem.name = model.CabinetCode;
+            Transform newMccItemTransform = newMccItem.transform;
+            Transform newMccItemPreviewInforGroup = newMccItemTransform.GetChild(0);
+            newMccItemPreviewInforGroup.Find("Preview_Mcc_CabinetCode").GetComponent<TMP_Text>().text = model.CabinetCode;
+            TMP_Text grapperText = newMccItemPreviewInforGroup.Find("Preview_Mcc_GrapLocation")?.GetComponent<TMP_Text>();
+            if (grapperText != null)
+            {
+                grapperText.text = GetGrapperName(grapperId);
+            }
+            Transform newMccItemPreviewButtonGroup = newMccItemTransform.GetChild(1);
+            listMccItems.Add(newMccItem);
+            newMccItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>().onClick.AddListener(() => EditMccItem(model.Id));
+            newMccItemPreviewButtonGroup.Find("Group/Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleMccItem(newMccItem, model));
+            listMccItems.Add(newMccItem);
+        }
+    }
+
+    // Hàm xử lý nội dung tìm kiếm
+    private void OnSearchValueChanged(string input)
+    {
+        string searchText = input.ToLower().Trim();
+
+        foreach (var item in listMccItems)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                item.SetActive(true);
+            }
+            else
+            {
+                bool match = item.name.ToLower().Contains(searchText);
+                item.SetActive(match);
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Parent_Vertical_Layout_Group.GetComponent<RectTransform>());
+        scrollView.verticalNormalizedPosition = 1f;
+    }
+
+    private void ClearSearchInput()
+    {
+        searchInputField.text = string.Empty;
+        OnSearchValueChanged(string.Empty);
+    }
+
+    private string GetGrapperName(int id)
+    {
+        switch (id)
+        {
+            case 1: return "Grapper A";
+            case 2: return "Grapper B";
+            case 3: return "Grapper C";
+            case 4: return "Lò hơi";
+            default: return "Khu vực khác";
+        }
     }
 }

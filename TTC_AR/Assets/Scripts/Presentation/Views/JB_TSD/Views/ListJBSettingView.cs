@@ -250,6 +250,11 @@ public class ListJBSettingView : MonoBehaviour, IJBView
             Transform newJBItemTransform = newJBItem.transform;
             Transform newJBItemPreviewInforGroup = newJBItemTransform.GetChild(0);
             newJBItemPreviewInforGroup.Find("Preview_JB_Name").GetComponent<TMP_Text>().text = model.Name;
+            TMP_Text grapperText = newJBItemPreviewInforGroup.Find("Preview_JB_GrapLocation")?.GetComponent<TMP_Text>();
+            if (grapperText != null)
+            {
+                grapperText.text = GetGrapperName(grapperId);
+            }
             Transform newJBItemPreviewButtonGroup = newJBItemTransform.GetChild(1);
             listJBItems.Add(newJBItem);
             var editButton = newJBItemPreviewButtonGroup.Find("Group/Edit_Button").GetComponent<Button>();
@@ -287,5 +292,17 @@ public class ListJBSettingView : MonoBehaviour, IJBView
     {
         searchInputField.text = string.Empty;
         OnSearchValueChanged(string.Empty);
+    }
+
+    private string GetGrapperName(int id)
+    {
+        switch (id)
+        {
+            case 1: return "Grapper A";
+            case 2: return "Grapper B";
+            case 3: return "Grapper C";
+            case 4: return "Lò hơi";
+            default: return "Khu vực khác";
+        }
     }
 }

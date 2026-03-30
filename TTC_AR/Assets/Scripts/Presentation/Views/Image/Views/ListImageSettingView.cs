@@ -34,10 +34,22 @@ public class ListImageSettingView : MonoBehaviour, IImageView
     private GameObject _imageItem;
     private string _imageName;
 
+    [Header("Search")]
+    public TMP_InputField searchInputField; // Thanh tìm kiếm
+    public Button clearButton; // Nút xóa nội dung tìm kiếm
+    private List<ImageInformationModel> allImages = new List<ImageInformationModel>(); // Lưu dữ liệu gốc
+
     void Awake()
     {
         _presenter = new ImagePresenter(this,
         ManagerLocator.Instance.ImageManager._IImageService);
+
+        // Đăng ký sự kiện cho nút xóa nội dung tìm kiếm
+        if (clearButton != null)
+        {
+            clearButton.onClick.RemoveAllListeners();
+            clearButton.onClick.AddListener(ClearSearchInput);
+        }
     }
     void OnEnable()
     {
@@ -68,22 +80,13 @@ public class ListImageSettingView : MonoBehaviour, IImageView
     }
     public void DisplayList(List<ImageInformationModel> models)
     {
-        if (models.Any())
+        // Lưu dữ liệu gốc để sử dụng cho tìm kiếm
+        allImages = models ?? new List<ImageInformationModel>();
+        RefreshList();
+
+        if (allImages.Any())
         {
-            foreach (var model in models)
-            {
-                // int ImageIndex = models.IndexOf(model);
-                // Debug.Log(ImageIndex);
-                var newImageItem = Instantiate(Image_Item_Prefab, Parent_Vertical_Layout_Group.transform);
-                newImageItem.SetActive(true);
-                Transform newImageItemTransform = newImageItem.transform;
-                var previewButton = newImageItem.GetComponent<Button>();
-                previewButton.onClick.RemoveAllListeners();
-                previewButton.onClick.AddListener(() => OpenPreviewImageCanvas(model));
-                newImageItemTransform.Find("Preview_Image_Name").GetComponent<TMP_Text>().text = model.Name;
-                newImageItemTransform.Find("Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleImageItem(newImageItem, model));
-                listImageItems.Add(newImageItem);
-            }
+            CreateImageItems(allImages);           
         }
         else
         {
@@ -91,6 +94,13 @@ public class ListImageSettingView : MonoBehaviour, IImageView
         }
         Image_Item_Prefab.SetActive(false);
         scrollView.verticalNormalizedPosition = 1f;
+
+        // Đăng ký sự kiện tìm kiếm
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.RemoveAllListeners();
+            searchInputField.onValueChanged.AddListener(OnSearchValueChanged);
+        }
     }
 
     private async void OpenPreviewImageCanvas(ImageInformationModel model)
@@ -245,4 +255,50 @@ public class ListImageSettingView : MonoBehaviour, IImageView
     public void DisplayCreateResult(bool success) { }
     public void DisplayUpdateResult(bool success) { }
     public void DisplayDeleteResult(bool success) { }
+
+    private void CreateImageItems(List<ImageInformationModel> images)
+    {
+        foreach (var model in images)
+        {
+            // int ImageIndex = models.IndexOf(model);
+            // Debug.Log(ImageIndex);
+            var newImageItem = Instantiate(Image_Item_Prefab, Parent_Vertical_Layout_Group.transform);
+            newImageItem.SetActive(true);
+            newImageItem.name = model.Name;
+            Transform newImageItemTransform = newImageItem.transform;
+            var previewButton = newImageItem.GetComponent<Button>();
+            previewButton.onClick.RemoveAllListeners();
+            previewButton.onClick.AddListener(() => OpenPreviewImageCanvas(model));
+            newImageItemTransform.Find("Preview_Image_Name").GetComponent<TMP_Text>().text = model.Name;
+            newImageItemTransform.Find("Delete_Button").GetComponent<Button>().onClick.AddListener(() => DeleImageItem(newImageItem, model));
+            listImageItems.Add(newImageItem);
+        }
+    }
+
+    // Hàm xử lý nội dung tìm kiếm
+    private void OnSearchValueChanged(string input)
+    {
+        string searchText = input.ToLower().Trim();
+
+        foreach (var item in listImageItems)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                item.SetActive(true);
+            }
+            else
+            {
+                bool match = item.name.ToLower().Contains(searchText);
+                item.SetActive(match);
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(Parent_Vertical_Layout_Group.GetComponent<RectTransform>());
+        scrollView.verticalNormalizedPosition = 1f;
+    }
+
+    private void ClearSearchInput()
+    {
+        searchInputField.text = string.Empty;
+        OnSearchValueChanged(string.Empty);
+    }
 }
