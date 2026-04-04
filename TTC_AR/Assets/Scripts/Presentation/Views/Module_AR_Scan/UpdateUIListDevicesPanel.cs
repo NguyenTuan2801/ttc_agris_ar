@@ -161,6 +161,7 @@ public class UpdateUIListDevicesPanel : MonoBehaviour, IDeviceView
         deviceInforValue[2].text = device.Range;
         deviceInforValue[3].text = device.Unit;
         deviceInforValue[4].text = device.IOAddress;
+        deviceInforValue[5].text = device.Type;
 
         GlobalVariable.deviceCode = device.Code;
         if (device.AdditionalConnectionImages != null && device.AdditionalConnectionImages.Any())

@@ -14,6 +14,12 @@ public class Manager : MonoBehaviour
     [SerializeField] private EventPublisher eventPublisher;
     [SerializeField] private Camera mainCamera;
 
+    [Header("Settings")]
+    public GameObject arGameObjectPrefab;
+    public float relativeScale = 1.2f;        // Thử từ 0.8 ~ 1.5
+    public Vector3 localOffset = new Vector3(0, 0.18f, 0);   // Đẩy lên cao hơn một chút
+
+    private VuforiaBarcodeARManager arManager;
 
     private string activeScene;
 
@@ -27,117 +33,102 @@ public class Manager : MonoBehaviour
         backBtn.onClick.RemoveAllListeners();
         backBtn.onClick.AddListener(CloseCanvas);
         Screen.orientation = ScreenOrientation.LandscapeLeft;
+
+        arManager = FindObjectOfType<VuforiaBarcodeARManager>();
     }
 
     private void Update()
     {
-        DetectClickedObject();
     }
 
-    public void DetectClickedObject()
+    // Hàm này được gọi từ AR Button
+    public void OpenModuleFromAR(string moduleName)
     {
-        Ray ray = new Ray();
+        if (string.IsNullOrEmpty(moduleName)) return;
 
-        // Check if the left mouse button was clicked
-        if (Input.GetMouseButtonDown(0))
+        GlobalVariable.objectName = moduleName;
+        title.text = "Module " + moduleName;
+
+        OpenCanvas();
+
+        // Trigger load data theo đúng logic cũ của bạn
+        InitModuleScanQRView view = FindObjectOfType<InitModuleScanQRView>();
+        if (view != null)
         {
-            // Create a ray from the camera to the mouse position
-            // Camera cam = Camera.main != null ? Camera.main : Camera.current;
-            // if (cam != null)
-            ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            view.LoadListModule();           // Load danh sách module
+            Debug.Log($"Đang load dữ liệu cho module: {moduleName}");
         }
-        else if (Input.touchCount > 0)
+        else
         {
-            // Get the first touch
-            Touch touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Began)
-            {
-                // Create a ray from the camera to the touch position
-                // Camera cam = Camera.main != null ? Camera.main : Camera.current;
-                // if (cam != null)
-                ray = mainCamera.ScreenPointToRay(touch.position);
-
-            }
+            Debug.LogWarning("Không tìm thấy InitModuleScanQRView");
         }
 
-        // Perform the raycast
-        if (Physics.Raycast(ray, out var hit, Mathf.Infinity, layerMask: LayerMask.GetMask("Game Object", "UI", "Default")))
+        // Trigger load detail cho panel hiện tại
+        OpenModuleGeneralPanelView detailView = FindObjectOfType<OpenModuleGeneralPanelView>();
+        if (detailView != null)
         {
-            // Get the GameObject that was hit
-            GameObject clickedObject = hit.collider.gameObject;
-            Vector3 hitPosition = hit.point;
-
-            float tolerance = 0.03f;
-            var qrMarker = aRHelper.markers.Values.FirstOrDefault(marker => Vector3.Distance(marker.qrPosition, hitPosition) <= tolerance);
-            if (qrMarker != null)
-            {
-                var key = aRHelper.markers.FirstOrDefault(pair => pair.Value == qrMarker).Key;
-                if (key != null)
-                {
-                    string[] parts = key.Split('_');
-                    string result = parts[parts.Length - 1]; // Lấy phần tử cuối cùng
-                    GlobalVariable.objectName = result;
-
-                    if (activeScene == "NewQRCodeDetectorMulti")
-                    {
-
-                        title.text = "Module " + result;
-                        // eventPublisher.TriggerEvent_ButtonClicked();
-                        if (
-                            GlobalVariable.temp_Dictionary_MCCInformationModel.TryGetValue(result, out var model1)
-                            || GlobalVariable.temp_Dictionary_ModuleInformationModel.TryGetValue(result, out var model2)
-
-                            )
-                        {
-                            OpenCanvas();
-                        }
-                    }
-                    else
-                    {
-                        title.text = "Tủ " + result;
-                        // eventPublisher.TriggerEvent_ButtonClicked();
-                        if (
-                                                  GlobalVariable.temp_Dictionary_MCCInformationModel.TryGetValue(result, out var model1)
-                                                  || GlobalVariable.temp_Dictionary_ModuleInformationModel.TryGetValue(result, out var model2)
-
-                                                  )
-                        {
-                            OpenCanvas();
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Debug.LogWarning("No QRMarker found at the hit position.");
-            }
+            detailView.LoadModuleInfor();    // Load thông tin chi tiết module
         }
     }
 
-    private void OpenCanvas()
+    public void OpenCanvas()
     {
-        if (enableQRCodeDetection)
+        if (canvas != null)
         {
+            canvas.SetActive(true);
             enableQRCodeDetection = false;
+
+            // === CÁCH MẠNH: ẨN HOÀN TOÀN TẤT CẢ AR BUTTON ===
+            var allARButtons = GameObject.FindObjectsOfType<ARQRMarker>(true);
+            foreach (var marker in allARButtons)
+            {
+                if (marker.gameObject != null)
+                    marker.gameObject.SetActive(false);
+            }
+
+            // Tắt luôn BarcodeScanner để ngừng quét mới
+            var barcodeScanner = FindObjectOfType<VuforiaBarcodeARManager>();
+            if (barcodeScanner != null)
+                barcodeScanner.enabled = false;
+
+            Debug.Log("✅ Canvas mở → Đã ẩn hết AR Button và tắt quét AR");
         }
-        canvas.SetActive(true);
+        else
+        {
+            Debug.LogError("Canvas chưa được gán!");
+        }
     }
 
     public void CloseCanvas()
     {
-        if (!enableQRCodeDetection)
+        if (canvas != null)
         {
+            canvas.SetActive(false);
+
             if (enableQRCodeDetectionByActiveCameraIcon)
-            {
                 enableQRCodeDetection = true;
+
+            // Bật lại quét AR và hiện button
+            var barcodeScanner = FindObjectOfType<VuforiaBarcodeARManager>();
+            if (barcodeScanner != null)
+                barcodeScanner.enabled = true;
+
+            // Hiện lại các button AR
+            var allARButtons = GameObject.FindObjectsOfType<ARQRMarker>(true);
+            foreach (var marker in allARButtons)
+            {
+                if (marker.gameObject != null)
+                    marker.gameObject.SetActive(true);
             }
+
+            Debug.Log("✅ Canvas đóng → Đã bật lại quét AR");
         }
-        canvas.SetActive(false);
     }
+
     public void setQRCodeDetection(bool enable)
     {
         enableQRCodeDetection = enable;
         enableQRCodeDetectionByActiveCameraIcon = enable;
     }
+
 }

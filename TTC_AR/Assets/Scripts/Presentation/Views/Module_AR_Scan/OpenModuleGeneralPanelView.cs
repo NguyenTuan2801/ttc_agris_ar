@@ -29,13 +29,24 @@ public class OpenModuleGeneralPanelView : MonoBehaviour, IModuleView
 
     public void LoadModuleInfor()
     {
-        Debug.Log(GlobalVariable.objectName);
-
         ModuleName = GlobalVariable.objectName;
 
-        GlobalVariable.temp_Dictionary_ModuleInformationModel.TryGetValue(ModuleName, out ModuleInformationModel ModuleInformationModel);
+        if (string.IsNullOrEmpty(ModuleName))
+        {
+            Debug.LogWarning("GlobalVariable.objectName chưa được gán!");
+            return;
+        }
 
-        _presenter.LoadDetailById(ModuleInformationModel.Id);
+        Debug.Log($"LoadModuleInfor cho module: {ModuleName}");
+
+        if (GlobalVariable.temp_Dictionary_ModuleInformationModel.TryGetValue(ModuleName, out ModuleInformationModel model))
+        {
+            _presenter.LoadDetailById(model.Id);
+        }
+        else
+        {
+            Debug.LogWarning($"Không tìm thấy module '{ModuleName}' trong dictionary");
+        }
     }
 
     public void DisplayList(List<ModuleInformationModel> models)

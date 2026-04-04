@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: VuforiaConfiguration
   m_EditorClassIdentifier: 
   vuforia:
-    vuforiaLicenseKey: AUkfaH//////AAABmd2OGuIyqEzKpUBZAobUp1cZ60+YiphQRXsYvffsRhmyZAf1ve2PbbNJzKjnqIsvOze2WZpRTO/lVlaONBCg6pYbGHyL5v1eDvDUofEzm2kCndbQq/EqFdfT0l46mzHQl/2T64SPyFJdWdiMZg9RBTeVDNGce6AjCVXztTiNkYfY4uHj5sIQz/FQyc/wW5vao/T7GzUeY5Qz0QXU0ii9DRoIg+107l96h+l4euY73Y5hCF2qNkBniY/vGifRuJdAiofw3bGZH5UEc5uou3K5FXEI0SQFtxqhW0vUlxdMXMIpKDVi9lWa8iHToi94oC6fLisr3RTxARS49yr8B96hqZN1oKUkOPOARP75CS+VhWu2
+    vuforiaLicenseKey: Aez8pV3/////AAABmRhW3RyMGEYlth556ARoER2ByesrOdBQvfn3SAZetqIIdU6x/JeLE3FTqg2xc25SNxcDeEUagpnto4GGpaEJtUpEnSthapRaUu09cD+q/9/1qK6AJGDIIRWT3R/urDrYL2sonC9F2cCSKycf3eHB8DVduM74DQSS0CmoErW6X34/SV397Yan9kdXnQeJrSPlzQWgCDYSrxX8ElTVGl6/xGajusLhC2zMlVJzUR1+u7+Sitg4/meEx5Cj3G2jsXM3AvarKNTro2YcKTCu9YTprHYJmeHg4Yqs4XIWsTT2WVaOLay1cCGkbRN2R+nF2y3aPACDvT0PcVa+AHhoKe7LoFhltIHnb5NM0pBr5b+2UUMt
     ufoLicenseKey: QVIzQmZnRC8vLy8vQUFBQUtGSitBeThkWlVOWWdQR2Uyc2s0Y1M5RmtJU2V0bS8xTTFkRDRoeW5zQkxjTkVkN2kvTzdmc0xyMGZUbXM0Z2hZZmY2MzMzVE5wV3IrNjhITVFHVmhKTjRHQzhLZU9TSUprOGJTbGtER1dyR3Y2UGtiUEkxU0RMUEFacE03cEg5aUoxN2FRNXNwL3JDRHl0d242emljRlVJSExQNWhQQWpMeVkzWDJPcDB5VzdkOExPSkVoZlcrcGtxQk1aREYxYWdVQXVUTENXKzRWV1lTTUEvVG11VVM0dENTZzgyeEJYVlJWZFZmdnFHd2I4U0hqODBzazJyMGM3TldLUGhrc0xPaHd2ekpPSHhmbHRBNlJ3OEpqMGNIbnZIVXlxVUpNRDRnNUxKK0dFdmYvVE82NW1oWEVZaGh3RGQxRVhMaHdmZUphR0R4dkdyVjlvTEwxU1EvbHQwZkc0cGFEYzVReGJOTzQramtDMU4velk=
     delayedInitialization: 0
     cameraFocusModeSetting: 2
@@ -23,17 +23,19 @@ MonoBehaviour:
     modelTargetRecoWhileExtendedTracked: 1
     shareRecordingsInITunes: 0
     logLevel: 0
-    version: 10.24.4
-    eulaAcceptedVersions: '{"Values":["8.3","10.20","10.1","10.4","10.5","0.0","10.9","10.10","10.13","10.14","10.21","10.22","10.24","10.25","10.19","10.28"]}'
+    version: 11.4.4
+    eulaAcceptedVersions: '{"Values":["8.3","10.20","10.1","10.4","10.5","0.0","10.9","10.10","10.13","10.14","10.21","10.22","10.24","10.25","10.19","10.28","11.4","9.8"]}'
   database:
     disableModelExtraction: 0
+  plugins:
+    pluginDirectory: asset://Vuforia
   shaders:
-    depthMaskShader: {fileID: 4800000, guid: 9894afa5f3a5e4bbca625981beb1b20e, type: 3}
+    depthMaskShader: {fileID: 4800000, guid: 1ce7eb78425fb1540838bc9d5d95857a, type: 3}
     outlineShader: {fileID: 4800000, guid: 88d3b6b5cf364476ca39fcec255331b1, type: 3}
     unlitTransparentShader: {fileID: 10750, guid: 0000000000000000f000000000000000,
       type: 0}
   runtimeResources:
-    register: {fileID: 11400000, guid: 41fc44d3a90764cc7b50f1019f2d8310, type: 2}
+    register: {fileID: 11400000, guid: caeba6ecda451416c803389918ddea4a, type: 2}
   videoBackground:
     numDivisions: 2
     videoBackgroundShader: {fileID: 4800000, guid: 144dfca22ac584ade9e538e24a5ddded,
@@ -48,6 +50,8 @@ MonoBehaviour:
   playmode:
     mRecordingPath: 
     playModeType: 0
+    mSimulatorInputActionAsset: {fileID: -944628639613478452, guid: eae7022f5cfd04e8189b1f372421b225,
+      type: 3}
   webcam:
     renderTextureLayer: 30
   packageInformation:
