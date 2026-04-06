@@ -165,6 +165,8 @@ EditorBuildSettings:
       type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 7d8433fe3d11a7b44aa716076d7f1323,
       type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 782ee3c687a6583448902ada5d5e6724,
+      type: 2}
     com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: 18952047aa282db4798f3a1ba398b0fb,
       type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 9f492ac31a132ba4fa2a7d858687f184,
