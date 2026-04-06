@@ -328,6 +328,10 @@ PlayerSettings:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 11400000, guid: 7d8433fe3d11a7b44aa716076d7f1323, type: 2}
+  - {fileID: 4082883342236237671, guid: b2f505ae59cf15342a97a76d884c8670, type: 2}
+  - {fileID: 11400000, guid: 18952047aa282db4798f3a1ba398b0fb, type: 2}
+  - {fileID: 3999335787551584721, guid: 9f492ac31a132ba4fa2a7d858687f184, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -440,7 +444,7 @@ PlayerSettings:
   useCustomGradlePropertiesTemplate: 1
   useCustomGradleSettingsTemplate: 0
   useCustomProguardFile: 1
-  AndroidTargetArchitectures: 3
+  AndroidTargetArchitectures: 2
   AndroidTargetDevices: 1
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 2800000, guid: c47d14f182e4965489363c99b6f0b350, type: 3}
