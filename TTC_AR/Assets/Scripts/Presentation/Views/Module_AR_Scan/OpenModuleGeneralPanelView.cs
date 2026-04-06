@@ -26,7 +26,6 @@ public class OpenModuleGeneralPanelView : MonoBehaviour, IModuleView
     {
     }
 
-
     public void LoadModuleInfor()
     {
         ModuleName = GlobalVariable.objectName;

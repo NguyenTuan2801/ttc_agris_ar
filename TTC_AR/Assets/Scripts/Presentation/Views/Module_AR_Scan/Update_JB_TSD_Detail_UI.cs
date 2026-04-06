@@ -242,7 +242,7 @@ public class Update_JB_TSD_Detail_UI : MonoBehaviour, IJBView
         {
             ClearInstantiatedImageObjects();
 
-            // ================== LOAD LOCATION IMAGE (OutdoorImage) ==================
+            // LOAD OURDOOR IMAGE
             if (model.OutdoorImage != null && !string.IsNullOrEmpty(model.OutdoorImage.Name))
             {
                 jb_location_imagePrefab.gameObject.SetActive(true);
@@ -254,9 +254,8 @@ public class Update_JB_TSD_Detail_UI : MonoBehaviour, IJBView
                 jb_location_imagePrefab.gameObject.SetActive(false);
                 Debug.Log($"[DeviceMode] JB {model.Name} không có OutdoorImage → Ẩn location image");
             }
-            // ======================================================================
 
-            // ================== LOAD ADDITIONAL CONNECTION IMAGES ==================
+            // LOAD ADDITIONAL CONNECTION IMAGES
             jb_connection_imagePrefab.gameObject.SetActive(true);
 
             var tasks = new List<Task>();
@@ -298,7 +297,7 @@ public class Update_JB_TSD_Detail_UI : MonoBehaviour, IJBView
         {
             ClearInstantiatedImageObjects();
 
-            // ================== SỬA PHẦN LOAD LOCATION IMAGE ==================
+            // LOAD OURDOOR IMAGE
             if (model.OutdoorImage != null && !string.IsNullOrEmpty(model.OutdoorImage.Name))
             {
                 jb_location_imagePrefab.gameObject.SetActive(true);
@@ -310,7 +309,6 @@ public class Update_JB_TSD_Detail_UI : MonoBehaviour, IJBView
                 jb_location_imagePrefab.gameObject.SetActive(false);
                 Debug.Log($"JB {model.Name} không có OutdoorImage → Ẩn jb_location_imagePrefab");
             }
-            // =================================================================
 
             jb_connection_imagePrefab.gameObject.SetActive(true);
 

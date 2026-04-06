@@ -60,7 +60,7 @@ public class VuforiaBarcodeARManager : MonoBehaviour
             tmpText.text = suffix;
         }
 
-        // === QUAN TRỌNG: Gán displaySuffix vào ARQRMarker ===
+        // Gán displaySuffix vào ARQRMarker
         ARQRMarker marker = newButton.GetComponent<ARQRMarker>();
         if (marker != null)
         {
@@ -95,9 +95,8 @@ public class VuforiaBarcodeARManager : MonoBehaviour
 
             Vector3 dirToCamera = Camera.main.transform.position - btn.transform.position;
 
-            // Cải tiến: Giữ cho button luôn "đứng thẳng" hơn khi camera di chuyển ngang
             Quaternion lookRot = Quaternion.LookRotation(dirToCamera);
-            Quaternion uprightRot = Quaternion.Euler(0, lookRot.eulerAngles.y, 0);  // Chỉ lấy góc Y
+            Quaternion uprightRot = Quaternion.Euler(0, lookRot.eulerAngles.y, 0);
             Quaternion finalRot = uprightRot * Quaternion.Euler(0, 180, 0);
 
             btn.transform.rotation = Quaternion.Slerp(btn.transform.rotation, finalRot, 20f * Time.deltaTime);

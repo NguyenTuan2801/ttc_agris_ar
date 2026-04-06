@@ -16,8 +16,8 @@ public class Manager : MonoBehaviour
 
     [Header("Settings")]
     public GameObject arGameObjectPrefab;
-    public float relativeScale = 1.2f;        // Thử từ 0.8 ~ 1.5
-    public Vector3 localOffset = new Vector3(0, 0.18f, 0);   // Đẩy lên cao hơn một chút
+    public float relativeScale = 1.2f;        
+    public Vector3 localOffset = new Vector3(0, 0.18f, 0);  
 
     private VuforiaBarcodeARManager arManager;
 
@@ -47,11 +47,10 @@ public class Manager : MonoBehaviour
         if (string.IsNullOrEmpty(moduleName)) return;
 
         GlobalVariable.objectName = moduleName;
-        title.text = "Module " + moduleName;
+        title.text = "Tủ " + moduleName;
 
         OpenCanvas();
 
-        // Trigger load data theo đúng logic cũ của bạn
         InitModuleScanQRView view = FindObjectOfType<InitModuleScanQRView>();
         if (view != null)
         {
@@ -63,7 +62,6 @@ public class Manager : MonoBehaviour
             Debug.LogWarning("Không tìm thấy InitModuleScanQRView");
         }
 
-        // Trigger load detail cho panel hiện tại
         OpenModuleGeneralPanelView detailView = FindObjectOfType<OpenModuleGeneralPanelView>();
         if (detailView != null)
         {
@@ -78,7 +76,7 @@ public class Manager : MonoBehaviour
             canvas.SetActive(true);
             enableQRCodeDetection = false;
 
-            // === CÁCH MẠNH: ẨN HOÀN TOÀN TẤT CẢ AR BUTTON ===
+            // Ẩn tất cả AR Button khi mở canvas
             var allARButtons = GameObject.FindObjectsOfType<ARQRMarker>(true);
             foreach (var marker in allARButtons)
             {
@@ -86,12 +84,12 @@ public class Manager : MonoBehaviour
                     marker.gameObject.SetActive(false);
             }
 
-            // Tắt luôn BarcodeScanner để ngừng quét mới
+            // Tắt BarcodeScanner để ngừng quét
             var barcodeScanner = FindObjectOfType<VuforiaBarcodeARManager>();
             if (barcodeScanner != null)
                 barcodeScanner.enabled = false;
 
-            Debug.Log("✅ Canvas mở → Đã ẩn hết AR Button và tắt quét AR");
+            Debug.Log("Đã ẩn hết AR Button và tắt quét AR");
         }
         else
         {
@@ -121,7 +119,7 @@ public class Manager : MonoBehaviour
                     marker.gameObject.SetActive(true);
             }
 
-            Debug.Log("✅ Canvas đóng → Đã bật lại quét AR");
+            Debug.Log("Đã bật lại quét AR");
         }
     }
 

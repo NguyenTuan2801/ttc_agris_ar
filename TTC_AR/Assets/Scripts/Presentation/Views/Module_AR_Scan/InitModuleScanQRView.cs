@@ -25,7 +25,6 @@ public class InitModuleScanQRView : MonoBehaviour, IModuleView
         _modulePresenter.LoadListModule(grapperId);
     }
 
-
     public void DisplayList(List<ModuleInformationModel> models)
     {
         GlobalVariable.temp_Dictionary_ModuleInformationModel = models.ToDictionary(m => m.Name, m => m);
@@ -41,7 +40,6 @@ public class InitModuleScanQRView : MonoBehaviour, IModuleView
         Progress.Hide();
     }
 
-
     public void ShowLoading(string title)
     {
         ShowProgressBar(title, "Đang tải dữ liệu...");
@@ -49,8 +47,6 @@ public class InitModuleScanQRView : MonoBehaviour, IModuleView
     public void HideLoading() => HideProgressBar();
     public void ShowError(string message)
     {
-
-
     }
 
     public void ShowSuccess(string message)
@@ -66,7 +62,5 @@ public class InitModuleScanQRView : MonoBehaviour, IModuleView
     public void DisplayCreateResult(bool success) { }
     public void DisplayUpdateResult(bool success) { }
     public void DisplayDeleteResult(bool success) { }
-
-
 }
 

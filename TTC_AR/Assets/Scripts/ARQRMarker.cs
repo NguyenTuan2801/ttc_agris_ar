@@ -13,7 +13,7 @@ public class ARQRMarker : MonoBehaviour
             return;
         }
 
-        Debug.Log($"=== AR BUTTON CLICKED === Module: {displaySuffix}");
+        Debug.Log($"AR BUTTON CLICKED, Module: {displaySuffix}");
 
         Manager manager = FindObjectOfType<Manager>();
         if (manager != null)
