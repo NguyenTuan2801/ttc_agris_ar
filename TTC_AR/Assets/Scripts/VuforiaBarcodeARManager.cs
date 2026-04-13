@@ -8,8 +8,8 @@ public class VuforiaBarcodeARManager : MonoBehaviour
 {
     [Header("Settings")]
     public GameObject qrButtonPrefab;
-    public float relativeScale = 0.78f;
-    public Vector3 localOffset = new Vector3(0, 0.22f, 0);
+    public float scaleMultiplier = 1.15f;
+    public Vector3 localOffset = new Vector3(0, 0.28f, 0.32f); 
 
     private Dictionary<string, GameObject> activeButtons = new Dictionary<string, GameObject>();
 
@@ -23,6 +23,7 @@ public class VuforiaBarcodeARManager : MonoBehaviour
         foreach (var barcode in FindObjectsOfType<BarcodeBehaviour>())
         {
             barcode.OnTargetStatusChanged += OnBarcodeStatusChanged;
+            barcode.OnBarcodeOutlineChanged += OnBarcodeOutlineChanged;
         }
     }
 
@@ -35,9 +36,17 @@ public class VuforiaBarcodeARManager : MonoBehaviour
 
         if (status.Status == Status.TRACKED || status.Status == Status.EXTENDED_TRACKED)
         {
+            // Chỉ tạo 1 ARGameObject
             if (!activeButtons.ContainsKey(content))
             {
                 CreateQRButton(content, barcodeBehaviour.transform);
+            }
+            else
+            {
+                if (activeButtons[content] != null)
+                {
+                    activeButtons[content].transform.SetParent(barcodeBehaviour.transform, false);
+                }
             }
         }
         else if (status.Status == Status.NO_POSE)
@@ -46,12 +55,30 @@ public class VuforiaBarcodeARManager : MonoBehaviour
         }
     }
 
+    private void OnBarcodeOutlineChanged(Vector3[] vertices)
+    {
+        if (vertices == null || vertices.Length < 4) return;
+
+        float width = Vector3.Distance(vertices[0], vertices[1]);
+        float qrSize = width;
+
+        foreach (var btn in activeButtons.Values)
+        {
+            if (btn != null)
+            {
+                btn.transform.localScale = Vector3.one * qrSize * scaleMultiplier;
+            }
+        }
+    }
+
     private void CreateQRButton(string content, Transform qrTransform)
     {
+        RemoveQRButton(content);
+
         GameObject newButton = Instantiate(qrButtonPrefab, qrTransform);
         newButton.name = "AR_" + content;
 
-        // Set text cho TextMeshPro
+        // Set Text
         TextMeshProUGUI tmpText = newButton.GetComponentInChildren<TextMeshProUGUI>(true);
         if (tmpText != null)
         {
@@ -60,31 +87,26 @@ public class VuforiaBarcodeARManager : MonoBehaviour
             tmpText.text = suffix;
         }
 
-        // Gán displaySuffix vào ARQRMarker
+        // Gán marker
         ARQRMarker marker = newButton.GetComponent<ARQRMarker>();
         if (marker != null)
         {
             marker.displaySuffix = content.Split('_').LastOrDefault() ?? content;
-            Debug.Log($"Gán displaySuffix = {marker.displaySuffix} cho button {content}");
-        }
-        else
-        {
-            Debug.LogError($"ARQRMarker chưa được attach trên prefab ARGameObject!");
         }
 
         newButton.transform.localPosition = localOffset;
-        newButton.transform.localScale = Vector3.one * relativeScale;
         newButton.transform.localRotation = Quaternion.Euler(0, 180, 0);
 
         activeButtons[content] = newButton;
     }
+
     private void RemoveQRButton(string content)
     {
         if (activeButtons.TryGetValue(content, out GameObject btn) && btn != null)
         {
             Destroy(btn);
-            activeButtons.Remove(content);
         }
+        activeButtons.Remove(content);
     }
 
     private void LateUpdate()
@@ -93,23 +115,16 @@ public class VuforiaBarcodeARManager : MonoBehaviour
         {
             if (btn == null) continue;
 
+            // Billboard
             Vector3 dirToCamera = Camera.main.transform.position - btn.transform.position;
-
             Quaternion lookRot = Quaternion.LookRotation(dirToCamera);
-            Quaternion uprightRot = Quaternion.Euler(0, lookRot.eulerAngles.y, 0);
-            Quaternion finalRot = uprightRot * Quaternion.Euler(0, 180, 0);
-
-            btn.transform.rotation = Quaternion.Slerp(btn.transform.rotation, finalRot, 20f * Time.deltaTime);
+            Quaternion finalRot = Quaternion.Euler(0, lookRot.eulerAngles.y, 0) * Quaternion.Euler(0, 180, 0);
+            btn.transform.rotation = Quaternion.Slerp(btn.transform.rotation, finalRot, 22f * Time.deltaTime);
         }
     }
 
     private void OnDestroy()
     {
         VuforiaApplication.Instance.OnVuforiaStarted -= OnVuforiaStarted;
-    }
-
-    public Dictionary<string, GameObject> GetActiveButtons()
-    {
-        return activeButtons;
     }
 }

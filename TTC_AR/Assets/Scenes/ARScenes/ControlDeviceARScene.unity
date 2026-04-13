@@ -2702,7 +2702,8 @@ GameObject:
   - component: {fileID: 264995636}
   - component: {fileID: 264995638}
   - component: {fileID: 264995639}
-  - component: {fileID: 264995640}
+  - component: {fileID: 264995641}
+  - component: {fileID: 264995642}
   m_Layer: 0
   m_Name: BarcodeScanner
   m_TagString: Untagged
@@ -2746,7 +2747,7 @@ MonoBehaviour:
   mDetectMultipleBarcodes: 1
   mShowAdvanced: 1
   mShowObservedTypes: 1
-  mPreview: {fileID: 264995640}
+  mPreview: {fileID: 264995642}
 --- !u!114 &264995639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2760,9 +2761,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   qrButtonPrefab: {fileID: 1114051163}
-  relativeScale: 0.33
+  scaleMultiplier: 0.0017
   localOffset: {x: 0, y: 0, z: 0}
---- !u!114 &264995640
+--- !u!114 &264995641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264995635}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3be61054796142fe9129793183d1cce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Material: {fileID: 2065682276}
+  Materials:
+  - {fileID: 2065682276}
+  OutlineThickness: 5
+--- !u!114 &264995642
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -15374,6 +15391,111 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2061510878}
   m_CullTransparentMesh: 1
+--- !u!21 &2065682276
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: BarcodeOutlineMaterial
+  m_Shader: {fileID: 211, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - GRABPASS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainHolesTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BlendOp: 0
+    - _BumpScale: 1
+    - _CameraFadingEnabled: 0
+    - _CameraFarFadeDistance: 2
+    - _CameraNearFadeDistance: 1
+    - _ColorMode: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DistortionBlend: 0.5
+    - _DistortionEnabled: 0
+    - _DistortionStrength: 1
+    - _DistortionStrengthScaled: 0
+    - _DstBlend: 0
+    - _EmissionEnabled: 0
+    - _FlipbookMode: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _LightingEnabled: 0
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _SmoothnessTextureChannel: 0
+    - _SoftParticlesEnabled: 0
+    - _SoftParticlesFarFadeDistance: 1
+    - _SoftParticlesNearFadeDistance: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _UVSec: 0
+    - _ZWrite: 1
+    m_Colors:
+    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
+    - _Color: {r: 0, g: 1, b: 0, a: 1}
+    - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []
 --- !u!1 &2080695898
 GameObject:
   m_ObjectHideFlags: 0
@@ -15521,8 +15643,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 735.1104, y: -686.1472}
-  m_SizeDelta: {x: 1470.2208, y: 1272.2944}
+  m_AnchoredPosition: {x: 698.9833, y: -686.1472}
+  m_SizeDelta: {x: 1397.9666, y: 1272.2944}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &2788422717873467715
 RectTransform:
@@ -15540,8 +15662,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 735.1104, y: -2533.0464}
-  m_SizeDelta: {x: 1470.2208, y: 250}
+  m_AnchoredPosition: {x: 698.9833, y: -2533.0464}
+  m_SizeDelta: {x: 1397.9666, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3473410521020809183
 MonoBehaviour:
@@ -22154,7 +22276,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 735.1104, y: -760.29443}
+  m_AnchoredPosition: {x: 698.9833, y: -760.29443}
   m_SizeDelta: {x: 768, y: 1024}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6845257293922354654
@@ -22524,8 +22646,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 735.1104, y: -1865.1704}
-  m_SizeDelta: {x: 1470.2208, y: 985.752}
+  m_AnchoredPosition: {x: 698.9833, y: -1865.1704}
+  m_SizeDelta: {x: 1397.9666, y: 985.752}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6845257294627178304
 MonoBehaviour:
@@ -22564,8 +22686,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.16243185, y: 0}
   m_AnchorMax: {x: 0.8333106, y: 0.9850001}
-  m_AnchoredPosition: {x: 4.0077515, y: -763.46063}
-  m_SizeDelta: {x: 207.1743, y: 1560.3535}
+  m_AnchoredPosition: {x: 4.006836, y: -763.4601}
+  m_SizeDelta: {x: 134.92, y: 1560.3535}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6845257294644779019
 CanvasRenderer:
@@ -22973,7 +23095,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 735.1104, y: -111.6472}
+  m_AnchoredPosition: {x: 698.9833, y: -111.6472}
   m_SizeDelta: {x: 1056.1978, y: 223.2944}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6845257294979980435
