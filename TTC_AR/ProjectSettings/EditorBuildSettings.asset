@@ -48,9 +48,6 @@ EditorBuildSettings:
     path: Assets/Scenes/MenuSettingScene/ControlDeviceMenuSettingScene.unity
     guid: a3130d64d305ac2429c02803b630be19
   - enabled: 1
-    path: Assets/Scenes/MenuSettingScene/FieldDeviceMenuSettingScene.unity
-    guid: 49f959330f5594c459beadeb512d6a07
-  - enabled: 1
     path: Assets/Scenes/SelectGrapperSettingScene/ControlDeviceSelectGrapperSettingScene.unity
     guid: e903c207ef420334fbdfbb4e72714977
   - enabled: 1
