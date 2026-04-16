@@ -30,44 +30,45 @@ namespace ApplicationLayer.UseCases
         {
             try
             {
+                UnityEngine.Debug.Log($"Gọi Repository GetListModuleAsync(grapperId = {grapperId})");
+
                 var moduleEntities = await _IModuleRepository.GetListModuleAsync(grapperId);
 
-                if (moduleEntities == null)
+                if (moduleEntities == null || moduleEntities.Count == 0)
                 {
-                    throw new ApplicationException("Failed to get Module list");
+                    UnityEngine.Debug.LogWarning($"Repository trả về 0 module cho grapperId = {grapperId}");
+                    return new List<ModuleBasicDto>();
                 }
-                else
+
+                var filteredDtos = new List<ModuleBasicDto>();
+
+                foreach (var entity in moduleEntities)
                 {
-                    int count = moduleEntities.Count;
-                    // var listModuleInfo = new List<ModuleInformationModel>(count);
-                    // var dictModuleInfo = new Dictionary<string, ModuleInformationModel>(count);
-                    var moduleBasicDtos = new List<ModuleBasicDto>(count);
-                    foreach (var moduleEntity in moduleEntities)
+                    // BUỘC GÁN ĐÚNG GrapperId
+                    if (entity.GrapperEntity == null)
                     {
-                        var dto = MapEntityToBasicDto(moduleEntity);
-                        // var model = new ModuleInformationModel(dto.Id, dto.Name);
-                        moduleBasicDtos.Add(dto);
-                        // listModuleInfo.Add(model);
-                        // dictModuleInfo[dto.Name] = model;
+                        entity.GrapperEntity = new GrapperEntity { Id = grapperId, Name = $"Grapper{grapperId}" };
+                    }
+                    else
+                    {
+                        entity.GrapperEntity.Id = grapperId;
                     }
 
-                    // GlobalVariable.temp_ListModuleInformationModel = listModuleInfo;
-                    // GlobalVariable.temp_Dictionary_ModuleInformationModel = dictModuleInfo;
-                    return moduleBasicDtos;
+                    var dto = MapEntityToBasicDto(entity);
+                    filteredDtos.Add(dto);
+
+                    UnityEngine.Debug.Log($"Giữ module: {entity.Name} | Id={entity.Id} | GrapperId={grapperId}");
                 }
 
-            }
-            catch (ArgumentException exception)
-            {
-                throw new ApplicationException("Failed to get Module list", exception); // Ném lại lỗi validation cho Unity xử lý
+                UnityEngine.Debug.Log($"Trả về {filteredDtos.Count} modules cho grapperId = {grapperId}");
+                return filteredDtos;
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Failed to get Module list", ex); // Bao bọc lỗi từ Repository
+                UnityEngine.Debug.LogError($"Lỗi: {ex.Message}");
+                return new List<ModuleBasicDto>();
             }
-
         }
-
         public async Task<ModuleResponseDto> GetModuleByIdAsync(int moduleId)
         {
             try

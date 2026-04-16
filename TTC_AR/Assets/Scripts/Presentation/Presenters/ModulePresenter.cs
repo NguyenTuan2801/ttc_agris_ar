@@ -8,6 +8,8 @@ using ApplicationLayer.Dtos.Device;
 using ApplicationLayer.Dtos.AdapterSpecification;
 using ApplicationLayer.Dtos.Rack;
 using ApplicationLayer.Dtos.ModuleSpecification;
+using UnityEngine;
+
 public class ModulePresenter
 {
     private readonly IModuleView _view;
@@ -22,45 +24,43 @@ public class ModulePresenter
     }
 
     //! Get list Module chỉ có Id và Code
+    //! Get list Module chỉ có Id và Code
     public async void LoadListModule(int grapperId)
     {
         GlobalVariable.APIRequestType.Add("GET_Module_List");
         _view.ShowLoading("Đang tải dữ liệu...");
+
         try
         {
-            var ModuleBasicDtos = await _service.GetListModuleAsync(grapperId);
-            if (ModuleBasicDtos != null)
-            {
-                if (ModuleBasicDtos.Any())
-                {
-                    var models = ModuleBasicDtos.Select(dto => ConvertFromBasicDto(dto)).ToList();
+            Debug.Log($"Gọi API GetListModuleAsync với grapperId = {grapperId}");
 
-                    _view.DisplayList(models);
-                }
-                else
-                {
-                    var models = new List<ModuleInformationModel>();
-                    _view.DisplayList(models);
-                }
-                _view.ShowSuccess("Tải danh sách thành công");
+            var ModuleBasicDtos = await _service.GetListModuleAsync(grapperId);
+
+            if (ModuleBasicDtos != null && ModuleBasicDtos.Any())
+            {
+                var models = ModuleBasicDtos.Select(dto => ConvertFromBasicDto(dto)).ToList();
+                _view.DisplayList(models);
+                Debug.Log($"Trả về {models.Count} modules từ server");
             }
             else
             {
-                _view.ShowError("No Modules found");
+                Debug.LogWarning($"Không có module nào cho grapperId = {grapperId}");
+                _view.DisplayList(new List<ModuleInformationModel>());
             }
+
+            _view.ShowSuccess("Tải danh sách thành công");
         }
         catch (Exception ex)
         {
+            Debug.LogError($"Lỗi: {ex.Message}");
             _view.ShowError($"Error: {ex.Message}");
-            UnityEngine.Debug.Log("Error: " + ex.Message);
         }
         finally
         {
             _view.HideLoading();
-            GlobalVariable.APIRequestType.Remove("GET_Module_List_General");
+            GlobalVariable.APIRequestType.Remove("GET_Module_List");
         }
     }
-
     //! GET Module Detail với đầy đủ thông tin
     public async void LoadDetailById(int moduleId)
     {

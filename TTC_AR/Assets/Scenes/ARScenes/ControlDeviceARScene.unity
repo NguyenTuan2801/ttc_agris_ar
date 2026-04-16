@@ -2702,8 +2702,7 @@ GameObject:
   - component: {fileID: 264995636}
   - component: {fileID: 264995638}
   - component: {fileID: 264995639}
-  - component: {fileID: 264995641}
-  - component: {fileID: 264995642}
+  - component: {fileID: 264995640}
   m_Layer: 0
   m_Name: BarcodeScanner
   m_TagString: Untagged
@@ -2747,7 +2746,7 @@ MonoBehaviour:
   mDetectMultipleBarcodes: 1
   mShowAdvanced: 1
   mShowObservedTypes: 1
-  mPreview: {fileID: 264995642}
+  mPreview: {fileID: 264995640}
 --- !u!114 &264995639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2761,25 +2760,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   qrButtonPrefab: {fileID: 1114051163}
-  scaleMultiplier: 0.0017
-  localOffset: {x: 0, y: 0, z: 0}
---- !u!114 &264995641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 264995635}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3be61054796142fe9129793183d1cce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Material: {fileID: 2065682276}
-  Materials:
-  - {fileID: 2065682276}
-  OutlineThickness: 5
---- !u!114 &264995642
+  scaleMultiplier: 0.0018
+  localOffset: {x: 0, y: 60, z: 0}
+--- !u!114 &264995640
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -15391,111 +15374,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2061510878}
   m_CullTransparentMesh: 1
---- !u!21 &2065682276
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: BarcodeOutlineMaterial
-  m_Shader: {fileID: 211, guid: 0000000000000000f000000000000000, type: 0}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 0
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses:
-  - GRABPASS
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _BumpMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _TerrainHolesTexture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _BlendOp: 0
-    - _BumpScale: 1
-    - _CameraFadingEnabled: 0
-    - _CameraFarFadeDistance: 2
-    - _CameraNearFadeDistance: 1
-    - _ColorMode: 0
-    - _Cull: 2
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DistortionBlend: 0.5
-    - _DistortionEnabled: 0
-    - _DistortionStrength: 1
-    - _DistortionStrengthScaled: 0
-    - _DstBlend: 0
-    - _EmissionEnabled: 0
-    - _FlipbookMode: 0
-    - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _LightingEnabled: 0
-    - _Metallic: 0
-    - _Mode: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _SmoothnessTextureChannel: 0
-    - _SoftParticlesEnabled: 0
-    - _SoftParticlesFarFadeDistance: 1
-    - _SoftParticlesNearFadeDistance: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _UVSec: 0
-    - _ZWrite: 1
-    m_Colors:
-    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 0, g: 1, b: 0, a: 1}
-    - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
-  m_BuildTextureStacks: []
 --- !u!1 &2080695898
 GameObject:
   m_ObjectHideFlags: 0
@@ -16067,7 +15945,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.08121875, y: 0.119375005}
   m_AnchorMax: {x: 0.37529534, y: 0.90000004}
-  m_AnchoredPosition: {x: 49.751953, y: 3.3619995}
+  m_AnchoredPosition: {x: 49.751953, y: 3.3620605}
   m_SizeDelta: {x: 4.594696, y: -6.723999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6521303904539254148
@@ -18064,7 +17942,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.08565625, y: 0.112500004}
   m_AnchorMax: {x: 0.38144818, y: 0.889389}
-  m_AnchoredPosition: {x: 34.13501, y: 15.684021}
+  m_AnchoredPosition: {x: 34.13501, y: 15.68396}
   m_SizeDelta: {x: -0.86968994, y: 0.27600002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6521303905275537734
@@ -18960,7 +18838,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.0674375, y: 0.112500004}
   m_AnchorMax: {x: 0.39235234, y: 0.889389}
-  m_AnchoredPosition: {x: 44.866943, y: 15.684021}
+  m_AnchoredPosition: {x: 44.866943, y: 15.68396}
   m_SizeDelta: {x: 1.9187012, y: 0.27600002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6521303905450827502

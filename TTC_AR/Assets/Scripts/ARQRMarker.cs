@@ -3,22 +3,23 @@
 public class ARQRMarker : MonoBehaviour
 {
     [HideInInspector]
+    public string fullQRContent;  
+
+    [HideInInspector]
     public string displaySuffix;
 
     public void OnButtonClicked()
     {
-        if (string.IsNullOrEmpty(displaySuffix))
+        if (string.IsNullOrEmpty(fullQRContent))
         {
-            Debug.LogWarning("displaySuffix vẫn rỗng!");
+            Debug.LogWarning("fullQRContent rỗng!");
             return;
         }
-
-        Debug.Log($"AR BUTTON CLICKED, Module: {displaySuffix}");
 
         Manager manager = FindObjectOfType<Manager>();
         if (manager != null)
         {
-            manager.OpenModuleFromAR(displaySuffix);
+            manager.OpenModuleFromAR(fullQRContent); 
         }
         else
         {

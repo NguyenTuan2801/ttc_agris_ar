@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using OpenCVForUnity.UnityUtils.Helper;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class Manager : MonoBehaviour
 {
@@ -42,30 +43,59 @@ public class Manager : MonoBehaviour
     }
 
     // Hàm này được gọi từ AR Button
-    public void OpenModuleFromAR(string moduleName)
+    public void OpenModuleFromAR(string fullQRContent)
     {
-        if (string.IsNullOrEmpty(moduleName)) return;
+        if (string.IsNullOrEmpty(fullQRContent)) return;
 
+        string[] parts = fullQRContent.Split('_');
+        string moduleName = parts.Length > 0 ? parts[parts.Length - 1] : fullQRContent;
+
+        int grapperId = 1;
+        if (parts.Length >= 2)
+        {
+            string area = parts[1].ToLower();
+            switch (area)
+            {
+                case "grappera": grapperId = 1; break;
+                case "grapperb": grapperId = 2; break;
+                case "grapperc": grapperId = 3; break;
+                case "lohoi": grapperId = 4; break;
+            }
+        }
+
+        GlobalVariable.GrapperId = grapperId;
         GlobalVariable.objectName = moduleName;
         title.text = "Tủ " + moduleName;
 
+        Debug.Log($"QR = {fullQRContent} : GrapperId = {grapperId} | Module = {moduleName}");
+
         OpenCanvas();
 
-        InitModuleScanQRView view = FindObjectOfType<InitModuleScanQRView>();
-        if (view != null)
+        // Gọi load list và chờ hoàn thành
+        StartCoroutine(LoadDataSequence(grapperId, moduleName));
+    }
+
+    private IEnumerator LoadDataSequence(int grapperId, string moduleName)
+    {
+        InitModuleScanQRView listView = FindObjectOfType<InitModuleScanQRView>();
+        if (listView != null)
         {
-            view.LoadListModule();           // Load danh sách module
-            Debug.Log($"Đang load dữ liệu cho module: {moduleName}");
-        }
-        else
-        {
-            Debug.LogWarning("Không tìm thấy InitModuleScanQRView");
+            listView.LoadListModule();           // Bắt đầu load async
         }
 
+        // Chờ dictionary được cập nhật
+        float timeout = 0f;
+        while (GlobalVariable.temp_Dictionary_ModuleInformationModel.Count == 0 && timeout < 3f)
+        {
+            timeout += Time.deltaTime;
+            yield return null;
+        }
+
+        // Load detail
         OpenModuleGeneralPanelView detailView = FindObjectOfType<OpenModuleGeneralPanelView>();
         if (detailView != null)
         {
-            detailView.LoadModuleInfor();    // Load thông tin chi tiết module
+            detailView.LoadModuleInfor();
         }
     }
 

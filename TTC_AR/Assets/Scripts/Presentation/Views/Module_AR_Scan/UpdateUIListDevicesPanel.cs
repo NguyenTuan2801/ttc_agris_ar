@@ -155,32 +155,30 @@ public class UpdateUIListDevicesPanel : MonoBehaviour, IDeviceView
     private void UpdateDeviceInformation(DeviceInformationModel device)
     {
         DestroyAllInstancesExceptPrefab(dic_JBInformationModel_Button.Values.ToList());
-
-        deviceInforValue[0].text = device.Code;
-        deviceInforValue[1].text = device.Function;
-        deviceInforValue[2].text = device.Range;
-        deviceInforValue[3].text = device.Unit;
-        deviceInforValue[4].text = device.IOAddress;
-        deviceInforValue[5].text = device.Type;
-
-        GlobalVariable.deviceCode = device.Code;
-        if (device.AdditionalConnectionImages != null && device.AdditionalConnectionImages.Any())
-        {
-            GlobalVariable.temp_List_AdditionalImages = device.AdditionalConnectionImages;
-        }
-        else
-        {
-            GlobalVariable.temp_List_AdditionalImages = new List<ImageInformationModel>();
-        }
-
         dic_JBInformationModel.Clear();
-
         dic_JBInformationModel_Button.Clear();
 
-        if (device.JBInformationModels != null && device.JBInformationModels.Any())
-        {
-            listJBInformationModel = device.JBInformationModels;
-        }
+        // Device Info
+        deviceInforValue[0].text = device.Code ?? "";
+        deviceInforValue[1].text = device.Function ?? "";
+        deviceInforValue[2].text = device.Range ?? "";
+        deviceInforValue[3].text = device.Unit ?? "";
+        deviceInforValue[4].text = device.IOAddress ?? "";
+        deviceInforValue[5].text = device.Type ?? "";
+
+        GlobalVariable.deviceCode = device.Code;
+
+        // Additional Images
+        GlobalVariable.temp_List_AdditionalImages = device.AdditionalConnectionImages?.Any() == true
+            ? device.AdditionalConnectionImages
+            : new List<ImageInformationModel>();
+
+        // JB List
+        listJBInformationModel = device.JBInformationModels?.Any() == true
+            ? new List<JBInformationModel>(device.JBInformationModels)
+            : new List<JBInformationModel>();
+
+        Debug.Log($"Device {device.Code} có {listJBInformationModel.Count} JB");
 
         if (!listJBInformationModel.Any())
         {
@@ -188,56 +186,51 @@ public class UpdateUIListDevicesPanel : MonoBehaviour, IDeviceView
             JB_Item_Prefab.GetComponent<JBInfor>().HandleEmptyList();
             return;
         }
-        else
+
+        JB_Item_Prefab.SetActive(false);
+
+        foreach (var jbModel in listJBInformationModel)
         {
-            if (listJBInformationModel.Count > 1)
+            if (jbModel == null || string.IsNullOrEmpty(jbModel.Name)) continue;
+
+            var newJBItem = Instantiate(JB_Item_Prefab, jbConnectionParentTransform);
+            newJBItem.SetActive(true);
+
+            var jbInfor = newJBItem.GetComponent<JBInfor>();
+            jbInfor.value.text = jbModel.Name;
+
+            string locationText = "Được ghi chú trong sơ đồ";
+
+            // Dùng Location trực tiếp từ JB trong Device
+            if (!string.IsNullOrEmpty(jbModel.Location))
             {
-                foreach (var model in listJBInformationModel)
-                {
-                    if (!dic_JBInformationModel.ContainsKey(model.Name))
-                    {
-                        if (GlobalVariable.temp_Dictionary_JBInformationModel.TryGetValue(model.Name, out var jbInformationModel))
-                        {
-                            dic_JBInformationModel.Add(jbInformationModel.Name, jbInformationModel);
-                            var new_JB_Item = Instantiate(JB_Item_Prefab, jbConnectionParentTransform);
-                            var new_JB_Item_JBInfor = new_JB_Item.GetComponent<JBInfor>();
-                            new_JB_Item_JBInfor.SetJBInfor(jbInformationModel);
-                            dic_JBInformationModel_Button.Add(jbInformationModel.Name, new_JB_Item);
-                            new_JB_Item_JBInfor.button.onClick.RemoveAllListeners();
-                            new_JB_Item_JBInfor.button.onClick.AddListener(() =>
-                            {
-                                GlobalVariable.navigate_from_List_Devices = true;
-                                GlobalVariable.navigate_from_list_JBs = false;
-                                NavigateJBDetailScreen(model: jbInformationModel);
-                            });
-                        }
-                    }
-                    dic_JBInformationModel_Button[model.Name].SetActive(true);
-                }
-                JB_Item_Prefab.SetActive(false);
-                return;
+                locationText = jbModel.Location;
+                Debug.Log($"[JB] Dùng Location từ Device: {jbModel.Name} → {locationText}");
             }
-            else
+            // Tìm trong Dictionary JB
+            else if (GlobalVariable.temp_Dictionary_JBInformationModel.TryGetValue(jbModel.Name.Trim(), out var fullJB))
             {
-                JB_Item_Prefab.SetActive(true);
-                if (GlobalVariable.temp_Dictionary_JBInformationModel.TryGetValue(listJBInformationModel[0].Name, out var jbInformationModel))
+                if (!string.IsNullOrEmpty(fullJB.Location))
                 {
-                    var jbInfor = JB_Item_Prefab.GetComponent<JBInfor>();
-                    jbInfor.SetJBInfor(jbInformationModel);
-                    jbInfor.button.onClick.RemoveAllListeners();
-                    jbInfor.button.onClick.AddListener(() =>
-                    {
-                        GlobalVariable.navigate_from_List_Devices = true;
-                        GlobalVariable.navigate_from_list_JBs = false;
-                        NavigateJBDetailScreen(model: jbInformationModel);
-                    });
+                    locationText = fullJB.Location;
+                    Debug.Log($"[JB] Dùng Location từ Dictionary: {jbModel.Name} → {locationText}");
                 }
             }
+
+            jbInfor.Location.text = locationText;
+
+            // Button Click
+            jbInfor.button.onClick.RemoveAllListeners();
+            jbInfor.button.onClick.AddListener(() =>
+            {
+                GlobalVariable.navigate_from_List_Devices = true;
+                GlobalVariable.navigate_from_list_JBs = false;
+                NavigateJBDetailScreen(jbModel);
+            });
+
+            dic_JBInformationModel_Button[jbModel.Name] = newJBItem;
         }
-
-
     }
-
     private void ClearDeviceInformation()
     {
         foreach (var infoValue in deviceInforValue)

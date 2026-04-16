@@ -78,20 +78,21 @@ public class VuforiaBarcodeARManager : MonoBehaviour
         GameObject newButton = Instantiate(qrButtonPrefab, qrTransform);
         newButton.name = "AR_" + content;
 
-        // Set Text
         TextMeshProUGUI tmpText = newButton.GetComponentInChildren<TextMeshProUGUI>(true);
+        string suffix = content;
         if (tmpText != null)
         {
             string[] parts = content.Split('_');
-            string suffix = parts.Length > 0 ? parts[parts.Length - 1] : content;
+            suffix = parts.Length > 0 ? parts[parts.Length - 1] : content;
             tmpText.text = suffix;
         }
 
-        // Gán marker
         ARQRMarker marker = newButton.GetComponent<ARQRMarker>();
         if (marker != null)
         {
-            marker.displaySuffix = content.Split('_').LastOrDefault() ?? content;
+            marker.fullQRContent = content;      
+            marker.displaySuffix = suffix;
+            Debug.Log($"Gán fullQRContent = {content}");
         }
 
         newButton.transform.localPosition = localOffset;
@@ -99,7 +100,6 @@ public class VuforiaBarcodeARManager : MonoBehaviour
 
         activeButtons[content] = newButton;
     }
-
     private void RemoveQRButton(string content)
     {
         if (activeButtons.TryGetValue(content, out GameObject btn) && btn != null)

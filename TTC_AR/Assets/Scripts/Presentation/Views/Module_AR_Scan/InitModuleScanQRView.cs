@@ -22,13 +22,42 @@ public class InitModuleScanQRView : MonoBehaviour, IModuleView
 
     public void LoadListModule()
     {
+        int grapperId = GlobalVariable.GrapperId;
+        Debug.Log($"LoadListModule theo grapperId = {grapperId}");
+
+        if (grapperId <= 0)
+        {
+            Debug.LogWarning("GrapperId không hợp lệ!");
+            return;
+        }
+
+        // Reset dictionary trước khi load mới
+        GlobalVariable.temp_Dictionary_ModuleInformationModel.Clear();
+
         _modulePresenter.LoadListModule(grapperId);
     }
 
     public void DisplayList(List<ModuleInformationModel> models)
     {
-        GlobalVariable.temp_Dictionary_ModuleInformationModel = models.ToDictionary(m => m.Name, m => m);
-        Debug.Log("DisplayList: " + models.Count);
+        if (models == null || models.Count == 0)
+        {
+            Debug.LogWarning("Không có module nào trong grapper này!");
+            return;
+        }
+
+        GlobalVariable.temp_Dictionary_ModuleInformationModel.Clear();
+
+        foreach (var m in models)
+        {
+            if (m == null || string.IsNullOrEmpty(m.Name)) continue;
+
+            string key = $"{GlobalVariable.GrapperId}_{m.Name}";
+            GlobalVariable.temp_Dictionary_ModuleInformationModel[key] = m;
+
+            Debug.Log($"Lưu module: {m.Name} (Id={m.Id}, GrapperId={GlobalVariable.GrapperId})");
+        }
+
+        Debug.Log($"Đã lưu {models.Count} modules cho GrapperId = {GlobalVariable.GrapperId}");
     }
     private void ShowProgressBar(string title, string details)
     {

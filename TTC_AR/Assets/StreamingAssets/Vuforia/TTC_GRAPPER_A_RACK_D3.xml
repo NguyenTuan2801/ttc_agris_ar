@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<QCARConfig>
-  <Tracking>
-    <ImageTarget name="D33O" size="1.000000 1.000000" />
-    <ImageTarget name="D32I" size="1.000000 1.000000" />
-    <ImageTarget name="D31I" size="1.000000 1.000000" />
-    <ImageTarget name="D30I" size="1.000000 1.000000" />
-  </Tracking>
-</QCARConfig>

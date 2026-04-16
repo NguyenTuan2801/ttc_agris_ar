@@ -7685,8 +7685,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   qrButtonPrefab: {fileID: 1002013424}
-  scaleMultiplier: 0.0017
-  localOffset: {x: 0, y: 0, z: 0}
+  scaleMultiplier: 0.0018
+  localOffset: {x: 0, y: 80, z: 0}
 --- !u!114 &1628400973
 MonoBehaviour:
   m_ObjectHideFlags: 0
