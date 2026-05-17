@@ -16998,8 +16998,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.08469903, y: 0.1837536}
   m_AnchorMax: {x: 0.91700006, y: 0.8036894}
-  m_AnchoredPosition: {x: -0.6447449, y: 1.56781}
-  m_SizeDelta: {x: 0.09659958, y: 1.1124992}
+  m_AnchoredPosition: {x: -0.6074524, y: 1.6360168}
+  m_SizeDelta: {x: -115.3313, y: 1.1125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6521303905026229637
 GameObject:
@@ -21543,7 +21543,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Module A4.1.I
+  m_text: A4.1.I
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1526582acaf61a640890decb2b2b149f, type: 2}
   m_sharedMaterial: {fileID: -1870415040321534674, guid: 1526582acaf61a640890decb2b2b149f,
